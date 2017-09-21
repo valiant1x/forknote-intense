@@ -12,3 +12,7 @@ CMakeFiles
 Release
 Debug
 x64
+*.d
+*.o
+*.a
+*.mk
