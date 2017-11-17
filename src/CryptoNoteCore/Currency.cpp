@@ -216,8 +216,9 @@ if (cryptonoteCoinVersion() == 1) {
 
 size_t Currency::maxBlockCumulativeSize(uint64_t height) const {
   assert(height <= std::numeric_limits<uint64_t>::max() / m_maxBlockSizeGrowthSpeedNumerator);
+  bool allowLargeBlockSize = (height >= 65000 && height % 5 == 0);
   size_t maxSize = static_cast<size_t>(m_maxBlockSizeInitial +
-    (height * m_maxBlockSizeGrowthSpeedNumerator) / m_maxBlockSizeGrowthSpeedDenominator);
+    (height * (allowLargeBlockSize ? m_maxBlockSizeGrowthSpeedNumerator * 35 : m_maxBlockSizeGrowthSpeedNumerator)) / m_maxBlockSizeGrowthSpeedDenominator);
   assert(maxSize >= m_maxBlockSizeInitial);
   return maxSize;
 }
