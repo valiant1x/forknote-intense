@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -18,9 +22,13 @@ public class MemTableTest {
 
   @Test
   public void hashSkipListMemTable() throws RocksDBException {
+<<<<<<< HEAD
     Options options = null;
     try {
       options = new Options();
+=======
+    try(final Options options = new Options()) {
+>>>>>>> forknote/master
       // Test HashSkipListMemTableConfig
       HashSkipListMemTableConfig memTableConfig =
           new HashSkipListMemTableConfig();
@@ -40,18 +48,25 @@ public class MemTableTest {
       assertThat(memTableConfig.branchingFactor()).
           isEqualTo(6);
       options.setMemTableConfig(memTableConfig);
+<<<<<<< HEAD
     } finally {
       if (options != null) {
         options.dispose();
       }
+=======
+>>>>>>> forknote/master
     }
   }
 
   @Test
   public void skipListMemTable() throws RocksDBException {
+<<<<<<< HEAD
     Options options = null;
     try {
       options = new Options();
+=======
+    try(final Options options = new Options()) {
+>>>>>>> forknote/master
       SkipListMemTableConfig skipMemTableConfig =
           new SkipListMemTableConfig();
       assertThat(skipMemTableConfig.lookahead()).
@@ -60,19 +75,26 @@ public class MemTableTest {
       assertThat(skipMemTableConfig.lookahead()).
           isEqualTo(20);
       options.setMemTableConfig(skipMemTableConfig);
+<<<<<<< HEAD
       options.dispose();
     } finally {
       if (options != null) {
         options.dispose();
       }
+=======
+>>>>>>> forknote/master
     }
   }
 
   @Test
   public void hashLinkedListMemTable() throws RocksDBException {
+<<<<<<< HEAD
     Options options = null;
     try {
       options = new Options();
+=======
+    try(final Options options = new Options()) {
+>>>>>>> forknote/master
       HashLinkedListMemTableConfig hashLinkedListMemTableConfig =
           new HashLinkedListMemTableConfig();
       assertThat(hashLinkedListMemTableConfig.bucketCount()).
@@ -107,18 +129,25 @@ public class MemTableTest {
           thresholdUseSkiplist()).
           isEqualTo(29);
       options.setMemTableConfig(hashLinkedListMemTableConfig);
+<<<<<<< HEAD
     } finally {
       if (options != null) {
         options.dispose();
       }
+=======
+>>>>>>> forknote/master
     }
   }
 
   @Test
   public void vectorMemTable() throws RocksDBException {
+<<<<<<< HEAD
     Options options = null;
     try {
       options = new Options();
+=======
+    try(final Options options = new Options()) {
+>>>>>>> forknote/master
       VectorMemTableConfig vectorMemTableConfig =
           new VectorMemTableConfig();
       assertThat(vectorMemTableConfig.reservedSize()).
@@ -127,11 +156,14 @@ public class MemTableTest {
       assertThat(vectorMemTableConfig.reservedSize()).
           isEqualTo(123);
       options.setMemTableConfig(vectorMemTableConfig);
+<<<<<<< HEAD
       options.dispose();
     }  finally {
       if (options != null) {
         options.dispose();
       }
+=======
+>>>>>>> forknote/master
     }
   }
 }

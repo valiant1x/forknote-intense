@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -18,7 +22,10 @@
 
 #include "rocksdb/comparator.h"
 #include "table/format.h"
+<<<<<<< HEAD
 #include "table/block_hash_index.h"
+=======
+>>>>>>> forknote/master
 #include "table/block_prefix_index.h"
 #include "util/coding.h"
 #include "util/logging.h"
@@ -64,6 +71,43 @@ void BlockIter::Next() {
 void BlockIter::Prev() {
   assert(Valid());
 
+<<<<<<< HEAD
+=======
+  assert(prev_entries_idx_ == -1 ||
+         static_cast<size_t>(prev_entries_idx_) < prev_entries_.size());
+  // Check if we can use cached prev_entries_
+  if (prev_entries_idx_ > 0 &&
+      prev_entries_[prev_entries_idx_].offset == current_) {
+    // Read cached CachedPrevEntry
+    prev_entries_idx_--;
+    const CachedPrevEntry& current_prev_entry =
+        prev_entries_[prev_entries_idx_];
+
+    const char* key_ptr = nullptr;
+    if (current_prev_entry.key_ptr != nullptr) {
+      // The key is not delta encoded and stored in the data block
+      key_ptr = current_prev_entry.key_ptr;
+      key_pinned_ = true;
+    } else {
+      // The key is delta encoded and stored in prev_entries_keys_buff_
+      key_ptr = prev_entries_keys_buff_.data() + current_prev_entry.key_offset;
+      key_pinned_ = false;
+    }
+    const Slice current_key(key_ptr, current_prev_entry.key_size);
+
+    current_ = current_prev_entry.offset;
+    key_.SetKey(current_key, false /* copy */);
+    value_ = current_prev_entry.value;
+
+    return;
+  }
+
+  // Clear prev entries cache
+  prev_entries_idx_ = -1;
+  prev_entries_.clear();
+  prev_entries_keys_buff_.clear();
+
+>>>>>>> forknote/master
   // Scan backwards to a restart point before current_
   const uint32_t original = current_;
   while (GetRestartPoint(restart_index_) >= original) {
@@ -77,9 +121,34 @@ void BlockIter::Prev() {
   }
 
   SeekToRestartPoint(restart_index_);
+<<<<<<< HEAD
   do {
     // Loop until end of current entry hits the start of original entry
   } while (ParseNextKey() && NextEntryOffset() < original);
+=======
+
+  do {
+    if (!ParseNextKey()) {
+      break;
+    }
+    Slice current_key = key();
+
+    if (key_.IsKeyPinned()) {
+      // The key is not delta encoded
+      prev_entries_.emplace_back(current_, current_key.data(), 0,
+                                 current_key.size(), value());
+    } else {
+      // The key is delta encoded, cache decoded key in buffer
+      size_t new_key_offset = prev_entries_keys_buff_.size();
+      prev_entries_keys_buff_.append(current_key.data(), current_key.size());
+
+      prev_entries_.emplace_back(current_, nullptr, new_key_offset,
+                                 current_key.size(), value());
+    }
+    // Loop until end of current entry hits the start of original entry
+  } while (NextEntryOffset() < original);
+  prev_entries_idx_ = static_cast<int32_t>(prev_entries_.size()) - 1;
+>>>>>>> forknote/master
 }
 
 void BlockIter::Seek(const Slice& target) {
@@ -92,8 +161,12 @@ void BlockIter::Seek(const Slice& target) {
   if (prefix_index_) {
     ok = PrefixSeek(target, &index);
   } else {
+<<<<<<< HEAD
     ok = hash_index_ ? HashSeek(target, &index)
       : BinarySeek(target, 0, num_restarts_ - 1, &index);
+=======
+    ok = BinarySeek(target, 0, num_restarts_ - 1, &index);
+>>>>>>> forknote/master
   }
 
   if (!ok) {
@@ -153,7 +226,20 @@ bool BlockIter::ParseNextKey() {
       CorruptionError();
       return false;
     } else {
+<<<<<<< HEAD
       key_.TrimAppend(shared, p, non_shared);
+=======
+      if (shared == 0) {
+        // If this key dont share any bytes with prev key then we dont need
+        // to decode it and can use it's address in the block directly.
+        key_.SetKey(Slice(p, non_shared), false /* copy */);
+        key_pinned_ = true;
+      } else {
+        // This key share `shared` bytes with prev key, we need to decode it
+        key_.TrimAppend(shared, p, non_shared);
+        key_pinned_ = false;
+      }
+>>>>>>> forknote/master
       value_ = Slice(p + non_shared, value_length);
       while (restart_index_ + 1 < num_restarts_ &&
              GetRestartPoint(restart_index_ + 1) < current_) {
@@ -266,6 +352,7 @@ bool BlockIter::BinaryBlockIndexSeek(const Slice& target, uint32_t* block_ids,
   }
 }
 
+<<<<<<< HEAD
 bool BlockIter::HashSeek(const Slice& target, uint32_t* index) {
   assert(hash_index_);
   auto restart_index = hash_index_->GetRestartIndex(target);
@@ -281,6 +368,8 @@ bool BlockIter::HashSeek(const Slice& target, uint32_t* index) {
   return BinarySeek(target, left, right, index);
 }
 
+=======
+>>>>>>> forknote/master
 bool BlockIter::PrefixSeek(const Slice& target, uint32_t* index) {
   assert(prefix_index_);
   uint32_t* block_ids = nullptr;
@@ -316,14 +405,23 @@ Block::Block(BlockContents&& contents)
   }
 }
 
+<<<<<<< HEAD
 Iterator* Block::NewIterator(
     const Comparator* cmp, BlockIter* iter, bool total_order_seek) {
+=======
+InternalIterator* Block::NewIterator(const Comparator* cmp, BlockIter* iter,
+                                     bool total_order_seek) {
+>>>>>>> forknote/master
   if (size_ < 2*sizeof(uint32_t)) {
     if (iter != nullptr) {
       iter->SetStatus(Status::Corruption("bad block contents"));
       return iter;
     } else {
+<<<<<<< HEAD
       return NewErrorIterator(Status::Corruption("bad block contents"));
+=======
+      return NewErrorInternalIterator(Status::Corruption("bad block contents"));
+>>>>>>> forknote/master
     }
   }
   const uint32_t num_restarts = NumRestarts();
@@ -332,39 +430,58 @@ Iterator* Block::NewIterator(
       iter->SetStatus(Status::OK());
       return iter;
     } else {
+<<<<<<< HEAD
       return NewEmptyIterator();
     }
   } else {
     BlockHashIndex* hash_index_ptr =
         total_order_seek ? nullptr : hash_index_.get();
+=======
+      return NewEmptyInternalIterator();
+    }
+  } else {
+>>>>>>> forknote/master
     BlockPrefixIndex* prefix_index_ptr =
         total_order_seek ? nullptr : prefix_index_.get();
 
     if (iter != nullptr) {
       iter->Initialize(cmp, data_, restart_offset_, num_restarts,
+<<<<<<< HEAD
                     hash_index_ptr, prefix_index_ptr);
     } else {
       iter = new BlockIter(cmp, data_, restart_offset_, num_restarts,
                            hash_index_ptr, prefix_index_ptr);
+=======
+                       prefix_index_ptr);
+    } else {
+      iter = new BlockIter(cmp, data_, restart_offset_, num_restarts,
+                           prefix_index_ptr);
+>>>>>>> forknote/master
     }
   }
 
   return iter;
 }
 
+<<<<<<< HEAD
 void Block::SetBlockHashIndex(BlockHashIndex* hash_index) {
   hash_index_.reset(hash_index);
 }
 
+=======
+>>>>>>> forknote/master
 void Block::SetBlockPrefixIndex(BlockPrefixIndex* prefix_index) {
   prefix_index_.reset(prefix_index);
 }
 
 size_t Block::ApproximateMemoryUsage() const {
   size_t usage = usable_size();
+<<<<<<< HEAD
   if (hash_index_) {
     usage += hash_index_->ApproximateMemoryUsage();
   }
+=======
+>>>>>>> forknote/master
   if (prefix_index_) {
     usage += prefix_index_->ApproximateMemoryUsage();
   }

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -39,6 +43,14 @@ enum ValueType : unsigned char {
   kTypeColumnFamilyMerge = 0x6,     // WAL only.
   kTypeSingleDeletion = 0x7,
   kTypeColumnFamilySingleDeletion = 0x8,  // WAL only.
+<<<<<<< HEAD
+=======
+  kTypeBeginPrepareXID = 0x9,             // WAL only.
+  kTypeEndPrepareXID = 0xA,               // WAL only.
+  kTypeCommitXID = 0xB,                   // WAL only.
+  kTypeRollbackXID = 0xC,                 // WAL only.
+  kTypeNoop = 0xD,                        // WAL only.
+>>>>>>> forknote/master
   kMaxValue = 0x7F                        // Not used for storing records.
 };
 
@@ -174,6 +186,13 @@ class InternalKey {
   Slice user_key() const { return ExtractUserKey(rep_); }
   size_t size() { return rep_.size(); }
 
+<<<<<<< HEAD
+=======
+  void Set(const Slice& _user_key, SequenceNumber s, ValueType t) {
+    SetFrom(ParsedInternalKey(_user_key, s, t));
+  }
+
+>>>>>>> forknote/master
   void SetFrom(const ParsedInternalKey& p) {
     rep_.clear();
     AppendInternalKey(&rep_, p);
@@ -271,7 +290,12 @@ inline LookupKey::~LookupKey() {
 
 class IterKey {
  public:
+<<<<<<< HEAD
   IterKey() : key_(space_), buf_size_(sizeof(space_)), key_size_(0) {}
+=======
+  IterKey()
+      : buf_(space_), buf_size_(sizeof(space_)), key_(buf_), key_size_(0) {}
+>>>>>>> forknote/master
 
   ~IterKey() { ResetBuffer(); }
 
@@ -293,15 +317,26 @@ class IterKey {
   void TrimAppend(const size_t shared_len, const char* non_shared_data,
                   const size_t non_shared_len) {
     assert(shared_len <= key_size_);
+<<<<<<< HEAD
 
     size_t total_size = shared_len + non_shared_len;
     if (total_size <= buf_size_) {
       key_size_ = total_size;
     } else {
+=======
+    size_t total_size = shared_len + non_shared_len;
+
+    if (IsKeyPinned() /* key is not in buf_ */) {
+      // Copy the key from external memory to buf_ (copy shared_len bytes)
+      EnlargeBufferIfNeeded(total_size);
+      memcpy(buf_, key_, shared_len);
+    } else if (total_size > buf_size_) {
+>>>>>>> forknote/master
       // Need to allocate space, delete previous space
       char* p = new char[total_size];
       memcpy(p, key_, shared_len);
 
+<<<<<<< HEAD
       if (key_ != space_) {
         delete[] key_;
       }
@@ -318,6 +353,32 @@ class IterKey {
     size_t size = key.size();
     EnlargeBufferIfNeeded(size);
     memcpy(key_, key.data(), size);
+=======
+      if (buf_ != space_) {
+        delete[] buf_;
+      }
+
+      buf_ = p;
+      buf_size_ = total_size;
+    }
+
+    memcpy(buf_ + shared_len, non_shared_data, non_shared_len);
+    key_ = buf_;
+    key_size_ = total_size;
+  }
+
+  Slice SetKey(const Slice& key, bool copy = true) {
+    size_t size = key.size();
+    if (copy) {
+      // Copy key to buf_
+      EnlargeBufferIfNeeded(size);
+      memcpy(buf_, key.data(), size);
+      key_ = buf_;
+    } else {
+      // Update key_ to point to external memory
+      key_ = key.data();
+    }
+>>>>>>> forknote/master
     key_size_ = size;
     return Slice(key_, key_size_);
   }
@@ -335,11 +396,22 @@ class IterKey {
   // Update the sequence number in the internal key.  Guarantees not to
   // invalidate slices to the key (and the user key).
   void UpdateInternalKey(uint64_t seq, ValueType t) {
+<<<<<<< HEAD
     assert(key_size_ >= 8);
     uint64_t newval = (seq << 8) | t;
     EncodeFixed64(&key_[key_size_ - 8], newval);
   }
 
+=======
+    assert(!IsKeyPinned());
+    assert(key_size_ >= 8);
+    uint64_t newval = (seq << 8) | t;
+    EncodeFixed64(&buf_[key_size_ - 8], newval);
+  }
+
+  bool IsKeyPinned() const { return (key_ != buf_); }
+
+>>>>>>> forknote/master
   void SetInternalKey(const Slice& key_prefix, const Slice& user_key,
                       SequenceNumber s,
                       ValueType value_type = kValueTypeForSeek) {
@@ -347,10 +419,19 @@ class IterKey {
     size_t usize = user_key.size();
     EnlargeBufferIfNeeded(psize + usize + sizeof(uint64_t));
     if (psize > 0) {
+<<<<<<< HEAD
       memcpy(key_, key_prefix.data(), psize);
     }
     memcpy(key_ + psize, user_key.data(), usize);
     EncodeFixed64(key_ + usize + psize, PackSequenceAndType(s, value_type));
+=======
+      memcpy(buf_, key_prefix.data(), psize);
+    }
+    memcpy(buf_ + psize, user_key.data(), usize);
+    EncodeFixed64(buf_ + usize + psize, PackSequenceAndType(s, value_type));
+
+    key_ = buf_;
+>>>>>>> forknote/master
     key_size_ = psize + usize + sizeof(uint64_t);
   }
 
@@ -377,6 +458,7 @@ class IterKey {
   void EncodeLengthPrefixedKey(const Slice& key) {
     auto size = key.size();
     EnlargeBufferIfNeeded(size + static_cast<size_t>(VarintLength(size)));
+<<<<<<< HEAD
     char* ptr = EncodeVarint32(key_, static_cast<uint32_t>(size));
     memcpy(ptr, key.data(), size);
   }
@@ -384,13 +466,30 @@ class IterKey {
  private:
   char* key_;
   size_t buf_size_;
+=======
+    char* ptr = EncodeVarint32(buf_, static_cast<uint32_t>(size));
+    memcpy(ptr, key.data(), size);
+    key_ = buf_;
+  }
+
+ private:
+  char* buf_;
+  size_t buf_size_;
+  const char* key_;
+>>>>>>> forknote/master
   size_t key_size_;
   char space_[32];  // Avoid allocation for short keys
 
   void ResetBuffer() {
+<<<<<<< HEAD
     if (key_ != space_) {
       delete[] key_;
       key_ = space_;
+=======
+    if (buf_ != space_) {
+      delete[] buf_;
+      buf_ = space_;
+>>>>>>> forknote/master
     }
     buf_size_ = sizeof(space_);
     key_size_ = 0;
@@ -407,7 +506,11 @@ class IterKey {
     if (key_size > buf_size_) {
       // Need to enlarge the buffer.
       ResetBuffer();
+<<<<<<< HEAD
       key_ = new char[key_size];
+=======
+      buf_ = new char[key_size];
+>>>>>>> forknote/master
       buf_size_ = key_size;
     }
   }
@@ -447,6 +550,15 @@ class InternalKeySliceTransform : public SliceTransform {
   const SliceTransform* const transform_;
 };
 
+<<<<<<< HEAD
+=======
+// Read the key of a record from a write batch.
+// if this record represent the default column family then cf_record
+// must be passed as false, otherwise it must be passed as true.
+extern bool ReadKeyFromWriteBatchEntry(Slice* input, Slice* key,
+                                       bool cf_record);
+
+>>>>>>> forknote/master
 // Read record from a write batch piece from input.
 // tag, column_family, key, value and blob are return values. Callers own the
 // Slice they point to.
@@ -454,5 +566,9 @@ class InternalKeySliceTransform : public SliceTransform {
 // input will be advanced to after the record.
 extern Status ReadRecordFromWriteBatch(Slice* input, char* tag,
                                        uint32_t* column_family, Slice* key,
+<<<<<<< HEAD
                                        Slice* value, Slice* blob);
+=======
+                                       Slice* value, Slice* blob, Slice* xid);
+>>>>>>> forknote/master
 }  // namespace rocksdb

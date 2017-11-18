@@ -1,13 +1,24 @@
+<<<<<<< HEAD
 //  Copyright (c) 2015, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
 
 #ifndef ROCKSDB_LITE
+<<<<<<< HEAD
 #include <memory>
 
 #include "rocksdb/utilities/table_properties_collectors.h"
 #include "utilities/table_properties_collectors/compact_on_deletion_collector.h"
+=======
+#include "utilities/table_properties_collectors/compact_on_deletion_collector.h"
+
+#include <memory>
+#include "rocksdb/utilities/table_properties_collectors.h"
+>>>>>>> forknote/master
 
 namespace rocksdb {
 
@@ -75,8 +86,14 @@ Status CompactOnDeletionCollector::AddUserKey(
   return Status::OK();
 }
 
+<<<<<<< HEAD
 TablePropertiesCollector* CompactOnDeletionCollectorFactory::
     CreateTablePropertiesCollector() {
+=======
+TablePropertiesCollector*
+CompactOnDeletionCollectorFactory::CreateTablePropertiesCollector(
+    TablePropertiesCollectorFactory::Context context) {
+>>>>>>> forknote/master
   return new CompactOnDeletionCollector(
       sliding_window_size_, deletion_trigger_);
 }

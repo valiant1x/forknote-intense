@@ -82,6 +82,7 @@ bool gen_double_spend_in_different_chains::check_double_spend(CryptoNote::Core& 
 
   return true;
 }
+<<<<<<< HEAD
 
 //======================================================================================================================
 // DoubleSpendBase
@@ -377,3 +378,5 @@ bool MultiSigTx_DoubleSpendAltChainDifferentBlocks::generate(std::vector<test_ev
 
   return true;
 }
+=======
+>>>>>>> forknote/master

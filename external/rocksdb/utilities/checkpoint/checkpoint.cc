@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -24,6 +28,10 @@
 #include "rocksdb/env.h"
 #include "rocksdb/transaction_log.h"
 #include "util/file_util.h"
+<<<<<<< HEAD
+=======
+#include "util/sync_point.h"
+>>>>>>> forknote/master
 #include "port/port.h"
 
 namespace rocksdb {
@@ -76,7 +84,13 @@ Status CheckpointImpl::CreateCheckpoint(const std::string& checkpoint_dir) {
   s = db_->DisableFileDeletions();
   if (s.ok()) {
     // this will return live_files prefixed with "/"
+<<<<<<< HEAD
     s = db_->GetLiveFiles(live_files, &manifest_file_size, true);
+=======
+    s = db_->GetLiveFiles(live_files, &manifest_file_size);
+    TEST_SYNC_POINT("CheckpointImpl::CreateCheckpoint:SavedLiveFiles1");
+    TEST_SYNC_POINT("CheckpointImpl::CreateCheckpoint:SavedLiveFiles2");
+>>>>>>> forknote/master
   }
   // if we have more than one column family, we need to also get WAL files
   if (s.ok()) {
@@ -98,6 +112,10 @@ Status CheckpointImpl::CreateCheckpoint(const std::string& checkpoint_dir) {
   s = db_->GetEnv()->CreateDir(full_private_path);
 
   // copy/hard link live_files
+<<<<<<< HEAD
+=======
+  std::string manifest_fname, current_fname;
+>>>>>>> forknote/master
   for (size_t i = 0; s.ok() && i < live_files.size(); ++i) {
     uint64_t number;
     FileType type;
@@ -106,10 +124,26 @@ Status CheckpointImpl::CreateCheckpoint(const std::string& checkpoint_dir) {
       s = Status::Corruption("Can't parse file name. This is very bad");
       break;
     }
+<<<<<<< HEAD
     // we should only get sst, manifest and current files here
     assert(type == kTableFile || type == kDescriptorFile ||
            type == kCurrentFile);
     assert(live_files[i].size() > 0 && live_files[i][0] == '/');
+=======
+    // we should only get sst, options, manifest and current files here
+    assert(type == kTableFile || type == kDescriptorFile ||
+           type == kCurrentFile || type == kOptionsFile);
+    assert(live_files[i].size() > 0 && live_files[i][0] == '/');
+    if (type == kCurrentFile) {
+      // We will craft the current file manually to ensure it's consistent with
+      // the manifest number. This is necessary because current's file contents
+      // can change during checkpoint creation.
+      current_fname = live_files[i];
+      continue;
+    } else if (type == kDescriptorFile) {
+      manifest_fname = live_files[i];
+    }
+>>>>>>> forknote/master
     std::string src_fname = live_files[i];
 
     // rules:
@@ -132,6 +166,13 @@ Status CheckpointImpl::CreateCheckpoint(const std::string& checkpoint_dir) {
                    (type == kDescriptorFile) ? manifest_file_size : 0);
     }
   }
+<<<<<<< HEAD
+=======
+  if (s.ok() && !current_fname.empty() && !manifest_fname.empty()) {
+    s = CreateFile(db_->GetEnv(), full_private_path + current_fname,
+                   manifest_fname.substr(1) + "\n");
+  }
+>>>>>>> forknote/master
   Log(db_->GetOptions().info_log, "Number of log files %" ROCKSDB_PRIszt,
       live_wal_files.size());
 
@@ -194,6 +235,7 @@ Status CheckpointImpl::CreateCheckpoint(const std::string& checkpoint_dir) {
     std::vector<std::string> subchildren;
     db_->GetEnv()->GetChildren(full_private_path, &subchildren);
     for (auto& subchild : subchildren) {
+<<<<<<< HEAD
       Status s1 = db_->GetEnv()->DeleteFile(full_private_path + subchild);
       if (s1.ok()) {
         Log(db_->GetOptions().info_log, "Deleted %s",
@@ -203,6 +245,16 @@ Status CheckpointImpl::CreateCheckpoint(const std::string& checkpoint_dir) {
     // finally delete the private dir
     Status s1 = db_->GetEnv()->DeleteDir(full_private_path);
     Log(db_->GetOptions().info_log, "Deleted dir %s -- %s",
+=======
+      std::string subchild_path = full_private_path + "/" + subchild;
+      Status s1 = db_->GetEnv()->DeleteFile(subchild_path);
+      Log(db_->GetOptions().info_log, "Delete file %s -- %s",
+          subchild_path.c_str(), s1.ToString().c_str());
+    }
+    // finally delete the private dir
+    Status s1 = db_->GetEnv()->DeleteDir(full_private_path);
+    Log(db_->GetOptions().info_log, "Delete dir %s -- %s",
+>>>>>>> forknote/master
         full_private_path.c_str(), s1.ToString().c_str());
     return s;
   }

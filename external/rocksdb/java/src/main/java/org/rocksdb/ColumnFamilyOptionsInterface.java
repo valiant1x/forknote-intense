@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -231,7 +235,11 @@ public interface ColumnFamilyOptionsInterface {
 
 
   /**
+<<<<<<< HEAD
    * Same as fixed length prefix extractor, except that when slice is 
+=======
+   * Same as fixed length prefix extractor, except that when slice is
+>>>>>>> forknote/master
    * shorter than the fixed length, it will use the full key.
    *
    * @param n use the first n bytes of a key as its prefix.
@@ -753,7 +761,11 @@ public interface ColumnFamilyOptionsInterface {
    * If &le; 0, a proper value is automatically calculated (usually 1/10 of
    * writer_buffer_size).
    *
+<<<<<<< HEAD
    * There are two additonal restriction of the The specified size:
+=======
+   * There are two additional restriction of the The specified size:
+>>>>>>> forknote/master
    * (1) size should be in the range of [4096, 2 &lt;&lt; 30] and
    * (2) be the multiple of the CPU word (which helps with the memory
    * alignment).
@@ -774,7 +786,11 @@ public interface ColumnFamilyOptionsInterface {
    * If &le; 0, a proper value is automatically calculated (usually 1/10 of
    * writer_buffer_size).
    *
+<<<<<<< HEAD
    * There are two additonal restriction of the The specified size:
+=======
+   * There are two additional restriction of the The specified size:
+>>>>>>> forknote/master
    * (1) size should be in the range of [4096, 2 &lt;&lt; 30] and
    * (2) be the multiple of the CPU word (which helps with the memory
    * alignment).
@@ -882,6 +898,7 @@ public interface ColumnFamilyOptionsInterface {
   boolean verifyChecksumsInCompaction();
 
   /**
+<<<<<<< HEAD
    * Use KeyMayExist API to filter deletes when this is true.
    * If KeyMayExist returns false, i.e. the key definitely does not exist, then
    * the delete is a noop. KeyMayExist only incurs in-memory look up.
@@ -905,6 +922,8 @@ public interface ColumnFamilyOptionsInterface {
   boolean filterDeletes();
 
   /**
+=======
+>>>>>>> forknote/master
    * An iteration-&gt;Next() sequentially skips over keys with the same
    * user-key unless this option is set. This number specifies the number
    * of keys (with the same userkey) that will be sequentially
@@ -1011,6 +1030,7 @@ public interface ColumnFamilyOptionsInterface {
   long inplaceUpdateNumLocks();
 
   /**
+<<<<<<< HEAD
    * Sets the number of bits used in the prefix bloom filter.
    *
    * This value will be used only when a prefix-extractor is specified.
@@ -1020,6 +1040,17 @@ public interface ColumnFamilyOptionsInterface {
    * @return the reference to the current option.
    */
   Object setMemtablePrefixBloomBits(int memtablePrefixBloomBits);
+=======
+   * Sets the size ratio of the memtable used in the prefix bloom filter.
+   *
+   * This value will be used only when a prefix-extractor is specified.
+   *
+   * @param memtablePrefixBloomSizeRatio the number of bits used in the
+   *     prefix bloom filter.
+   * @return the reference to the current option.
+   */
+  Object setMemtablePrefixBloomSizeRatio(double memtablePrefixBloomSizeRatio);
+>>>>>>> forknote/master
 
   /**
    * Returns the number of bits used in the prefix bloom filter.
@@ -1029,6 +1060,7 @@ public interface ColumnFamilyOptionsInterface {
    * @return the number of bloom-bits.
    * @see #useFixedLengthPrefixExtractor(int)
    */
+<<<<<<< HEAD
   int memtablePrefixBloomBits();
 
   /**
@@ -1045,6 +1077,9 @@ public interface ColumnFamilyOptionsInterface {
    * @return the number of hash probes per key.
    */
   int memtablePrefixBloomProbes();
+=======
+  double memtablePrefixBloomSizeRatio();
+>>>>>>> forknote/master
 
   /**
    * Control locality of bloom filter probes to improve cache miss rate.
@@ -1074,7 +1109,11 @@ public interface ColumnFamilyOptionsInterface {
    * Default: 0
    *
    * @return the level of locality of bloom-filter probes.
+<<<<<<< HEAD
    * @see #setMemtablePrefixBloomProbes(int)
+=======
+   * @see #setBloomLocality(int)
+>>>>>>> forknote/master
    */
   int bloomLocality();
 

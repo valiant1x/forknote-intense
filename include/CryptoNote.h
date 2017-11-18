@@ -33,16 +33,20 @@ struct KeyInput {
   Crypto::KeyImage keyImage;
 };
 
+<<<<<<< HEAD
 struct MultisignatureInput {
   uint64_t amount;
   uint8_t signatureCount;
   uint32_t outputIndex;
 };
 
+=======
+>>>>>>> forknote/master
 struct KeyOutput {
   Crypto::PublicKey key;
 };
 
+<<<<<<< HEAD
 struct MultisignatureOutput {
   std::vector<Crypto::PublicKey> keys;
   uint8_t requiredSignatureCount;
@@ -51,6 +55,11 @@ struct MultisignatureOutput {
 typedef boost::variant<BaseInput, KeyInput, MultisignatureInput> TransactionInput;
 
 typedef boost::variant<KeyOutput, MultisignatureOutput> TransactionOutputTarget;
+=======
+typedef boost::variant<BaseInput, KeyInput> TransactionInput;
+
+typedef boost::variant<KeyOutput> TransactionOutputTarget;
+>>>>>>> forknote/master
 
 struct TransactionOutput {
   uint64_t amount;

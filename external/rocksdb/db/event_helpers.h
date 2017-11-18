@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -19,15 +23,40 @@ namespace rocksdb {
 class EventHelpers {
  public:
   static void AppendCurrentTime(JSONWriter* json_writer);
+<<<<<<< HEAD
   static void LogAndNotifyTableFileCreation(
       EventLogger* event_logger,
       const std::vector<std::shared_ptr<EventListener>>& listeners,
       const FileDescriptor& fd, const TableFileCreationInfo& info);
+=======
+#ifndef ROCKSDB_LITE
+  static void NotifyTableFileCreationStarted(
+      const std::vector<std::shared_ptr<EventListener>>& listeners,
+      const std::string& db_name, const std::string& cf_name,
+      const std::string& file_path, int job_id, TableFileCreationReason reason);
+#endif  // !ROCKSDB_LITE
+  static void LogAndNotifyTableFileCreationFinished(
+      EventLogger* event_logger,
+      const std::vector<std::shared_ptr<EventListener>>& listeners,
+      const std::string& db_name, const std::string& cf_name,
+      const std::string& file_path, int job_id, const FileDescriptor& fd,
+      const TableProperties& table_properties, TableFileCreationReason reason,
+      const Status& s);
+>>>>>>> forknote/master
   static void LogAndNotifyTableFileDeletion(
       EventLogger* event_logger, int job_id,
       uint64_t file_number, const std::string& file_path,
       const Status& status, const std::string& db_name,
       const std::vector<std::shared_ptr<EventListener>>& listeners);
+<<<<<<< HEAD
+=======
+
+ private:
+  static void LogAndNotifyTableFileCreation(
+      EventLogger* event_logger,
+      const std::vector<std::shared_ptr<EventListener>>& listeners,
+      const FileDescriptor& fd, const TableFileCreationInfo& info);
+>>>>>>> forknote/master
 };
 
 }  // namespace rocksdb

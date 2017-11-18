@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -7,8 +11,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
+<<<<<<< HEAD
 #include "port/stack_trace.h"
 #include "util/db_test_util.h"
+=======
+#include "db/db_test_util.h"
+#include "port/stack_trace.h"
+>>>>>>> forknote/master
 
 namespace rocksdb {
 
@@ -47,6 +56,27 @@ class DeleteFilter : public CompactionFilter {
   virtual const char* Name() const override { return "DeleteFilter"; }
 };
 
+<<<<<<< HEAD
+=======
+class DeleteISFilter : public CompactionFilter {
+ public:
+  virtual bool Filter(int level, const Slice& key, const Slice& value,
+                      std::string* new_value,
+                      bool* value_changed) const override {
+    cfilter_count++;
+    int i = std::stoi(key.ToString());
+    if (i > 5 && i <= 105) {
+      return true;
+    }
+    return false;
+  }
+
+  virtual bool IgnoreSnapshots() const override { return true; }
+
+  virtual const char* Name() const override { return "DeleteFilter"; }
+};
+
+>>>>>>> forknote/master
 class DelayFilter : public CompactionFilter {
  public:
   explicit DelayFilter(DBTestBase* d) : db_test(d) {}
@@ -97,8 +127,16 @@ class ChangeFilter : public CompactionFilter {
 
 class KeepFilterFactory : public CompactionFilterFactory {
  public:
+<<<<<<< HEAD
   explicit KeepFilterFactory(bool check_context = false)
       : check_context_(check_context) {}
+=======
+  explicit KeepFilterFactory(bool check_context = false,
+                             bool check_context_cf_id = false)
+      : check_context_(check_context),
+        check_context_cf_id_(check_context_cf_id),
+        compaction_filter_created_(false) {}
+>>>>>>> forknote/master
 
   virtual std::unique_ptr<CompactionFilter> CreateCompactionFilter(
       const CompactionFilter::Context& context) override {
@@ -106,6 +144,7 @@ class KeepFilterFactory : public CompactionFilterFactory {
       EXPECT_EQ(expect_full_compaction_.load(), context.is_full_compaction);
       EXPECT_EQ(expect_manual_compaction_.load(), context.is_manual_compaction);
     }
+<<<<<<< HEAD
     return std::unique_ptr<CompactionFilter>(new KeepFilter());
   }
 
@@ -113,6 +152,24 @@ class KeepFilterFactory : public CompactionFilterFactory {
   bool check_context_;
   std::atomic_bool expect_full_compaction_;
   std::atomic_bool expect_manual_compaction_;
+=======
+    if (check_context_cf_id_) {
+      EXPECT_EQ(expect_cf_id_.load(), context.column_family_id);
+    }
+    compaction_filter_created_ = true;
+    return std::unique_ptr<CompactionFilter>(new KeepFilter());
+  }
+
+  bool compaction_filter_created() const { return compaction_filter_created_; }
+
+  virtual const char* Name() const override { return "KeepFilterFactory"; }
+  bool check_context_;
+  bool check_context_cf_id_;
+  std::atomic_bool expect_full_compaction_;
+  std::atomic_bool expect_manual_compaction_;
+  std::atomic<uint32_t> expect_cf_id_;
+  bool compaction_filter_created_;
+>>>>>>> forknote/master
 };
 
 class DeleteFilterFactory : public CompactionFilterFactory {
@@ -129,6 +186,24 @@ class DeleteFilterFactory : public CompactionFilterFactory {
   virtual const char* Name() const override { return "DeleteFilterFactory"; }
 };
 
+<<<<<<< HEAD
+=======
+// Delete Filter Factory which ignores snapshots
+class DeleteISFilterFactory : public CompactionFilterFactory {
+ public:
+  virtual std::unique_ptr<CompactionFilter> CreateCompactionFilter(
+      const CompactionFilter::Context& context) override {
+    if (context.is_manual_compaction) {
+      return std::unique_ptr<CompactionFilter>(new DeleteISFilter());
+    } else {
+      return std::unique_ptr<CompactionFilter>(nullptr);
+    }
+  }
+
+  virtual const char* Name() const override { return "DeleteFilterFactory"; }
+};
+
+>>>>>>> forknote/master
 class DelayFilterFactory : public CompactionFilterFactory {
  public:
   explicit DelayFilterFactory(DBTestBase* d) : db_test(d) {}
@@ -174,6 +249,10 @@ class ChangeFilterFactory : public CompactionFilterFactory {
   virtual const char* Name() const override { return "ChangeFilterFactory"; }
 };
 
+<<<<<<< HEAD
+=======
+#ifndef ROCKSDB_LITE
+>>>>>>> forknote/master
 TEST_F(DBTestCompactionFilter, CompactionFilter) {
   Options options = CurrentOptions();
   options.max_open_files = -1;
@@ -216,7 +295,11 @@ TEST_F(DBTestCompactionFilter, CompactionFilter) {
   Arena arena;
   {
     ScopedArenaIterator iter(
+<<<<<<< HEAD
         dbfull()->TEST_NewInternalIterator(&arena, handles_[1]));
+=======
+        dbfull()->NewInternalIterator(&arena, handles_[1]));
+>>>>>>> forknote/master
     iter->SeekToFirst();
     ASSERT_OK(iter->status());
     while (iter->Valid()) {
@@ -304,7 +387,11 @@ TEST_F(DBTestCompactionFilter, CompactionFilter) {
   count = 0;
   {
     ScopedArenaIterator iter(
+<<<<<<< HEAD
         dbfull()->TEST_NewInternalIterator(&arena, handles_[1]));
+=======
+        dbfull()->NewInternalIterator(&arena, handles_[1]));
+>>>>>>> forknote/master
     iter->SeekToFirst();
     ASSERT_OK(iter->status());
     while (iter->Valid()) {
@@ -322,11 +409,18 @@ TEST_F(DBTestCompactionFilter, CompactionFilter) {
 // entries are deleted. The compaction should create bunch of 'DeleteFile'
 // entries in VersionEdit, but none of the 'AddFile's.
 TEST_F(DBTestCompactionFilter, CompactionFilterDeletesAll) {
+<<<<<<< HEAD
   Options options;
   options.compaction_filter_factory = std::make_shared<DeleteFilterFactory>();
   options.disable_auto_compactions = true;
   options.create_if_missing = true;
   options = CurrentOptions(options);
+=======
+  Options options = CurrentOptions();
+  options.compaction_filter_factory = std::make_shared<DeleteFilterFactory>();
+  options.disable_auto_compactions = true;
+  options.create_if_missing = true;
+>>>>>>> forknote/master
   DestroyAndReopen(options);
 
   // put some data
@@ -350,6 +444,7 @@ TEST_F(DBTestCompactionFilter, CompactionFilterDeletesAll) {
 
   delete itr;
 }
+<<<<<<< HEAD
 
 TEST_F(DBTestCompactionFilter, CompactionFilterWithValueChange) {
   do {
@@ -358,6 +453,16 @@ TEST_F(DBTestCompactionFilter, CompactionFilterWithValueChange) {
     options.compaction_filter_factory =
       std::make_shared<ChangeFilterFactory>();
     options = CurrentOptions(options);
+=======
+#endif  // ROCKSDB_LITE
+
+TEST_F(DBTestCompactionFilter, CompactionFilterWithValueChange) {
+  do {
+    Options options = CurrentOptions();
+    options.num_levels = 3;
+    options.compaction_filter_factory =
+      std::make_shared<ChangeFilterFactory>();
+>>>>>>> forknote/master
     CreateAndReopenWithCF({"pikachu"}, options);
 
     // Write 100K+1 keys, these are written to a few files
@@ -420,8 +525,12 @@ TEST_F(DBTestCompactionFilter, CompactionFilterWithMergeOperator) {
   PutFixed64(&three, 3);
   PutFixed64(&four, 4);
 
+<<<<<<< HEAD
   Options options;
   options = CurrentOptions(options);
+=======
+  Options options = CurrentOptions();
+>>>>>>> forknote/master
   options.create_if_missing = true;
   options.merge_operator = MergeOperators::CreateUInt64AddOperator();
   options.num_levels = 3;
@@ -481,8 +590,14 @@ TEST_F(DBTestCompactionFilter, CompactionFilterWithMergeOperator) {
   ASSERT_EQ(newvalue, four);
 }
 
+<<<<<<< HEAD
 TEST_F(DBTestCompactionFilter, CompactionFilterContextManual) {
   KeepFilterFactory* filter = new KeepFilterFactory();
+=======
+#ifndef ROCKSDB_LITE
+TEST_F(DBTestCompactionFilter, CompactionFilterContextManual) {
+  KeepFilterFactory* filter = new KeepFilterFactory(true, true);
+>>>>>>> forknote/master
 
   Options options = CurrentOptions();
   options.compaction_style = kCompactionStyleUniversal;
@@ -504,22 +619,39 @@ TEST_F(DBTestCompactionFilter, CompactionFilterContextManual) {
     // be triggered.
     num_keys_per_file /= 2;
   }
+<<<<<<< HEAD
+=======
+  dbfull()->TEST_WaitForCompact();
+>>>>>>> forknote/master
 
   // Force a manual compaction
   cfilter_count = 0;
   filter->expect_manual_compaction_.store(true);
+<<<<<<< HEAD
   filter->expect_full_compaction_.store(false);  // Manual compaction always
                                                  // set this flag.
   dbfull()->CompactRange(CompactRangeOptions(), nullptr, nullptr);
   ASSERT_EQ(cfilter_count, 700);
   ASSERT_EQ(NumSortedRuns(0), 1);
+=======
+  filter->expect_full_compaction_.store(true);
+  filter->expect_cf_id_.store(0);
+  dbfull()->CompactRange(CompactRangeOptions(), nullptr, nullptr);
+  ASSERT_EQ(cfilter_count, 700);
+  ASSERT_EQ(NumSortedRuns(0), 1);
+  ASSERT_TRUE(filter->compaction_filter_created());
+>>>>>>> forknote/master
 
   // Verify total number of keys is correct after manual compaction.
   {
     int count = 0;
     int total = 0;
     Arena arena;
+<<<<<<< HEAD
     ScopedArenaIterator iter(dbfull()->TEST_NewInternalIterator(&arena));
+=======
+    ScopedArenaIterator iter(dbfull()->NewInternalIterator(&arena));
+>>>>>>> forknote/master
     iter->SeekToFirst();
     ASSERT_OK(iter->status());
     while (iter->Valid()) {
@@ -533,6 +665,7 @@ TEST_F(DBTestCompactionFilter, CompactionFilterContextManual) {
       iter->Next();
     }
     ASSERT_EQ(total, 700);
+<<<<<<< HEAD
     ASSERT_EQ(count, 1);
   }
 }
@@ -545,6 +678,50 @@ TEST_F(DBTestCompactionFilter, CompactionFilterSnapshot) {
   options.disable_auto_compactions = true;
   options.create_if_missing = true;
   options = CurrentOptions(options);
+=======
+    ASSERT_EQ(count, 2);
+  }
+}
+#endif  // ROCKSDB_LITE
+
+TEST_F(DBTestCompactionFilter, CompactionFilterContextCfId) {
+  KeepFilterFactory* filter = new KeepFilterFactory(false, true);
+  filter->expect_cf_id_.store(1);
+
+  Options options = CurrentOptions();
+  options.compaction_filter_factory.reset(filter);
+  options.compression = kNoCompression;
+  options.level0_file_num_compaction_trigger = 2;
+  CreateAndReopenWithCF({"pikachu"}, options);
+
+  int num_keys_per_file = 400;
+  for (int j = 0; j < 3; j++) {
+    // Write several keys.
+    const std::string value(10, 'x');
+    for (int i = 0; i < num_keys_per_file; i++) {
+      char key[100];
+      snprintf(key, sizeof(key), "B%08d%02d", i, j);
+      Put(1, key, value);
+    }
+    Flush(1);
+    // Make sure next file is much smaller so automatic compaction will not
+    // be triggered.
+    num_keys_per_file /= 2;
+  }
+  dbfull()->TEST_WaitForCompact();
+
+  ASSERT_TRUE(filter->compaction_filter_created());
+}
+
+#ifndef ROCKSDB_LITE
+// Compaction filters should only be applied to records that are newer than the
+// latest snapshot. This test inserts records and applies a delete filter.
+TEST_F(DBTestCompactionFilter, CompactionFilterSnapshot) {
+  Options options = CurrentOptions();
+  options.compaction_filter_factory = std::make_shared<DeleteFilterFactory>();
+  options.disable_auto_compactions = true;
+  options.create_if_missing = true;
+>>>>>>> forknote/master
   DestroyAndReopen(options);
 
   // Put some data.
@@ -573,6 +750,7 @@ TEST_F(DBTestCompactionFilter, CompactionFilterSnapshot) {
   ASSERT_EQ(0U, CountLiveFiles());
 }
 
+<<<<<<< HEAD
 }  // namespace rocksdb
 
 int main(int argc, char** argv) {
@@ -583,4 +761,74 @@ int main(int argc, char** argv) {
 #else
   return 0;
 #endif
+=======
+// Compaction filters should only be applied to records that are newer than the
+// latest snapshot. However, if the compaction filter asks to ignore snapshots
+// records newer than the snapshot will also be processed
+TEST_F(DBTestCompactionFilter, CompactionFilterIgnoreSnapshot) {
+  std::string five = ToString(5);
+  Options options = CurrentOptions();
+  options.compaction_filter_factory = std::make_shared<DeleteISFilterFactory>();
+  options.disable_auto_compactions = true;
+  options.create_if_missing = true;
+  DestroyAndReopen(options);
+
+  // Put some data.
+  const Snapshot* snapshot = nullptr;
+  for (int table = 0; table < 4; ++table) {
+    for (int i = 0; i < 10; ++i) {
+      Put(ToString(table * 100 + i), "val");
+    }
+    Flush();
+
+    if (table == 0) {
+      snapshot = db_->GetSnapshot();
+    }
+  }
+  assert(snapshot != nullptr);
+
+  cfilter_count = 0;
+  ASSERT_OK(db_->CompactRange(CompactRangeOptions(), nullptr, nullptr));
+  // The filter should delete 40 records.
+  ASSERT_EQ(40U, cfilter_count);
+
+  {
+    // Scan the entire database as of the snapshot to ensure
+    // that nothing is left
+    ReadOptions read_options;
+    read_options.snapshot = snapshot;
+    std::unique_ptr<Iterator> iter(db_->NewIterator(read_options));
+    iter->SeekToFirst();
+    int count = 0;
+    while (iter->Valid()) {
+      count++;
+      iter->Next();
+    }
+    ASSERT_EQ(count, 6);
+    read_options.snapshot = 0;
+    std::unique_ptr<Iterator> iter1(db_->NewIterator(read_options));
+    iter1->SeekToFirst();
+    count = 0;
+    while (iter1->Valid()) {
+      count++;
+      iter1->Next();
+    }
+    // We have deleted 10 keys from 40 using the compaction filter
+    //  Keys 6-9 before the snapshot and 100-105 after the snapshot
+    ASSERT_EQ(count, 30);
+  }
+
+  // Release the snapshot and compact again -> now all records should be
+  // removed.
+  db_->ReleaseSnapshot(snapshot);
+}
+#endif  // ROCKSDB_LITE
+
+}  // namespace rocksdb
+
+int main(int argc, char** argv) {
+  rocksdb::port::InstallStackTraceHandler();
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+>>>>>>> forknote/master
 }

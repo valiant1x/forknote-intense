@@ -54,16 +54,22 @@ public:
   void cutBlockchain(uint32_t height);
 
   bool getTransactionGlobalIndexesByHash(const Crypto::Hash& transactionHash, std::vector<uint32_t>& globalIndexes);
+<<<<<<< HEAD
   bool getMultisignatureOutputByGlobalIndex(uint64_t amount, uint32_t globalIndex, CryptoNote::MultisignatureOutput& out);
+=======
+>>>>>>> forknote/master
   size_t getGeneratedTransactionsNumber(uint32_t index);
   void setMinerAccount(const CryptoNote::AccountBase& account);
 
 private:
+<<<<<<< HEAD
   struct MultisignatureOutEntry {
     Crypto::Hash transactionHash;
     uint16_t indexOut;
   };
 
+=======
+>>>>>>> forknote/master
   struct KeyOutEntry {
     Crypto::Hash transactionHash;
     uint16_t indexOut;
@@ -78,7 +84,10 @@ private:
   std::vector<CryptoNote::BlockTemplate> m_blockchain;
   std::unordered_map<Crypto::Hash, CryptoNote::Transaction> m_txs;
   std::unordered_map<Crypto::Hash, std::vector<uint32_t>> transactionGlobalOuts;
+<<<<<<< HEAD
   std::unordered_map<uint64_t, std::vector<MultisignatureOutEntry>> multisignatureOutsIndex;
+=======
+>>>>>>> forknote/master
   std::unordered_map<uint64_t, std::vector<KeyOutEntry>> keyOutsIndex;
 
   std::unordered_map<Crypto::Hash, CryptoNote::Transaction> m_txPool;

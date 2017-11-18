@@ -8,7 +8,11 @@
 # Input         Value
 # -------------------------------------------------------------------------
 # EMAIL         Email address to report on trigger conditions
+<<<<<<< HEAD
 # ONCAL         Email address to raise a task on failure
+=======
+# ONCALL        Email address to raise a task on failure
+>>>>>>> forknote/master
 # TRIGGER       Trigger conditions for email. Valid values are fail, warn, all
 # SUBSCRIBER    Email addresss to add as subscriber for task
 #
@@ -42,6 +46,12 @@ if [ ! -z $ONCALL ]; then
   },"
 fi
 
+<<<<<<< HEAD
+=======
+# For now, create the tasks using only the dedicated task creation tool.
+CREATE_TASK=
+
+>>>>>>> forknote/master
 REPORT=
 if [[ ! -z $REPORT_EMAIL || ! -z $CREATE_TASK ]]; then
   REPORT="'report': [
@@ -56,18 +66,71 @@ fi
 CLEANUP_ENV="
 {
     'name':'Cleanup environment',
+<<<<<<< HEAD
     'shell':'rm -rf /dev/shm/rocksdb && mkdir /dev/shm/rocksdb && make clean',
     'user':'root'
 }"
 
+=======
+    'shell':'rm -rf /dev/shm/rocksdb && mkdir /dev/shm/rocksdb && chmod +t /dev/shm && make clean',
+    'user':'root'
+}"
+
+# We will eventually set the RATIO to 1, but we want do this
+# in steps. RATIO=$(nproc) will make it work as J=1
+if [ -z $RATIO ]; then
+  RATIO=$(nproc)
+fi
+
+if [ -z $PARALLEL_J ]; then
+  PARALLEL_J="J=$(expr $(nproc) / ${RATIO})"
+fi
+
+if [ -z $PARALLEL_j ]; then
+  PARALLEL_j="-j$(expr $(nproc) / ${RATIO})"
+fi
+
+PARALLELISM="$PARALLEL_J $PARALLEL_j"
+
+>>>>>>> forknote/master
 DEBUG="OPT=-g"
 SHM="TEST_TMPDIR=/dev/shm/rocksdb"
 GCC_481="ROCKSDB_FBCODE_BUILD_WITH_481=1"
 ASAN="COMPILE_WITH_ASAN=1"
 CLANG="USE_CLANG=1"
+<<<<<<< HEAD
 LITE="OPT=-DROCKSDB_LITE"
 TSAN="COMPILE_WITH_TSAN=1"
 DISABLE_JEMALLOC="DISABLE_JEMALLOC=1"
+=======
+LITE="OPT=\"-DROCKSDB_LITE -g\""
+TSAN="COMPILE_WITH_TSAN=1"
+UBSAN="COMPILE_WITH_UBSAN=1"
+DISABLE_JEMALLOC="DISABLE_JEMALLOC=1"
+HTTP_PROXY="https_proxy=http://fwdproxy.29.prn1:8080 http_proxy=http://fwdproxy.29.prn1:8080 ftp_proxy=http://fwdproxy.29.prn1:8080"
+SETUP_JAVA_ENV="export $HTTP_PROXY; export JAVA_HOME=/usr/local/jdk-7u10-64/; export PATH=\$PATH:\$JAVA_HOME/bin"
+PARSER="'parser':'python build_tools/error_filter.py $1'"
+
+CONTRUN_NAME="ROCKSDB_CONTRUN_NAME"
+
+# This code is getting called under various scenarios. What we care about is to
+# understand when it's called from nightly contruns because in that case we'll
+# create tasks for any failures. To follow the existing pattern, we'll check
+# the value of $ONCALL. If it's a diff then just call `false` to make sure
+# that errors will be properly propagated to the caller.
+if [ ! -z $ONCALL ]; then
+  TASK_CREATION_TOOL="/usr/local/bin/mysql_mtr_filter --rocksdb"
+else
+  TASK_CREATION_TOOL="false"
+fi
+
+ARTIFACTS=" 'artifacts': [
+    {
+        'name':'database',
+        'paths':[ '/dev/shm/rocksdb' ],
+    }
+]"
+>>>>>>> forknote/master
 
 #
 # A mechanism to disable tests temporarily
@@ -99,14 +162,26 @@ PARALLEL_UNIT_TEST_COMMANDS="[
             $CLEANUP_ENV,
             {
                 'name':'Build and test RocksDB debug version',
+<<<<<<< HEAD
                 'shell':'$DEBUG make -j$(nproc) all && $SHM make check > /dev/null 2>&1 || cat t/log-*',
                 'user':'root'
+=======
+                'shell':'$DEBUG make -j$(nproc) all && $SHM make check > /dev/null 2>&1 || $CONTRUN_NAME=punit_check $TASK_CREATION_TOOL || cat t/log-*',
+                'user':'root',
+                $PARSER
+>>>>>>> forknote/master
             },
             $CLEANUP_ENV,
             {
                 'name':'Build and test RocksDB debug version under gcc-4.8.1',
+<<<<<<< HEAD
                 'shell':'$GCC_481 $DEBUG make -j$(nproc) all && $SHM make check > /dev/null 2>&1 || cat t/log-*',
                 'user':'root'
+=======
+                'shell':'$GCC_481 $DEBUG make -j$(nproc) all && $SHM make check > /dev/null 2>&1 || $CONTRUN_NAME=punit_check_gcc481 $TASK_CREATION_TOOL || cat t/log-*',
+                'user':'root',
+                $PARSER
+>>>>>>> forknote/master
             },
         ],
         $REPORT
@@ -124,8 +199,56 @@ UNIT_TEST_COMMANDS="[
             $CLEANUP_ENV,
             {
                 'name':'Build and test RocksDB debug version',
+<<<<<<< HEAD
                 'shell':'$SHM $DEBUG make J=1 check',
                 'user':'root'
+=======
+                'shell':'$SHM $DEBUG make $PARALLELISM check || $CONTRUN_NAME=check $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+            },
+        ],
+        $REPORT
+    }
+]"
+
+#
+# RocksDB unit test not under /dev/shm
+#
+UNIT_TEST_NON_SHM_COMMANDS="[
+    {
+        'name':'Rocksdb Unit Test',
+        'oncall':'$ONCALL',
+        'timeout': 86400,
+        'steps': [
+            $CLEANUP_ENV,
+            {
+                'name':'Build and test RocksDB debug version',
+                'timeout': 86400,
+                'shell':'$DEBUG make $PARALLELISM check || $CONTRUN_NAME=non_shm_check $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+            },
+        ],
+        $REPORT
+    }
+]"
+
+#
+# RocksDB release build and unit tests
+#
+RELEASE_BUILD_COMMANDS="[
+    {
+        'name':'Rocksdb Release Build',
+        'oncall':'$ONCALL',
+        'steps': [
+            $CLEANUP_ENV,
+            {
+                'name':'Build RocksDB release',
+                'shell':'make $PARALLEL_j release || $CONTRUN_NAME=release $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+>>>>>>> forknote/master
             },
         ],
         $REPORT
@@ -143,8 +266,34 @@ UNIT_TEST_COMMANDS_481="[
             $CLEANUP_ENV,
             {
                 'name':'Build and test RocksDB debug version',
+<<<<<<< HEAD
                 'shell':'$SHM $GCC_481 $DEBUG make J=1 check',
                 'user':'root'
+=======
+                'shell':'$SHM $GCC_481 $DEBUG make $PARALLELISM check || $CONTRUN_NAME=unit_gcc_481_check $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+            },
+        ],
+        $REPORT
+    }
+]"
+
+#
+# RocksDB release build and unit tests
+#
+RELEASE_BUILD_COMMANDS_481="[
+    {
+        'name':'Rocksdb Release on GCC 4.8.1',
+        'oncall':'$ONCALL',
+        'steps': [
+            $CLEANUP_ENV,
+            {
+                'name':'Build RocksDB release on GCC 4.8.1',
+                'shell':'$GCC_481 make $PARALLEL_j release || $CONTRUN_NAME=release_gcc481 $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+>>>>>>> forknote/master
             },
         ],
         $REPORT
@@ -162,8 +311,34 @@ CLANG_UNIT_TEST_COMMANDS="[
             $CLEANUP_ENV,
             {
                 'name':'Build and test RocksDB debug',
+<<<<<<< HEAD
                 'shell':'$CLANG $SHM $DEBUG make J=1 check',
                 'user':'root'
+=======
+                'shell':'$CLANG $SHM $DEBUG make $PARALLELISM check || $CONTRUN_NAME=clang_check $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+            },
+        ],
+        $REPORT
+    }
+]"
+
+#
+# RocksDB release build with CLANG
+#
+CLANG_RELEASE_BUILD_COMMANDS="[
+    {
+        'name':'Rocksdb CLANG Release Build',
+        'oncall':'$ONCALL',
+        'steps': [
+            $CLEANUP_ENV,
+            {
+                'name':'Build RocksDB release',
+                'shell':'$CLANG make $PARALLEL_j release|| $CONTRUN_NAME=clang_release $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+>>>>>>> forknote/master
             },
         ],
         $REPORT
@@ -181,8 +356,14 @@ CLANG_ANALYZE_COMMANDS="[
             $CLEANUP_ENV,
             {
                 'name':'RocksDB build and analyze',
+<<<<<<< HEAD
                 'shell':'$CLANG $SHM $DEBUG make J=1 analyze',
                 'user':'root'
+=======
+                'shell':'$CLANG $SHM $DEBUG make $PARALLEL_j analyze || $CONTRUN_NAME=clang_analyze $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+>>>>>>> forknote/master
             },
         ],
         $REPORT
@@ -200,8 +381,14 @@ CODE_COV_COMMANDS="[
             $CLEANUP_ENV,
             {
                 'name':'Build, test and collect code coverage info',
+<<<<<<< HEAD
                 'shell':'$SHM $DEBUG make J=1 coverage',
                 'user':'root'
+=======
+                'shell':'$SHM $DEBUG make $PARALLELISM coverage || $CONTRUN_NAME=coverage $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+>>>>>>> forknote/master
             },
         ],
         $REPORT
@@ -219,8 +406,14 @@ UNITY_COMMANDS="[
             $CLEANUP_ENV,
             {
                 'name':'Build, test unity test',
+<<<<<<< HEAD
                 'shell':'$SHM $DEBUG V=1 make J=1 unity_test',
                 'user':'root'
+=======
+                'shell':'$SHM $DEBUG V=1 make J=1 unity_test || $CONTRUN_NAME=unity_test $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+>>>>>>> forknote/master
             },
         ],
         $REPORT
@@ -238,8 +431,34 @@ LITE_BUILD_COMMANDS="[
             $CLEANUP_ENV,
             {
                 'name':'Build RocksDB debug version',
+<<<<<<< HEAD
                 'shell':'$LITE $DEBUG make J=1 static_lib',
                 'user':'root'
+=======
+                'shell':'$LITE make J=1 static_lib || $CONTRUN_NAME=lite_static_lib $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+            },
+        ],
+        $REPORT
+    }
+]"
+
+#
+# RocksDB lite tests
+#
+LITE_UNIT_TEST_COMMANDS="[
+    {
+        'name':'Rocksdb Lite Unit Test',
+        'oncall':'$ONCALL',
+        'steps': [
+            $CLEANUP_ENV,
+            {
+                'name':'Build RocksDB debug version',
+                'shell':'$SHM $LITE make J=1 check || $CONTRUN_NAME=lite_check $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+>>>>>>> forknote/master
             },
         ],
         $REPORT
@@ -258,20 +477,60 @@ STRESS_CRASH_TEST_COMMANDS="[
             $CLEANUP_ENV,
             {
                 'name':'Build and run RocksDB debug stress tests',
+<<<<<<< HEAD
                 'shell':'$SHM $DEBUG make J=1 db_stress',
                 'user':'root'
+=======
+                'shell':'$SHM $DEBUG make J=1 db_stress || $CONTRUN_NAME=db_stress $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+>>>>>>> forknote/master
             },
             {
                 'name':'Build and run RocksDB debug crash tests',
                 'timeout': 86400,
+<<<<<<< HEAD
                 'shell':'$SHM $DEBUG make J=1 crash_test',
                 'user':'root'
             }
         ],
+=======
+                'shell':'$SHM $DEBUG make J=1 crash_test || $CONTRUN_NAME=crash_test $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+            }
+        ],
+        $ARTIFACTS,
+>>>>>>> forknote/master
         $REPORT
     }
 ]"
 
+<<<<<<< HEAD
+=======
+# RocksDB write stress test.
+# We run on disk device on purpose (i.e. no $SHM)
+# because we want to add some randomness to fsync commands
+WRITE_STRESS_COMMANDS="[
+    {
+        'name':'Rocksdb Write Stress Test',
+        'oncall':'$ONCALL',
+        'steps': [
+            $CLEANUP_ENV,
+            {
+                'name':'Build and run RocksDB write stress tests',
+                'shell':'make write_stress && python tools/write_stress_runner.py --runtime_sec=3600 --db=/tmp/rocksdb_write_stress || $CONTRUN_NAME=write_stress $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+            }
+        ],
+        'artifacts': [{'name': 'database', 'paths': ['/tmp/rocksdb_write_stress']}],
+        $REPORT
+    }
+]"
+
+
+>>>>>>> forknote/master
 #
 # RocksDB test under address sanitizer
 #
@@ -283,8 +542,14 @@ ASAN_TEST_COMMANDS="[
             $CLEANUP_ENV,
             {
                 'name':'Test RocksDB debug under ASAN',
+<<<<<<< HEAD
                 'shell':'set -o pipefail && $SHM $ASAN $DEBUG make J=1 asan_check |& /usr/facebook/ops/scripts/asan_symbolize.py -d',
                 'user':'root'
+=======
+'shell':'set -o pipefail && ($SHM $ASAN $DEBUG make $PARALLELISM asan_check || $CONTRUN_NAME=asan_check $TASK_CREATION_TOOL) |& /usr/facebook/ops/scripts/asan_symbolize.py -d',
+                'user':'root',
+                $PARSER
+>>>>>>> forknote/master
             }
         ],
         $REPORT
@@ -304,8 +569,56 @@ ASAN_CRASH_TEST_COMMANDS="[
             {
                 'name':'Build and run RocksDB debug asan_crash_test',
                 'timeout': 86400,
+<<<<<<< HEAD
                 'shell':'$SHM $DEBUG make J=1 asan_crash_test',
                 'user':'root'
+=======
+                'shell':'$SHM $DEBUG make J=1 asan_crash_test || $CONTRUN_NAME=asan_crash_test $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+            },
+        ],
+        $REPORT
+    }
+]"
+
+#
+# RocksDB test under undefined behavior sanitizer
+#
+UBSAN_TEST_COMMANDS="[
+    {
+        'name':'Rocksdb Unit Test under UBSAN',
+        'oncall':'$ONCALL',
+        'steps': [
+            $CLEANUP_ENV,
+            {
+                'name':'Test RocksDB debug under UBSAN',
+                'shell':'set -o pipefail && $SHM $UBSAN $DEBUG make $PARALLELISM ubsan_check || $CONTRUN_NAME=ubsan_check $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+            }
+        ],
+        $REPORT
+    }
+]"
+
+#
+# RocksDB crash testing under udnefined behavior sanitizer
+#
+UBSAN_CRASH_TEST_COMMANDS="[
+    {
+        'name':'Rocksdb crash test under UBSAN',
+        'oncall':'$ONCALL',
+        'timeout': 86400,
+        'steps': [
+            $CLEANUP_ENV,
+            {
+                'name':'Build and run RocksDB debug ubsan_crash_test',
+                'timeout': 86400,
+                'shell':'$SHM $DEBUG make J=1 ubsan_crash_test || $CONTRUN_NAME=ubsan_crash_test $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+>>>>>>> forknote/master
             },
         ],
         $REPORT
@@ -319,12 +632,23 @@ VALGRIND_TEST_COMMANDS="[
     {
         'name':'Rocksdb Unit Test under valgrind',
         'oncall':'$ONCALL',
+<<<<<<< HEAD
+=======
+        'timeout': 86400,
+>>>>>>> forknote/master
         'steps': [
             $CLEANUP_ENV,
             {
                 'name':'Run RocksDB debug unit tests',
+<<<<<<< HEAD
                 'shell':'$DISABLE_JEMALLOC $SHM $DEBUG make valgrind_check',
                 'user':'root'
+=======
+                'timeout': 86400,
+                'shell':'$DISABLE_JEMALLOC $SHM $DEBUG make $PARALLELISM valgrind_check || $CONTRUN_NAME=valgrind_check $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+>>>>>>> forknote/master
             },
         ],
         $REPORT
@@ -338,12 +662,23 @@ TSAN_UNIT_TEST_COMMANDS="[
     {
         'name':'Rocksdb Unit Test under TSAN',
         'oncall':'$ONCALL',
+<<<<<<< HEAD
+=======
+        'timeout': 86400,
+>>>>>>> forknote/master
         'steps': [
             $CLEANUP_ENV,
             {
                 'name':'Run RocksDB debug unit test',
+<<<<<<< HEAD
                 'shell':'set -o pipefail && $SHM $DEBUG $TSAN make J=1 check',
                 'user':'root'
+=======
+                'timeout': 86400,
+                'shell':'set -o pipefail && $SHM $DEBUG $TSAN make $PARALLELISM check || $CONTRUN_NAME=tsan_check $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+>>>>>>> forknote/master
             },
         ],
         $REPORT
@@ -363,8 +698,14 @@ TSAN_CRASH_TEST_COMMANDS="[
             {
                 'name':'Compile and run',
                 'timeout': 86400,
+<<<<<<< HEAD
                 'shell':'set -o pipefail && $SHM $DEBUG $TSAN make J=1 crash_test',
                 'user':'root'
+=======
+                'shell':'set -o pipefail && $SHM $DEBUG $TSAN CRASH_TEST_KILL_ODD=1887 make J=1 crash_test || $CONTRUN_NAME=tsan_crash_test $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+>>>>>>> forknote/master
             },
         ],
         $REPORT
@@ -393,9 +734,15 @@ run_format_compatible()
   if [ -e "build_detect_platform" ]
   then
     sed "s/tcmalloc/nothingnothingnothing/g" build_detect_platform > $TEST_TMPDIR/temp_build_file
+<<<<<<< HEAD
     rm -rf build_detect_platform 
     cp $TEST_TMPDIR/temp_build_file build_detect_platform
     chmod +x build_detect_platform 
+=======
+    rm -rf build_detect_platform
+    cp $TEST_TMPDIR/temp_build_file build_detect_platform
+    chmod +x build_detect_platform
+>>>>>>> forknote/master
   fi
 
   make ldb -j32
@@ -424,8 +771,14 @@ FORMAT_COMPATIBLE_COMMANDS="[
             $CLEANUP_ENV,
             {
                 'name':'Run RocksDB debug unit test',
+<<<<<<< HEAD
                 'shell':'build_tools/rocksdb-lego-determinator run_format_compatible',
                 'user':'root'
+=======
+                'shell':'build_tools/rocksdb-lego-determinator run_format_compatible || $CONTRUN_NAME=run_format_compatible $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+>>>>>>> forknote/master
             },
         ],
         $REPORT
@@ -456,8 +809,14 @@ NO_COMPRESSION_COMMANDS="[
             $CLEANUP_ENV,
             {
                 'name':'Run RocksDB debug unit test',
+<<<<<<< HEAD
                 'shell':'build_tools/rocksdb-lego-determinator run_no_compression',
                 'user':'root'
+=======
+                'shell':'build_tools/rocksdb-lego-determinator run_no_compression || $CONTRUN_NAME=run_no_compression $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+>>>>>>> forknote/master
             },
         ],
         $REPORT
@@ -512,14 +871,44 @@ REGRESSION_COMMANDS="[
             $CLEANUP_ENV,
             {
                 'name':'Make and run script',
+<<<<<<< HEAD
                 'shell':'build_tools/rocksdb-lego-determinator run_regression',
                 'user':'root'
+=======
+                'shell':'build_tools/rocksdb-lego-determinator run_regression || $CONTRUN_NAME=run_regression $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
             },
         ],
         $REPORT
     }
 ]"
 
+#
+# RocksDB Java build
+#
+JAVA_BUILD_TEST_COMMANDS="[
+    {
+        'name':'Rocksdb Java Build',
+        'oncall':'$ONCALL',
+        'steps': [
+            $CLEANUP_ENV,
+            {
+                'name':'Build RocksDB for Java',
+                'shell':'$SETUP_JAVA_ENV; $SHM make rocksdbjava || $CONTRUN_NAME=rocksdbjava $TASK_CREATION_TOOL',
+                'user':'root',
+                $PARSER
+>>>>>>> forknote/master
+            },
+        ],
+        $REPORT
+    }
+]"
+
+<<<<<<< HEAD
+=======
+
+>>>>>>> forknote/master
 case $1 in
   punit)
     echo $PARALLEL_UNIT_TEST_COMMANDS
@@ -527,12 +916,33 @@ case $1 in
   unit)
     echo $UNIT_TEST_COMMANDS
     ;;
+<<<<<<< HEAD
   unit_481)
     echo $UNIT_TEST_COMMANDS_481
     ;;
   clang_unit)
     echo $CLANG_UNIT_TEST_COMMANDS
     ;;
+=======
+  unit_non_shm)
+    echo $UNIT_TEST_NON_SHM_COMMANDS
+    ;;
+  release)
+    echo $RELEASE_BUILD_COMMANDS
+    ;;
+  unit_481)
+    echo $UNIT_TEST_COMMANDS_481
+    ;;
+  release_481)
+    echo $RELEASE_BUILD_COMMANDS_481
+    ;;
+  clang_unit)
+    echo $CLANG_UNIT_TEST_COMMANDS
+    ;;
+  clang_release)
+    echo $CLANG_RELEASE_BUILD_COMMANDS
+    ;;
+>>>>>>> forknote/master
   clang_analyze)
     echo $CLANG_ANALYZE_COMMANDS
     ;;
@@ -545,15 +955,36 @@ case $1 in
   lite)
     echo $LITE_BUILD_COMMANDS
     ;;
+<<<<<<< HEAD
   stress_crash)
     echo $STRESS_CRASH_TEST_COMMANDS
     ;;
+=======
+  lite_test)
+    echo $LITE_UNIT_TEST_COMMANDS
+    ;;
+  stress_crash)
+    echo $STRESS_CRASH_TEST_COMMANDS
+    ;;
+  write_stress)
+    echo $WRITE_STRESS_COMMANDS
+    ;;
+>>>>>>> forknote/master
   asan)
     echo $ASAN_TEST_COMMANDS
     ;;
   asan_crash)
     echo $ASAN_CRASH_TEST_COMMANDS
     ;;
+<<<<<<< HEAD
+=======
+  ubsan)
+    echo $UBSAN_TEST_COMMANDS
+    ;;
+  ubsan_crash)
+    echo $UBSAN_CRASH_TEST_COMMANDS
+    ;;
+>>>>>>> forknote/master
   valgrind)
     echo $VALGRIND_TEST_COMMANDS
     ;;
@@ -581,6 +1012,12 @@ case $1 in
   run_regression)
     run_regression
     ;;
+<<<<<<< HEAD
+=======
+  java_build)
+    echo $JAVA_BUILD_TEST_COMMANDS
+    ;;
+>>>>>>> forknote/master
   *)
     echo "Invalid determinator command"
     ;;

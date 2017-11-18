@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -19,15 +23,48 @@
 #ifndef STORAGE_ROCKSDB_INCLUDE_ITERATOR_H_
 #define STORAGE_ROCKSDB_INCLUDE_ITERATOR_H_
 
+<<<<<<< HEAD
+=======
+#include <string>
+>>>>>>> forknote/master
 #include "rocksdb/slice.h"
 #include "rocksdb/status.h"
 
 namespace rocksdb {
 
+<<<<<<< HEAD
 class Iterator {
  public:
   Iterator();
   virtual ~Iterator();
+=======
+class Cleanable {
+ public:
+  Cleanable();
+  ~Cleanable();
+  // Clients are allowed to register function/arg1/arg2 triples that
+  // will be invoked when this iterator is destroyed.
+  //
+  // Note that unlike all of the preceding methods, this method is
+  // not abstract and therefore clients should not override it.
+  typedef void (*CleanupFunction)(void* arg1, void* arg2);
+  void RegisterCleanup(CleanupFunction function, void* arg1, void* arg2);
+
+ protected:
+  struct Cleanup {
+    CleanupFunction function;
+    void* arg1;
+    void* arg2;
+    Cleanup* next;
+  };
+  Cleanup cleanup_;
+};
+
+class Iterator : public Cleanable {
+ public:
+  Iterator() {}
+  virtual ~Iterator() {}
+>>>>>>> forknote/master
 
   // An iterator is either positioned at a key/value pair, or
   // not valid.  This method returns true iff the iterator is valid.
@@ -73,6 +110,7 @@ class Iterator {
   // satisfied without doing some IO, then this returns Status::Incomplete().
   virtual Status status() const = 0;
 
+<<<<<<< HEAD
   // Clients are allowed to register function/arg1/arg2 triples that
   // will be invoked when this iterator is destroyed.
   //
@@ -90,6 +128,21 @@ class Iterator {
   };
   Cleanup cleanup_;
 
+=======
+  // Property "rocksdb.iterator.is-key-pinned":
+  //   If returning "1", this means that the Slice returned by key() is valid
+  //   as long as the iterator is not deleted.
+  //   It is guaranteed to always return "1" if
+  //      - Iterator created with ReadOptions::pin_data = true
+  //      - DB tables were created with
+  //        BlockBasedTableOptions::use_delta_encoding = false.
+  // Property "rocksdb.iterator.super-version-number":
+  //   LSM version used by the iterator. The same format as DB Property
+  //   kCurrentSuperVersionNumber. See its comment for more information.
+  virtual Status GetProperty(std::string prop_name, std::string* prop);
+
+ private:
+>>>>>>> forknote/master
   // No copying allowed
   Iterator(const Iterator&);
   void operator=(const Iterator&);

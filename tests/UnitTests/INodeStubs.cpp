@@ -92,12 +92,15 @@ TransactionDetails toDetails(Transaction tx, const Crypto::Hash& blockHash, uint
                    } else if (ti.type() == typeid(BaseInput)) {
                      auto bi = boost::get<BaseInput>(ti);
                      return TransactionInputDetails{BaseInputDetails{bi, 0}}; // TODO
+<<<<<<< HEAD
                    } else if (ti.type() == typeid(MultisignatureInput)) {
                      auto mi = boost::get<MultisignatureInput>(ti);
                      td.totalInputsAmount += mi.amount;
                      MultisignatureInputDetails det;
                      det.input = mi;
                      return TransactionInputDetails{det};
+=======
+>>>>>>> forknote/master
                    } else {
                      assert(false);
                      throw std::runtime_error("unknown type");
@@ -573,6 +576,7 @@ void INodeTrivialRefreshStub::sendPoolChanged() {
 void INodeTrivialRefreshStub::sendLocalBlockchainUpdated(){
   observerManager.notify(&INodeObserver::localBlockchainUpdated, getLastLocalBlockHeight());
 }
+<<<<<<< HEAD
 
 void INodeTrivialRefreshStub::getMultisignatureOutputByGlobalIndex(uint64_t amount, uint32_t gindex, CryptoNote::MultisignatureOutput& out, const Callback& callback) {
   m_asyncCounter.addAsyncContext();
@@ -595,3 +599,5 @@ void INodeTrivialRefreshStub::doGetOutByMSigGIndex(uint64_t amount, uint32_t gin
     callback(std::make_error_code(std::errc::invalid_argument));
   }
 }
+=======
+>>>>>>> forknote/master

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -68,6 +72,15 @@ struct EnvOptions {
    // If true, then use mmap to write data
   bool use_mmap_writes = true;
 
+<<<<<<< HEAD
+=======
+  // If true, then use O_DIRECT for reading data
+  bool use_direct_reads = false;
+
+  // If true, then use O_DIRECT for writing data
+  bool use_direct_writes = false;
+
+>>>>>>> forknote/master
   // If false, fallocate() calls are bypassed
   bool allow_fallocate = true;
 
@@ -88,12 +101,35 @@ struct EnvOptions {
   // WAL writes
   bool fallocate_with_keep_size = true;
 
+<<<<<<< HEAD
+=======
+  // See DBOPtions doc
+  size_t compaction_readahead_size;
+
+  // See DBOPtions doc
+  size_t random_access_max_buffer_size;
+
+  // See DBOptions doc
+  size_t writable_file_max_buffer_size = 1024 * 1024;
+
+>>>>>>> forknote/master
   // If not nullptr, write rate limiting is enabled for flush and compaction
   RateLimiter* rate_limiter = nullptr;
 };
 
 class Env {
  public:
+<<<<<<< HEAD
+=======
+  struct FileAttributes {
+    // File name
+    std::string name;
+
+    // Size of file in bytes
+    uint64_t size_bytes;
+  };
+
+>>>>>>> forknote/master
   Env() : thread_status_updater_(nullptr) {}
 
   virtual ~Env();
@@ -139,6 +175,15 @@ class Env {
                                  unique_ptr<WritableFile>* result,
                                  const EnvOptions& options) = 0;
 
+<<<<<<< HEAD
+=======
+  // Reuse an existing file by renaming it and opening it as writable.
+  virtual Status ReuseWritableFile(const std::string& fname,
+                                   const std::string& old_fname,
+                                   unique_ptr<WritableFile>* result,
+                                   const EnvOptions& options);
+
+>>>>>>> forknote/master
   // Create an object that represents a directory. Will fail if directory
   // doesn't exist. If the directory exists, it will open the directory
   // and create a new Directory object.
@@ -162,6 +207,18 @@ class Env {
   virtual Status GetChildren(const std::string& dir,
                              std::vector<std::string>* result) = 0;
 
+<<<<<<< HEAD
+=======
+  // Store in *result the attributes of the children of the specified directory.
+  // In case the implementation lists the directory prior to iterating the files
+  // and files are concurrently deleted, the deleted files will be omitted from
+  // result.
+  // The name attributes are relative to "dir".
+  // Original contents of *results are dropped.
+  virtual Status GetChildrenFileAttributes(const std::string& dir,
+                                           std::vector<FileAttributes>* result);
+
+>>>>>>> forknote/master
   // Delete the named file.
   virtual Status DeleteFile(const std::string& fname) = 0;
 
@@ -229,8 +286,16 @@ class Env {
   // added to the same Env may run concurrently in different threads.
   // I.e., the caller may not assume that background work items are
   // serialized.
+<<<<<<< HEAD
   virtual void Schedule(void (*function)(void* arg), void* arg,
                         Priority pri = LOW, void* tag = nullptr) = 0;
+=======
+  // When the UnSchedule function is called, the unschedFunction
+  // registered at the time of Schedule is invoked with arg as a parameter.
+  virtual void Schedule(void (*function)(void* arg), void* arg,
+                        Priority pri = LOW, void* tag = nullptr,
+                        void (*unschedFunction)(void* arg) = 0) = 0;
+>>>>>>> forknote/master
 
   // Arrange to remove jobs for given arg from the queue_ if they are not
   // already scheduled. Caller is expected to have exclusive lock on arg.
@@ -402,6 +467,13 @@ class RandomAccessFile {
     return false;
   }
 
+<<<<<<< HEAD
+=======
+  // For cases when read-ahead is implemented in the platform dependent
+  // layer
+  virtual void EnableReadAhead() {}
+
+>>>>>>> forknote/master
   // Tries to get an unique ID for this file that will be the same each time
   // the file is opened (and will stay the same while the file is open).
   // Furthermore, it tries to make this ID at most "max_size" bytes. If such an
@@ -522,7 +594,11 @@ class WritableFile {
    * underlying storage of a file (generally via fallocate) if the Env
    * instance supports it.
    */
+<<<<<<< HEAD
   void SetPreallocationBlockSize(size_t size) {
+=======
+  virtual void SetPreallocationBlockSize(size_t size) {
+>>>>>>> forknote/master
     preallocation_block_size_ = size;
   }
 
@@ -551,14 +627,22 @@ class WritableFile {
   // This asks the OS to initiate flushing the cached data to disk,
   // without waiting for completion.
   // Default implementation does nothing.
+<<<<<<< HEAD
   virtual Status RangeSync(off_t offset, off_t nbytes) { return Status::OK(); }
+=======
+  virtual Status RangeSync(uint64_t offset, uint64_t nbytes) { return Status::OK(); }
+>>>>>>> forknote/master
 
   // PrepareWrite performs any necessary preparation for a write
   // before the write actually occurs.  This allows for pre-allocation
   // of space on devices where it can result in less file
   // fragmentation and/or less waste from over-zealous filesystem
   // pre-allocation.
+<<<<<<< HEAD
   void PrepareWrite(size_t offset, size_t len) {
+=======
+  virtual void PrepareWrite(size_t offset, size_t len) {
+>>>>>>> forknote/master
     if (preallocation_block_size_ == 0) {
       return;
     }
@@ -571,8 +655,13 @@ class WritableFile {
     if (new_last_preallocated_block > last_preallocated_block_) {
       size_t num_spanned_blocks =
         new_last_preallocated_block - last_preallocated_block_;
+<<<<<<< HEAD
       Allocate(static_cast<off_t>(block_size * last_preallocated_block_),
                static_cast<off_t>(block_size * num_spanned_blocks));
+=======
+      Allocate(block_size * last_preallocated_block_,
+               block_size * num_spanned_blocks);
+>>>>>>> forknote/master
       last_preallocated_block_ = new_last_preallocated_block;
     }
   }
@@ -581,7 +670,11 @@ class WritableFile {
   /*
    * Pre-allocate space for a file.
    */
+<<<<<<< HEAD
   virtual Status Allocate(off_t offset, off_t len) {
+=======
+  virtual Status Allocate(uint64_t offset, uint64_t len) {
+>>>>>>> forknote/master
     return Status::OK();
   }
 
@@ -596,6 +689,10 @@ class WritableFile {
 
  protected:
   friend class WritableFileWrapper;
+<<<<<<< HEAD
+=======
+  friend class WritableFileMirror;
+>>>>>>> forknote/master
 
   Env::IOPriority io_priority_;
 };
@@ -687,7 +784,11 @@ extern void Error(const shared_ptr<Logger>& info_log, const char* format, ...);
 extern void Fatal(const shared_ptr<Logger>& info_log, const char* format, ...);
 
 // Log the specified data to *info_log if info_log is non-nullptr.
+<<<<<<< HEAD
 // The default info log level is InfoLogLevel::ERROR.
+=======
+// The default info log level is InfoLogLevel::INFO_LEVEL.
+>>>>>>> forknote/master
 extern void Log(const shared_ptr<Logger>& info_log, const char* format, ...)
 #   if defined(__GNUC__) || defined(__clang__)
     __attribute__((__format__ (__printf__, 2, 3)))
@@ -699,7 +800,11 @@ extern void LogFlush(Logger *info_log);
 extern void Log(const InfoLogLevel log_level, Logger* info_log,
                 const char* format, ...);
 
+<<<<<<< HEAD
 // The default info log level is InfoLogLevel::ERROR.
+=======
+// The default info log level is InfoLogLevel::INFO_LEVEL.
+>>>>>>> forknote/master
 extern void Log(Logger* info_log, const char* format, ...)
 #   if defined(__GNUC__) || defined(__clang__)
     __attribute__((__format__ (__printf__, 2, 3)))
@@ -749,6 +854,15 @@ class EnvWrapper : public Env {
                          const EnvOptions& options) override {
     return target_->NewWritableFile(f, r, options);
   }
+<<<<<<< HEAD
+=======
+  Status ReuseWritableFile(const std::string& fname,
+                           const std::string& old_fname,
+                           unique_ptr<WritableFile>* r,
+                           const EnvOptions& options) override {
+    return target_->ReuseWritableFile(fname, old_fname, r, options);
+  }
+>>>>>>> forknote/master
   virtual Status NewDirectory(const std::string& name,
                               unique_ptr<Directory>* result) override {
     return target_->NewDirectory(name, result);
@@ -760,6 +874,13 @@ class EnvWrapper : public Env {
                      std::vector<std::string>* r) override {
     return target_->GetChildren(dir, r);
   }
+<<<<<<< HEAD
+=======
+  Status GetChildrenFileAttributes(
+      const std::string& dir, std::vector<FileAttributes>* result) override {
+    return target_->GetChildrenFileAttributes(dir, result);
+  }
+>>>>>>> forknote/master
   Status DeleteFile(const std::string& f) override {
     return target_->DeleteFile(f);
   }
@@ -796,8 +917,13 @@ class EnvWrapper : public Env {
   Status UnlockFile(FileLock* l) override { return target_->UnlockFile(l); }
 
   void Schedule(void (*f)(void* arg), void* a, Priority pri,
+<<<<<<< HEAD
                 void* tag = nullptr) override {
     return target_->Schedule(f, a, pri, tag);
+=======
+                void* tag = nullptr, void (*u)(void* arg) = 0) override {
+    return target_->Schedule(f, a, pri, tag, u);
+>>>>>>> forknote/master
   }
 
   int UnSchedule(void* tag, Priority pri) override {
@@ -900,11 +1026,26 @@ class WritableFileWrapper : public WritableFile {
     return target_->InvalidateCache(offset, length);
   }
 
+<<<<<<< HEAD
  protected:
   Status Allocate(off_t offset, off_t len) override {
     return target_->Allocate(offset, len);
   }
   Status RangeSync(off_t offset, off_t nbytes) override {
+=======
+  virtual void SetPreallocationBlockSize(size_t size) override {
+    target_->SetPreallocationBlockSize(size);
+  }
+  virtual void PrepareWrite(size_t offset, size_t len) override {
+    target_->PrepareWrite(offset, len);
+  }
+
+ protected:
+  Status Allocate(uint64_t offset, uint64_t len) override {
+    return target_->Allocate(offset, len);
+  }
+  Status RangeSync(uint64_t offset, uint64_t nbytes) override {
+>>>>>>> forknote/master
     return target_->RangeSync(offset, nbytes);
   }
 
@@ -918,6 +1059,13 @@ class WritableFileWrapper : public WritableFile {
 // *base_env must remain live while the result is in use.
 Env* NewMemEnv(Env* base_env);
 
+<<<<<<< HEAD
+=======
+// Returns a new environment that is used for HDFS environment.
+// This is a factory method for HdfsEnv declared in hdfs/env_hdfs.h
+Status NewHdfsEnv(Env** hdfs_env, const std::string& fsname);
+
+>>>>>>> forknote/master
 }  // namespace rocksdb
 
 #endif  // STORAGE_ROCKSDB_INCLUDE_ENV_H_

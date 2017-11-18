@@ -44,7 +44,11 @@ abstract class BaseDirectoryScopedFormatLinter extends ArcanistLinter {
       $futures[$path] = $this->getFormatFuture($path, $changed);
     }
 
+<<<<<<< HEAD
     foreach (Futures($futures)->limit(8) as $p => $f) {
+=======
+    foreach (id(new FutureIterator($futures))->limit(8) as $p => $f) {
+>>>>>>> forknote/master
       $this->rawLintOutput[$p] = $f->resolvex();
     }
   }

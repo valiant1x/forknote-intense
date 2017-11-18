@@ -243,7 +243,11 @@ make release
     --bloom_bits=10 \
     --num=$((NUM / 4)) \
     --reads=$((NUM / 4)) \
+<<<<<<< HEAD
     --writes_per_second=1000 \
+=======
+    --benchmark_write_rate_limit=$(( 110 * 1024 )) \
+>>>>>>> forknote/master
     --write_buffer_size=100000000 \
     --cache_size=6442450944 \
     --cache_numshardbits=6 \
@@ -329,7 +333,11 @@ common_in_mem_args="--db=/dev/shm/rocksdb \
     --use_existing_db=1 \
     --duration=600 \
     --threads=32 \
+<<<<<<< HEAD
     --writes_per_second=81920 > ${STAT_FILE}.readwhilewriting_in_ram
+=======
+    --benchmark_write_rate_limit=9502720 > ${STAT_FILE}.readwhilewriting_in_ram
+>>>>>>> forknote/master
 
 # Seekrandomwhilewriting
 ./db_bench \
@@ -342,7 +350,11 @@ common_in_mem_args="--db=/dev/shm/rocksdb \
     --use_tailing_iterator=1 \
     --duration=600 \
     --threads=32 \
+<<<<<<< HEAD
     --writes_per_second=81920 > ${STAT_FILE}.seekwhilewriting_in_ram
+=======
+    --benchmark_write_rate_limit=9502720 > ${STAT_FILE}.seekwhilewriting_in_ram
+>>>>>>> forknote/master
 
 # measure fillseq with bunch of column families
 ./db_bench \

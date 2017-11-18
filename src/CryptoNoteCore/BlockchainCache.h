@@ -79,6 +79,7 @@ struct OutputGlobalIndexesForAmount {
   void serialize(ISerializer& s);
 };
 
+<<<<<<< HEAD
 struct MultisignatureOutputState {
   PackedOutIndex output;
   void serialize(ISerializer& s);
@@ -94,6 +95,8 @@ struct MultisignatureIndexes {
   void serialize(ISerializer& s);
 };
 
+=======
+>>>>>>> forknote/master
 struct PaymentIdTransactionHashPair {
   Crypto::Hash paymentId;
   Crypto::Hash transactionHash;
@@ -123,9 +126,12 @@ public:
   virtual PushedBlockInfo getPushedBlockInfo(uint32_t index) const override;
   bool checkIfSpent(const Crypto::KeyImage& keyImage, uint32_t blockIndex) const override;
   bool checkIfSpent(const Crypto::KeyImage& keyImage) const override;
+<<<<<<< HEAD
 
   bool checkIfSpentMultisignature(uint64_t amount, uint32_t globalIndex) const override;
   bool checkIfSpentMultisignature(uint64_t amount, uint32_t globalIndex, uint32_t blockIndex) const override;
+=======
+>>>>>>> forknote/master
   
   bool isTransactionSpendTimeUnlocked(uint64_t unlockTime) const override;
   bool isTransactionSpendTimeUnlocked(uint64_t unlockTime, uint32_t blockIndex) const override;
@@ -135,10 +141,13 @@ public:
 
   ExtractOutputKeysResult extractKeyOtputIndexes(uint64_t amount, Common::ArrayView<uint32_t> globalIndexes, std::vector<PackedOutIndex>& outIndexes) const override;
   ExtractOutputKeysResult extractKeyOtputReferences(uint64_t amount, Common::ArrayView<uint32_t> globalIndexes, std::vector<std::pair<Crypto::Hash, size_t>>& outputReferences) const override;
+<<<<<<< HEAD
   
   bool getMultisignatureOutputIfExists(uint64_t amount, uint32_t globalIndex, MultisignatureOutput& output, uint64_t& unlockTime) const override;
   bool getMultisignatureOutputIfExists(uint64_t amount, uint32_t globalIndex, uint32_t blockIndex, MultisignatureOutput& output, uint64_t& unlockTime) const override;
   std::pair<Crypto::Hash, size_t> getMultisignatureOutputReference(uint64_t amount, uint32_t globalIndex) const override;
+=======
+>>>>>>> forknote/master
 
   uint32_t getTopBlockIndex() const override;
   const Crypto::Hash& getTopBlockHash() const override;
@@ -177,12 +186,18 @@ public:
   virtual uint32_t getStartBlockIndex() const override;
 
   virtual size_t getKeyOutputsCountForAmount(uint64_t amount, uint32_t blockIndex) const override;
+<<<<<<< HEAD
   virtual size_t getMultisignatureCountForAmount(uint64_t amount, uint32_t blockIndex) const override;
+=======
+>>>>>>> forknote/master
 
   virtual uint32_t getTimestampLowerBoundBlockIndex(uint64_t timestamp) const override;
   virtual bool getTransactionGlobalIndexes(const Crypto::Hash& transactionHash, std::vector<uint32_t>& globalIndexes) const override;
   virtual size_t getTransactionCount() const override;
+<<<<<<< HEAD
   virtual void addSpentMultisignature(uint64_t amount, uint32_t globalIndex, uint32_t blockIndex) override;
+=======
+>>>>>>> forknote/master
   virtual uint32_t getBlockIndexContainingTx(const Crypto::Hash& transactionHash) const override;
 
   virtual size_t getChildCount() const override;
@@ -201,6 +216,10 @@ public:
   virtual RawBlock getBlockByIndex(uint32_t index) const override;
   virtual BinaryArray getRawTransaction(uint32_t blockIndex, uint32_t transactionIndex) const override;
   virtual std::vector<Crypto::Hash> getTransactionHashes() const override;
+<<<<<<< HEAD
+=======
+  virtual std::vector<uint32_t> getRandomOutsByAmount(uint64_t amount, size_t count, uint32_t blockIndex, uint32_t startBlockIndex) const override;
+>>>>>>> forknote/master
   virtual std::vector<uint32_t> getRandomOutsByAmount(uint64_t amount, size_t count, uint32_t blockIndex) const override;
   virtual ExtractOutputKeysResult extractKeyOutputs(uint64_t amount, uint32_t blockIndex, Common::ArrayView<uint32_t> globalIndexes,
     std::function<ExtractOutputKeysResult(const CachedTransactionInfo& info, PackedOutIndex index,
@@ -289,7 +308,10 @@ private:
   > PaymentIdContainer;
 
   typedef std::map<uint64_t, OutputGlobalIndexesForAmount> OutputsGlobalIndexesContainer;
+<<<<<<< HEAD
   typedef std::map<uint64_t, MultisignatureIndexes> MultisignaturesContainer;
+=======
+>>>>>>> forknote/master
   typedef std::map<BlockIndex, std::vector<std::pair<Amount, GlobalOutputIndex>>> OutputSpentInBlock;
   typedef std::set<std::pair<Amount, GlobalOutputIndex>> SpentOutputsOnAmount;
 
@@ -305,10 +327,14 @@ private:
   SpentKeyImagesContainer spentKeyImages;
   BlockInfoContainer blockInfos;
   OutputsGlobalIndexesContainer keyOutputsGlobalIndexes;
+<<<<<<< HEAD
   MultisignaturesContainer multisignatureStorage;
   PaymentIdContainer paymentIds;
   OutputSpentInBlock spentMultisigOutputsByBlock;
   SpentOutputsOnAmount spentMultisigOutputs;
+=======
+  PaymentIdContainer paymentIds;
+>>>>>>> forknote/master
   std::unique_ptr<BlockchainStorage> storage;
 
   std::vector<IBlockchainCache*> children;
@@ -322,11 +348,17 @@ private:
   void splitTransactions(BlockchainCache& newCache, uint32_t splitBlockIndex);
   void splitBlocks(BlockchainCache& newCache, uint32_t splitBlockIndex);
   void splitKeyOutputsGlobalIndexes(BlockchainCache& newCache, uint32_t splitBlockIndex);
+<<<<<<< HEAD
   void splitMultiSignatureOutputsGlobalIndexes(BlockchainCache& newCache, uint32_t splitBlockIndex);
   void removePaymentId(const Crypto::Hash& transactionHash, BlockchainCache& newCache);
 
   uint32_t insertKeyOutputToGlobalIndex(uint64_t amount, PackedOutIndex output, uint32_t blockIndex);
   uint32_t insertMultisignatureToGlobalIndex(uint64_t amount, PackedOutIndex output, uint32_t blockIndex);
+=======
+  void removePaymentId(const Crypto::Hash& transactionHash, BlockchainCache& newCache);
+
+  uint32_t insertKeyOutputToGlobalIndex(uint64_t amount, PackedOutIndex output, uint32_t blockIndex);
+>>>>>>> forknote/master
 
   enum class OutputSearchResult : uint8_t {
     FOUND,
@@ -334,7 +366,10 @@ private:
     INVALID_ARGUMENT
   };
 
+<<<<<<< HEAD
   OutputSearchResult findPackedOutForMultisignatureInCurrentSegment(uint64_t amount, uint32_t globalIndex, PackedOutIndex& packedOut) const;
+=======
+>>>>>>> forknote/master
   TransactionValidatorState fillOutputsSpentByBlock(uint32_t blockIndex) const;
 
 uint8_t getBlockMajorVersionForHeight(uint32_t height) const;

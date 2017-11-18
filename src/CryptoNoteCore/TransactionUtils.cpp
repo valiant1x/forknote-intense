@@ -36,6 +36,10 @@ bool checkInputsKeyimagesDiff(const CryptoNote::TransactionPrefix& tx) {
         return false;
     }
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> forknote/master
   return true;
 }
 
@@ -45,9 +49,13 @@ size_t getRequiredSignaturesCount(const TransactionInput& in) {
   if (in.type() == typeid(KeyInput)) {
     return boost::get<KeyInput>(in).outputIndexes.size();
   }
+<<<<<<< HEAD
   if (in.type() == typeid(MultisignatureInput)) {
     return boost::get<MultisignatureInput>(in).signatureCount;
   }
+=======
+
+>>>>>>> forknote/master
   return 0;
 }
 
@@ -55,9 +63,13 @@ uint64_t getTransactionInputAmount(const TransactionInput& in) {
   if (in.type() == typeid(KeyInput)) {
     return boost::get<KeyInput>(in).amount;
   }
+<<<<<<< HEAD
   if (in.type() == typeid(MultisignatureInput)) {
     return boost::get<MultisignatureInput>(in).amount;
   }
+=======
+
+>>>>>>> forknote/master
   return 0;
 }
 
@@ -65,12 +77,20 @@ TransactionTypes::InputType getTransactionInputType(const TransactionInput& in) 
   if (in.type() == typeid(KeyInput)) {
     return TransactionTypes::InputType::Key;
   }
+<<<<<<< HEAD
   if (in.type() == typeid(MultisignatureInput)) {
     return TransactionTypes::InputType::Multisignature;
   }
   if (in.type() == typeid(BaseInput)) {
     return TransactionTypes::InputType::Generating;
   }
+=======
+
+  if (in.type() == typeid(BaseInput)) {
+    return TransactionTypes::InputType::Generating;
+  }
+
+>>>>>>> forknote/master
   return TransactionTypes::InputType::Invalid;
 }
 
@@ -78,6 +98,10 @@ const TransactionInput& getInputChecked(const CryptoNote::TransactionPrefix& tra
   if (transaction.inputs.size() <= index) {
     throw std::runtime_error("Transaction input index out of range");
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> forknote/master
   return transaction.inputs[index];
 }
 
@@ -86,6 +110,10 @@ const TransactionInput& getInputChecked(const CryptoNote::TransactionPrefix& tra
   if (getTransactionInputType(input) != type) {
     throw std::runtime_error("Unexpected transaction input type");
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> forknote/master
   return input;
 }
 
@@ -95,9 +123,13 @@ TransactionTypes::OutputType getTransactionOutputType(const TransactionOutputTar
   if (out.type() == typeid(KeyOutput)) {
     return TransactionTypes::OutputType::Key;
   }
+<<<<<<< HEAD
   if (out.type() == typeid(MultisignatureOutput)) {
     return TransactionTypes::OutputType::Multisignature;
   }
+=======
+
+>>>>>>> forknote/master
   return TransactionTypes::OutputType::Invalid;
 }
 
@@ -105,6 +137,10 @@ const TransactionOutput& getOutputChecked(const CryptoNote::TransactionPrefix& t
   if (transaction.outputs.size() <= index) {
     throw std::runtime_error("Transaction output index out of range");
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> forknote/master
   return transaction.outputs[index];
 }
 
@@ -113,6 +149,10 @@ const TransactionOutput& getOutputChecked(const CryptoNote::TransactionPrefix& t
   if (getTransactionOutputType(output.target) != type) {
     throw std::runtime_error("Unexpected transaction output target type");
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> forknote/master
   return output;
 }
 
@@ -139,12 +179,17 @@ bool findOutputsToAccount(const CryptoNote::TransactionPrefix& transaction, cons
   generate_key_derivation(txPubKey, keys.viewSecretKey, derivation);
 
   for (const TransactionOutput& o : transaction.outputs) {
+<<<<<<< HEAD
     assert(o.target.type() == typeid(KeyOutput) || o.target.type() == typeid(MultisignatureOutput));
+=======
+    assert(o.target.type() == typeid(KeyOutput));
+>>>>>>> forknote/master
     if (o.target.type() == typeid(KeyOutput)) {
       if (is_out_to_acc(keys, boost::get<KeyOutput>(o.target), derivation, keyIndex)) {
         out.push_back(outputIndex);
         amount += o.amount;
       }
+<<<<<<< HEAD
       ++keyIndex;
     } else if (o.target.type() == typeid(MultisignatureOutput)) {
       const auto& target = boost::get<MultisignatureOutput>(o.target);
@@ -155,6 +200,12 @@ bool findOutputsToAccount(const CryptoNote::TransactionPrefix& transaction, cons
         ++keyIndex;
       }
     }
+=======
+
+      ++keyIndex;
+    }
+
+>>>>>>> forknote/master
     ++outputIndex;
   }
 

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -11,23 +15,42 @@
 
 #include "rocksdb/env.h"
 #include "rocksdb/options.h"
+<<<<<<< HEAD
+=======
+#include "util/options_helper.h"
+#include "util/options_sanity_check.h"
+#include "table/block_based_table_factory.h"
+>>>>>>> forknote/master
 
 namespace rocksdb {
 
 #ifndef ROCKSDB_LITE
 
 #define ROCKSDB_OPTION_FILE_MAJOR 1
+<<<<<<< HEAD
 #define ROCKSDB_OPTION_FILE_MINOR 0
+=======
+#define ROCKSDB_OPTION_FILE_MINOR 1
+>>>>>>> forknote/master
 
 enum OptionSection : char {
   kOptionSectionVersion = 0,
   kOptionSectionDBOptions,
   kOptionSectionCFOptions,
+<<<<<<< HEAD
   kOptionSectionUnknown
 };
 
 static const std::string opt_section_titles[] = {"Version", "DBOptions",
                                                  "CFOptions", "Unknown"};
+=======
+  kOptionSectionTableOptions,
+  kOptionSectionUnknown
+};
+
+static const std::string opt_section_titles[] = {
+    "Version", "DBOptions", "CFOptions", "TableOptions/", "Unknown"};
+>>>>>>> forknote/master
 
 Status PersistRocksDBOptions(const DBOptions& db_opt,
                              const std::vector<std::string>& cf_names,
@@ -55,6 +78,7 @@ class RocksDBOptionsParser {
     return &cf_opt_maps_;
   }
 
+<<<<<<< HEAD
   const ColumnFamilyOptions* GetCFOptions(const std::string& name) const {
     assert(cf_names_.size() == cf_opts_.size());
     for (size_t i = 0; i < cf_names_.size(); ++i) {
@@ -63,12 +87,17 @@ class RocksDBOptionsParser {
       }
     }
     return nullptr;
+=======
+  const ColumnFamilyOptions* GetCFOptions(const std::string& name) {
+    return GetCFOptionsImpl(name);
+>>>>>>> forknote/master
   }
   size_t NumColumnFamilies() { return cf_opts_.size(); }
 
   static Status VerifyRocksDBOptionsFromFile(
       const DBOptions& db_opt, const std::vector<std::string>& cf_names,
       const std::vector<ColumnFamilyOptions>& cf_opts,
+<<<<<<< HEAD
       const std::string& file_name, Env* env);
 
   static Status VerifyDBOptions(
@@ -80,13 +109,42 @@ class RocksDBOptionsParser {
       const ColumnFamilyOptions& base_opt, const ColumnFamilyOptions& new_opt,
       const std::unordered_map<std::string, std::string>* new_opt_map =
           nullptr);
+=======
+      const std::string& file_name, Env* env,
+      OptionsSanityCheckLevel sanity_check_level = kSanityLevelExactMatch);
+
+  static Status VerifyDBOptions(
+      const DBOptions& base_opt, const DBOptions& new_opt,
+      const std::unordered_map<std::string, std::string>* new_opt_map = nullptr,
+      OptionsSanityCheckLevel sanity_check_level = kSanityLevelExactMatch);
+
+  static Status VerifyCFOptions(
+      const ColumnFamilyOptions& base_opt, const ColumnFamilyOptions& new_opt,
+      const std::unordered_map<std::string, std::string>* new_opt_map = nullptr,
+      OptionsSanityCheckLevel sanity_check_level = kSanityLevelExactMatch);
+
+  static Status VerifyTableFactory(
+      const TableFactory* base_tf, const TableFactory* file_tf,
+      OptionsSanityCheckLevel sanity_check_level = kSanityLevelExactMatch);
+
+  static Status VerifyBlockBasedTableFactory(
+      const BlockBasedTableFactory* base_tf,
+      const BlockBasedTableFactory* file_tf,
+      OptionsSanityCheckLevel sanity_check_level);
+>>>>>>> forknote/master
 
   static Status ExtraParserCheck(const RocksDBOptionsParser& input_parser);
 
  protected:
   bool IsSection(const std::string& line);
+<<<<<<< HEAD
   Status ParseSection(OptionSection* section, std::string* argument,
                       const std::string& line, const int line_num);
+=======
+  Status ParseSection(OptionSection* section, std::string* title,
+                      std::string* argument, const std::string& line,
+                      const int line_num);
+>>>>>>> forknote/master
 
   Status CheckSection(const OptionSection section,
                       const std::string& section_arg, const int line_num);
@@ -95,7 +153,12 @@ class RocksDBOptionsParser {
                         const std::string& line, const int line_num);
 
   Status EndSection(
+<<<<<<< HEAD
       const OptionSection section, const std::string& section_arg,
+=======
+      const OptionSection section, const std::string& title,
+      const std::string& section_arg,
+>>>>>>> forknote/master
       const std::unordered_map<std::string, std::string>& opt_map);
 
   Status ValidityCheck();
@@ -106,6 +169,19 @@ class RocksDBOptionsParser {
                             const std::string& ver_string, const int max_count,
                             int* version);
 
+<<<<<<< HEAD
+=======
+  ColumnFamilyOptions* GetCFOptionsImpl(const std::string& name) {
+    assert(cf_names_.size() == cf_opts_.size());
+    for (size_t i = 0; i < cf_names_.size(); ++i) {
+      if (cf_names_[i] == name) {
+        return &cf_opts_[i];
+      }
+    }
+    return nullptr;
+  }
+
+>>>>>>> forknote/master
  private:
   DBOptions db_opt_;
   std::unordered_map<std::string, std::string> db_opt_map_;

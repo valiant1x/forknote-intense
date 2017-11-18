@@ -47,10 +47,15 @@ public:
   SpentOutputDescriptor();
   SpentOutputDescriptor(const TransactionOutputInformationIn& transactionInfo);
   SpentOutputDescriptor(const Crypto::KeyImage* keyImage);
+<<<<<<< HEAD
   SpentOutputDescriptor(uint64_t amount, uint32_t globalOutputIndex);
 
   void assign(const Crypto::KeyImage* keyImage);
   void assign(uint64_t amount, uint32_t globalOutputIndex);
+=======
+
+  void assign(const Crypto::KeyImage* keyImage);
+>>>>>>> forknote/master
 
   bool isValid() const;
 
@@ -102,8 +107,11 @@ struct TransactionOutputInformationEx : public TransactionOutputInformationIn {
 
     if (type == TransactionTypes::OutputType::Key) {
       s(outputKey, "");
+<<<<<<< HEAD
     } else if (type == TransactionTypes::OutputType::Multisignature) {
       s(requiredSignatures, "");
+=======
+>>>>>>> forknote/master
     }
   }
 

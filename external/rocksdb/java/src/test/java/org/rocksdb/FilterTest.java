@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -16,6 +20,7 @@ public class FilterTest {
 
   @Test
   public void filter() {
+<<<<<<< HEAD
     Options options = null;
     try {
       options = new Options();
@@ -41,6 +46,25 @@ public class FilterTest {
     } finally {
       if (options != null) {
         options.dispose();
+=======
+    // new Bloom filter
+    final BlockBasedTableConfig blockConfig = new BlockBasedTableConfig();
+    try(final Options options = new Options()) {
+
+      try(final Filter bloomFilter = new BloomFilter()) {
+        blockConfig.setFilter(bloomFilter);
+        options.setTableFormatConfig(blockConfig);
+      }
+
+      try(final Filter bloomFilter = new BloomFilter(10)) {
+        blockConfig.setFilter(bloomFilter);
+        options.setTableFormatConfig(blockConfig);
+      }
+
+      try(final Filter bloomFilter = new BloomFilter(10, false)) {
+        blockConfig.setFilter(bloomFilter);
+        options.setTableFormatConfig(blockConfig);
+>>>>>>> forknote/master
       }
     }
   }

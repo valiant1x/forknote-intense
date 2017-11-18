@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -27,8 +31,12 @@ public class WriteBatch extends AbstractWriteBatch {
    * Constructs a WriteBatch instance.
    */
   public WriteBatch() {
+<<<<<<< HEAD
     super();
     newWriteBatch(0);
+=======
+    this(0);
+>>>>>>> forknote/master
   }
 
   /**
@@ -37,8 +45,12 @@ public class WriteBatch extends AbstractWriteBatch {
    * @param reserved_bytes reserved size for WriteBatch
    */
   public WriteBatch(final int reserved_bytes) {
+<<<<<<< HEAD
     nativeHandle_ = 0;
     newWriteBatch(reserved_bytes);
+=======
+    super(newWriteBatch(reserved_bytes));
+>>>>>>> forknote/master
   }
 
   /**
@@ -50,7 +62,11 @@ public class WriteBatch extends AbstractWriteBatch {
    * @throws RocksDBException If we cannot iterate over the batch
    */
   public void iterate(final Handler handler) throws RocksDBException {
+<<<<<<< HEAD
     iterate(handler.nativeHandle_);
+=======
+    iterate(nativeHandle_, handler.nativeHandle_);
+>>>>>>> forknote/master
   }
 
   /**
@@ -61,6 +77,7 @@ public class WriteBatch extends AbstractWriteBatch {
    * @param nativeHandle address of native instance.
    */
   WriteBatch(final long nativeHandle) {
+<<<<<<< HEAD
     super();
     disOwnNativeHandle();
     nativeHandle_ = nativeHandle;
@@ -81,15 +98,55 @@ public class WriteBatch extends AbstractWriteBatch {
 
   private native void newWriteBatch(int reserved_bytes);
   private native void iterate(long handlerHandle) throws RocksDBException;
+=======
+    super(nativeHandle);
+    disOwnNativeHandle();
+  }
+
+  @Override protected final native void disposeInternal(final long handle);
+  @Override final native int count0(final long handle);
+  @Override final native void put(final long handle, final byte[] key,
+      final int keyLen, final byte[] value, final int valueLen);
+  @Override final native void put(final long handle, final byte[] key,
+      final int keyLen, final byte[] value, final int valueLen,
+      final long cfHandle);
+  @Override final native void merge(final long handle, final byte[] key,
+      final int keyLen, final byte[] value, final int valueLen);
+  @Override final native void merge(final long handle, final byte[] key,
+      final int keyLen, final byte[] value, final int valueLen,
+      final long cfHandle);
+  @Override final native void remove(final long handle, final byte[] key,
+      final int keyLen);
+  @Override final native void remove(final long handle, final byte[] key,
+      final int keyLen, final long cfHandle);
+  @Override final native void putLogData(final long handle,
+      final byte[] blob, final int blobLen);
+  @Override final native void clear0(final long handle);
+  @Override final native void setSavePoint0(final long handle);
+  @Override final native void rollbackToSavePoint0(final long handle);
+
+  private native static long newWriteBatch(final int reserved_bytes);
+  private native void iterate(final long handle, final long handlerHandle)
+      throws RocksDBException;
+>>>>>>> forknote/master
 
 
   /**
    * Handler callback for iterating over the contents of a batch.
    */
+<<<<<<< HEAD
   public static abstract class Handler extends RocksObject {
     public Handler() {
       super();
       createNewHandler0();
+=======
+  public static abstract class Handler
+      extends AbstractImmutableNativeReference {
+    private final long nativeHandle_;
+    public Handler() {
+      super(true);
+      this.nativeHandle_ = createNewHandler0();
+>>>>>>> forknote/master
     }
 
     public abstract void put(byte[] key, byte[] value);
@@ -116,11 +173,19 @@ public class WriteBatch extends AbstractWriteBatch {
      */
     @Override
     protected void disposeInternal() {
+<<<<<<< HEAD
       assert(isInitialized());
       disposeInternal(nativeHandle_);
     }
 
     private native void createNewHandler0();
     private native void disposeInternal(long handle);
+=======
+      disposeInternal(nativeHandle_);
+    }
+
+    private native long createNewHandler0();
+    private native void disposeInternal(final long handle);
+>>>>>>> forknote/master
   }
 }

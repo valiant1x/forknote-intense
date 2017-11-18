@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -20,7 +24,10 @@
 #include "utilities/merge_operators.h"
 #include "util/testharness.h"
 
+<<<<<<< HEAD
 using namespace std;
+=======
+>>>>>>> forknote/master
 using namespace rocksdb;
 
 namespace {
@@ -76,7 +83,11 @@ class CountMergeOperator : public AssociativeMergeOperator {
 };
 
 namespace {
+<<<<<<< HEAD
 std::shared_ptr<DB> OpenDb(const string& dbname, const bool ttl = false,
+=======
+std::shared_ptr<DB> OpenDb(const std::string& dbname, const bool ttl = false,
+>>>>>>> forknote/master
                            const size_t max_successive_merges = 0,
                            const uint32_t min_partial_merge_operands = 2) {
   DB* db;
@@ -90,7 +101,11 @@ std::shared_ptr<DB> OpenDb(const string& dbname, const bool ttl = false,
 // DBWithTTL is not supported in ROCKSDB_LITE
 #ifndef ROCKSDB_LITE
   if (ttl) {
+<<<<<<< HEAD
     cout << "Opening database with TTL\n";
+=======
+    std::cout << "Opening database with TTL\n";
+>>>>>>> forknote/master
     DBWithTTL* db_with_ttl;
     s = DBWithTTL::Open(options, dbname, &db_with_ttl);
     db = db_with_ttl;
@@ -102,7 +117,11 @@ std::shared_ptr<DB> OpenDb(const string& dbname, const bool ttl = false,
   s = DB::Open(options, dbname, &db);
 #endif  // !ROCKSDB_LITE
   if (!s.ok()) {
+<<<<<<< HEAD
     cerr << s.ToString() << endl;
+=======
+    std::cerr << s.ToString() << std::endl;
+>>>>>>> forknote/master
     assert(false);
   }
   return std::shared_ptr<DB>(db);
@@ -142,7 +161,11 @@ class Counters {
   // if the underlying level db operation failed.
 
   // mapped to a levedb Put
+<<<<<<< HEAD
   bool set(const string& key, uint64_t value) {
+=======
+  bool set(const std::string& key, uint64_t value) {
+>>>>>>> forknote/master
     // just treat the internal rep of int64 as the string
     Slice slice((char *)&value, sizeof(value));
     auto s = db_->Put(put_option_, key, slice);
@@ -150,26 +173,43 @@ class Counters {
     if (s.ok()) {
       return true;
     } else {
+<<<<<<< HEAD
       cerr << s.ToString() << endl;
+=======
+      std::cerr << s.ToString() << std::endl;
+>>>>>>> forknote/master
       return false;
     }
   }
 
   // mapped to a rocksdb Delete
+<<<<<<< HEAD
   bool remove(const string& key) {
+=======
+  bool remove(const std::string& key) {
+>>>>>>> forknote/master
     auto s = db_->Delete(delete_option_, key);
 
     if (s.ok()) {
       return true;
     } else {
+<<<<<<< HEAD
       cerr << s.ToString() << std::endl;
+=======
+      std::cerr << s.ToString() << std::endl;
+>>>>>>> forknote/master
       return false;
     }
   }
 
   // mapped to a rocksdb Get
+<<<<<<< HEAD
   bool get(const string& key, uint64_t *value) {
     string str;
+=======
+  bool get(const std::string& key, uint64_t* value) {
+    std::string str;
+>>>>>>> forknote/master
     auto s = db_->Get(get_option_, key, &str);
 
     if (s.IsNotFound()) {
@@ -179,26 +219,39 @@ class Counters {
     } else if (s.ok()) {
       // deserialization
       if (str.size() != sizeof(uint64_t)) {
+<<<<<<< HEAD
         cerr << "value corruption\n";
+=======
+        std::cerr << "value corruption\n";
+>>>>>>> forknote/master
         return false;
       }
       *value = DecodeFixed64(&str[0]);
       return true;
     } else {
+<<<<<<< HEAD
       cerr << s.ToString() << std::endl;
+=======
+      std::cerr << s.ToString() << std::endl;
+>>>>>>> forknote/master
       return false;
     }
   }
 
   // 'add' is implemented as get -> modify -> set
   // An alternative is a single merge operation, see MergeBasedCounters
+<<<<<<< HEAD
   virtual bool add(const string& key, uint64_t value) {
+=======
+  virtual bool add(const std::string& key, uint64_t value) {
+>>>>>>> forknote/master
     uint64_t base = default_;
     return get(key, &base) && set(key, base + value);
   }
 
 
   // convenience functions for testing
+<<<<<<< HEAD
   void assert_set(const string& key, uint64_t value) {
     assert(set(key, value));
   }
@@ -208,6 +261,15 @@ class Counters {
   }
 
   uint64_t assert_get(const string& key) {
+=======
+  void assert_set(const std::string& key, uint64_t value) {
+    assert(set(key, value));
+  }
+
+  void assert_remove(const std::string& key) { assert(remove(key)); }
+
+  uint64_t assert_get(const std::string& key) {
+>>>>>>> forknote/master
     uint64_t value = default_;
     int result = get(key, &value);
     assert(result);
@@ -215,7 +277,11 @@ class Counters {
     return value;
   }
 
+<<<<<<< HEAD
   void assert_add(const string& key, uint64_t value) {
+=======
+  void assert_add(const std::string& key, uint64_t value) {
+>>>>>>> forknote/master
     int result = add(key, value);
     assert(result);
     if (result == 0) exit(1); // Disable unused variable warning.
@@ -234,7 +300,11 @@ class MergeBasedCounters : public Counters {
   }
 
   // mapped to a rocksdb Merge operation
+<<<<<<< HEAD
   virtual bool add(const string& key, uint64_t value) override {
+=======
+  virtual bool add(const std::string& key, uint64_t value) override {
+>>>>>>> forknote/master
     char encoded[sizeof(uint64_t)];
     EncodeFixed64(encoded, value);
     Slice slice(encoded, sizeof(uint64_t));
@@ -243,7 +313,11 @@ class MergeBasedCounters : public Counters {
     if (s.ok()) {
       return true;
     } else {
+<<<<<<< HEAD
       cerr << s.ToString() << endl;
+=======
+      std::cerr << s.ToString() << std::endl;
+>>>>>>> forknote/master
       return false;
     }
   }
@@ -254,7 +328,11 @@ void dumpDb(DB* db) {
   auto it = unique_ptr<Iterator>(db->NewIterator(ReadOptions()));
   for (it->SeekToFirst(); it->Valid(); it->Next()) {
     uint64_t value = DecodeFixed64(it->value().data());
+<<<<<<< HEAD
     cout << it->key().ToString() << ": "  << value << endl;
+=======
+    std::cout << it->key().ToString() << ": " << value << std::endl;
+>>>>>>> forknote/master
   }
   assert(it->status().ok());  // Check for any errors found during the scan
 }
@@ -302,9 +380,15 @@ void testCounters(Counters& counters, DB* db, bool test_compaction) {
   if (test_compaction) {
     db->Flush(o);
 
+<<<<<<< HEAD
     cout << "Compaction started ...\n";
     db->CompactRange(CompactRangeOptions(), nullptr, nullptr);
     cout << "Compaction ended\n";
+=======
+    std::cout << "Compaction started ...\n";
+    db->CompactRange(CompactRangeOptions(), nullptr, nullptr);
+    std::cout << "Compaction ended\n";
+>>>>>>> forknote/master
 
     dumpDb(db);
 
@@ -400,7 +484,11 @@ void testSingleBatchSuccessiveMerge(DB* db, size_t max_num_merges,
 
   // Get the value
   resetNumMergeOperatorCalls();
+<<<<<<< HEAD
   string get_value_str;
+=======
+  std::string get_value_str;
+>>>>>>> forknote/master
   {
     Status s = db->Get(ReadOptions(), key, &get_value_str);
     assert(s.ok());
@@ -412,24 +500,40 @@ void testSingleBatchSuccessiveMerge(DB* db, size_t max_num_merges,
             static_cast<size_t>((num_merges % (max_num_merges + 1))));
 }
 
+<<<<<<< HEAD
 void runTest(int argc, const string& dbname, const bool use_ttl = false) {
   bool compact = false;
   if (argc > 1) {
     compact = true;
     cout << "Turn on Compaction\n";
+=======
+void runTest(int argc, const std::string& dbname, const bool use_ttl = false) {
+  bool compact = false;
+  if (argc > 1) {
+    compact = true;
+    std::cout << "Turn on Compaction\n";
+>>>>>>> forknote/master
   }
 
   {
     auto db = OpenDb(dbname, use_ttl);
 
     {
+<<<<<<< HEAD
       cout << "Test read-modify-write counters... \n";
+=======
+      std::cout << "Test read-modify-write counters... \n";
+>>>>>>> forknote/master
       Counters counters(db, 0);
       testCounters(counters, db.get(), true);
     }
 
     {
+<<<<<<< HEAD
       cout << "Test merge-based counters... \n";
+=======
+      std::cout << "Test merge-based counters... \n";
+>>>>>>> forknote/master
       MergeBasedCounters counters(db, 0);
       testCounters(counters, db.get(), compact);
     }
@@ -438,7 +542,11 @@ void runTest(int argc, const string& dbname, const bool use_ttl = false) {
   DestroyDB(dbname, Options());
 
   {
+<<<<<<< HEAD
     cout << "Test merge in memtable... \n";
+=======
+    std::cout << "Test merge in memtable... \n";
+>>>>>>> forknote/master
     size_t max_merge = 5;
     auto db = OpenDb(dbname, use_ttl, max_merge);
     MergeBasedCounters counters(db, 0);
@@ -449,7 +557,11 @@ void runTest(int argc, const string& dbname, const bool use_ttl = false) {
   }
 
   {
+<<<<<<< HEAD
     cout << "Test Partial-Merge\n";
+=======
+    std::cout << "Test Partial-Merge\n";
+>>>>>>> forknote/master
     size_t max_merge = 100;
     for (uint32_t min_merge = 5; min_merge < 25; min_merge += 5) {
       for (uint32_t count = min_merge - 1; count <= min_merge + 1; count++) {
@@ -469,7 +581,11 @@ void runTest(int argc, const string& dbname, const bool use_ttl = false) {
   }
 
   {
+<<<<<<< HEAD
     cout << "Test merge-operator not set after reopen\n";
+=======
+    std::cout << "Test merge-operator not set after reopen\n";
+>>>>>>> forknote/master
     {
       auto db = OpenDb(dbname);
       MergeBasedCounters counters(db, 0);
@@ -489,7 +605,11 @@ void runTest(int argc, const string& dbname, const bool use_ttl = false) {
 
   /* Temporary remove this test
   {
+<<<<<<< HEAD
     cout << "Test merge-operator not set after reopen (recovery case)\n";
+=======
+    std::cout << "Test merge-operator not set after reopen (recovery case)\n";
+>>>>>>> forknote/master
     {
       auto db = OpenDb(dbname);
       MergeBasedCounters counters(db, 0);

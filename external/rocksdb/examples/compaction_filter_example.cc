@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -10,6 +14,7 @@
 
 class MyMerge : public rocksdb::MergeOperator {
  public:
+<<<<<<< HEAD
   bool FullMerge(const rocksdb::Slice& key,
                  const rocksdb::Slice* existing_value,
                  const std::deque<std::string>& operand_list,
@@ -23,6 +28,20 @@ class MyMerge : public rocksdb::MergeOperator {
       fprintf(stderr, "Merge(%s)\n", m.c_str());
       assert(m != "bad");  // the compaction filter filters out bad values
       new_value->assign(m);
+=======
+  virtual bool FullMergeV2(const MergeOperationInput& merge_in,
+                           MergeOperationOutput* merge_out) const override {
+    merge_out->new_value.clear();
+    if (merge_in.existing_value != nullptr) {
+      merge_out->new_value.assign(merge_in.existing_value->data(),
+                                  merge_in.existing_value->size());
+    }
+    for (const rocksdb::Slice& m : merge_in.operand_list) {
+      fprintf(stderr, "Merge(%s)\n", m.ToString().c_str());
+      // the compaction filter filters out bad values
+      assert(m.ToString() != "bad");
+      merge_out->new_value.assign(m.data(), m.size());
+>>>>>>> forknote/master
     }
     return true;
   }

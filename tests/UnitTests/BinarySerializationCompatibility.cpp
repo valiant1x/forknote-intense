@@ -128,6 +128,7 @@
 //  fillData(reinterpret_cast<char *>(&sig), sizeof(Crypto::Signature), startByte);
 //}
 //
+<<<<<<< HEAD
 //void fillTransactionOutputMultisignature(CryptoNote::TransactionOutputMultisignature& s) {
 //  Crypto::PublicKey key;
 //  fillPublicKey(key, 0);
@@ -152,6 +153,8 @@
 //
 //  s.requiredSignatures = 12;
 //}
+=======
+>>>>>>> forknote/master
 //
 //void fillTransaction(CryptoNote::Transaction& tx) {
 //  tx.version = 1;
@@ -167,12 +170,15 @@
 //  fillKeyImage(key.keyImage);
 //  tx.vin.push_back(key);
 //
+<<<<<<< HEAD
 //  CryptoNote::TransactionInputMultisignature multisig;
 //  multisig.amount = 490000000;
 //  multisig.outputIndex = 424242;
 //  multisig.signatures = 4;
 //  tx.vin.push_back(multisig);
 //
+=======
+>>>>>>> forknote/master
 //  CryptoNote::TransactionOutput txOutput;
 //  txOutput.amount = 0xfff000ffff778822;
 //  CryptoNote::TransactionOutputToKey out;
@@ -189,12 +195,15 @@
 //    fillSignature(sig, static_cast<char>(i));
 //    tx.signatures[1].push_back(sig);
 //  }
+<<<<<<< HEAD
 //
 //  for (size_t i = 0; i < boost::get<CryptoNote::TransactionInputMultisignature>(tx.vin[2]).signatures; ++i) {
 //    Crypto::Signature sig;
 //    fillSignature(sig, static_cast<char>(i + 120));
 //    tx.signatures[2].push_back(sig);
 //  }
+=======
+>>>>>>> forknote/master
 //}
 //
 //void fillParentBlock(CryptoNote::ParentBlock& pb) {
@@ -242,6 +251,7 @@
 //  header.majorVersion = 2;
 //}
 //
+<<<<<<< HEAD
 //TEST(BinarySerializationCompatibility, TransactionOutputMultisignature) {
 //  CryptoNote::TransactionOutputMultisignature s;
 //
@@ -250,6 +260,8 @@
 //  checkCompatibility(s);
 //}
 //
+=======
+>>>>>>> forknote/master
 //TEST(BinarySerializationCompatibility, TransactionInputGenerate) {
 //  CryptoNote::TransactionInputGenerate s;
 //  s.height = 0x80000001;
@@ -272,6 +284,7 @@
 //  checkCompatibility(s);
 //}
 //
+<<<<<<< HEAD
 //TEST(BinarySerializationCompatibility, TransactionInputMultisignature) {
 //  CryptoNote::TransactionInputMultisignature s;
 //  s.amount = 0xfff000ffff778822;
@@ -281,6 +294,8 @@
 //  checkCompatibility(s);
 //}
 //
+=======
+>>>>>>> forknote/master
 //TEST(BinarySerializationCompatibility, TransactionOutput_TransactionOutputToKey) {
 //  CryptoNote::TransactionOutput s;
 //  s.amount = 0xfff000ffff778822;
@@ -292,6 +307,7 @@
 //  checkCompatibility(s);
 //}
 //
+<<<<<<< HEAD
 //TEST(BinarySerializationCompatibility, TransactionOutput_TransactionOutputMultisignature) {
 //  CryptoNote::TransactionOutput s;
 //  s.amount = 0xfff000ffff778822;
@@ -303,6 +319,8 @@
 //  checkCompatibility(s);
 //}
 //
+=======
+>>>>>>> forknote/master
 //TEST(BinarySerializationCompatibility, Transaction) {
 //  CryptoNote::Transaction tx;
 //

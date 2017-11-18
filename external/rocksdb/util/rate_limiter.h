@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -9,6 +13,10 @@
 
 #pragma once
 
+<<<<<<< HEAD
+=======
+#include <algorithm>
+>>>>>>> forknote/master
 #include <atomic>
 #include <deque>
 #include "port/port.h"
@@ -59,13 +67,22 @@ class GenericRateLimiter : public RateLimiter {
 
  private:
   void Refill();
+<<<<<<< HEAD
   int64_t CalculateRefillBytesPerPeriod(int64_t rate_bytes_per_sec) {
     return rate_bytes_per_sec * refill_period_us_ / 1000000.0;
   }
+=======
+  int64_t CalculateRefillBytesPerPeriod(int64_t rate_bytes_per_sec);
+>>>>>>> forknote/master
 
   // This mutex guard all internal states
   mutable port::Mutex request_mutex_;
 
+<<<<<<< HEAD
+=======
+  const int64_t kMinRefillBytesPerPeriod = 100;
+
+>>>>>>> forknote/master
   const int64_t refill_period_us_;
   // This variable can be changed dynamically.
   std::atomic<int64_t> refill_bytes_per_period_;

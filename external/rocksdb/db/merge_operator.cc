@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -11,6 +15,21 @@
 
 namespace rocksdb {
 
+<<<<<<< HEAD
+=======
+bool MergeOperator::FullMergeV2(const MergeOperationInput& merge_in,
+                                MergeOperationOutput* merge_out) const {
+  // If FullMergeV2 is not implemented, we convert the operand_list to
+  // std::deque<std::string> and pass it to FullMerge
+  std::deque<std::string> operand_list_str;
+  for (auto& op : merge_in.operand_list) {
+    operand_list_str.emplace_back(op.data(), op.size());
+  }
+  return FullMerge(merge_in.key, merge_in.existing_value, operand_list_str,
+                   &merge_out->new_value, merge_in.logger);
+}
+
+>>>>>>> forknote/master
 // The default implementation of PartialMergeMulti, which invokes
 // PartialMerge multiple times internally and merges two operands at
 // a time.
@@ -39,6 +58,7 @@ bool MergeOperator::PartialMergeMulti(const Slice& key,
 // Given a "real" merge from the library, call the user's
 // associative merge function one-by-one on each of the operands.
 // NOTE: It is assumed that the client's merge-operator will handle any errors.
+<<<<<<< HEAD
 bool AssociativeMergeOperator::FullMerge(
     const Slice& key,
     const Slice* existing_value,
@@ -56,6 +76,22 @@ bool AssociativeMergeOperator::FullMerge(
     }
     swap(temp_value, *new_value);
     temp_existing = Slice(*new_value);
+=======
+bool AssociativeMergeOperator::FullMergeV2(
+    const MergeOperationInput& merge_in,
+    MergeOperationOutput* merge_out) const {
+  // Simply loop through the operands
+  Slice temp_existing;
+  const Slice* existing_value = merge_in.existing_value;
+  for (const auto& operand : merge_in.operand_list) {
+    std::string temp_value;
+    if (!Merge(merge_in.key, existing_value, operand, &temp_value,
+               merge_in.logger)) {
+      return false;
+    }
+    swap(temp_value, merge_out->new_value);
+    temp_existing = Slice(merge_out->new_value);
+>>>>>>> forknote/master
     existing_value = &temp_existing;
   }
 

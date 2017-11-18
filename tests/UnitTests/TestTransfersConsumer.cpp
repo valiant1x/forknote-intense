@@ -509,6 +509,7 @@ TEST_F(TransfersConsumerTest, onNewBlocks_DifferentSubscribers) {
   ASSERT_EQ(amount2, outs2[0].amount);
 }
 
+<<<<<<< HEAD
 TEST_F(TransfersConsumerTest, onNewBlocks_MultisignatureTransaction) {
   auto& container1 = addSubscription().getContainer();
 
@@ -535,6 +536,8 @@ TEST_F(TransfersConsumerTest, onNewBlocks_MultisignatureTransaction) {
   ASSERT_EQ(amount, outs1[0].amount);
 }
 
+=======
+>>>>>>> forknote/master
 TEST_F(TransfersConsumerTest, onNewBlocks_getTransactionOutsGlobalIndicesIsProperlyCalled) {
   class INodeGlobalIndicesStub: public INodeDummyStub {
   public:
@@ -686,6 +689,7 @@ TEST_F(TransfersConsumerTest, onNewBlocks_checkTransactionOutputInformation) {
   ASSERT_EQ(out.transactionPublicKey, o.transactionPublicKey);
 }
 
+<<<<<<< HEAD
 TEST_F(TransfersConsumerTest, onNewBlocks_checkTransactionOutputInformationMultisignature) {
   const uint64_t index = 2;
 
@@ -726,6 +730,8 @@ TEST_F(TransfersConsumerTest, onNewBlocks_checkTransactionOutputInformationMulti
   ASSERT_EQ(expectedOut.transactionPublicKey, o.transactionPublicKey);
 }
 
+=======
+>>>>>>> forknote/master
 TEST_F(TransfersConsumerTest, onNewBlocks_checkTransactionInformation) {
   auto& container = addSubscription().getContainer();
 
@@ -834,6 +840,7 @@ TEST_F(TransfersConsumerTest, onPoolUpdated_addTransaction) {
   ASSERT_EQ(UNCONFIRMED_TRANSACTION_GLOBAL_OUTPUT_INDEX, o.globalOutputIndex);
 }
 
+<<<<<<< HEAD
 TEST_F(TransfersConsumerTest, onPoolUpdated_addTransactionMultisignature) {
   auto& sub = addSubscription();
 
@@ -868,6 +875,8 @@ TEST_F(TransfersConsumerTest, onPoolUpdated_addTransactionMultisignature) {
 }
 
 
+=======
+>>>>>>> forknote/master
 TEST_F(TransfersConsumerTest, onPoolUpdated_addTransactionDoesNotGetsGlobalIndices) {
   addSubscription();
   // construct tx

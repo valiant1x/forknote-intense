@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -24,8 +28,13 @@
 namespace rocksdb {
 
 BlockBasedTableFactory::BlockBasedTableFactory(
+<<<<<<< HEAD
     const BlockBasedTableOptions& table_options)
     : table_options_(table_options) {
+=======
+    const BlockBasedTableOptions& _table_options)
+    : table_options_(_table_options) {
+>>>>>>> forknote/master
   if (table_options_.flush_block_policy_factory == nullptr) {
     table_options_.flush_block_policy_factory.reset(
         new FlushBlockBySizePolicyFactory());
@@ -39,11 +48,21 @@ BlockBasedTableFactory::BlockBasedTableFactory(
       table_options_.block_size_deviation > 100) {
     table_options_.block_size_deviation = 0;
   }
+<<<<<<< HEAD
+=======
+  if (table_options_.block_restart_interval < 1) {
+    table_options_.block_restart_interval = 1;
+  }
+  if (table_options_.index_block_restart_interval < 1) {
+    table_options_.index_block_restart_interval = 1;
+  }
+>>>>>>> forknote/master
 }
 
 Status BlockBasedTableFactory::NewTableReader(
     const TableReaderOptions& table_reader_options,
     unique_ptr<RandomAccessFileReader>&& file, uint64_t file_size,
+<<<<<<< HEAD
     unique_ptr<TableReader>* table_reader) const {
   return NewTableReader(table_reader_options, std::move(file), file_size,
                         table_reader,
@@ -62,14 +81,36 @@ Status BlockBasedTableFactory::NewTableReader(
 
 TableBuilder* BlockBasedTableFactory::NewTableBuilder(
     const TableBuilderOptions& table_builder_options,
+=======
+    unique_ptr<TableReader>* table_reader,
+    bool prefetch_index_and_filter_in_cache) const {
+  return BlockBasedTable::Open(
+      table_reader_options.ioptions, table_reader_options.env_options,
+      table_options_, table_reader_options.internal_comparator, std::move(file),
+      file_size, table_reader, prefetch_index_and_filter_in_cache,
+      table_reader_options.skip_filters, table_reader_options.level);
+}
+
+TableBuilder* BlockBasedTableFactory::NewTableBuilder(
+    const TableBuilderOptions& table_builder_options, uint32_t column_family_id,
+>>>>>>> forknote/master
     WritableFileWriter* file) const {
   auto table_builder = new BlockBasedTableBuilder(
       table_builder_options.ioptions, table_options_,
       table_builder_options.internal_comparator,
+<<<<<<< HEAD
       table_builder_options.int_tbl_prop_collector_factories, file,
       table_builder_options.compression_type,
       table_builder_options.compression_opts,
       table_builder_options.skip_filters);
+=======
+      table_builder_options.int_tbl_prop_collector_factories, column_family_id,
+      file, table_builder_options.compression_type,
+      table_builder_options.compression_opts,
+      table_builder_options.compression_dict,
+      table_builder_options.skip_filters,
+      table_builder_options.column_family_name);
+>>>>>>> forknote/master
 
   return table_builder;
 }
@@ -87,6 +128,15 @@ Status BlockBasedTableFactory::SanitizeOptions(
     return Status::InvalidArgument("Enable cache_index_and_filter_blocks, "
         ", but block cache is disabled");
   }
+<<<<<<< HEAD
+=======
+  if (table_options_.pin_l0_filter_and_index_blocks_in_cache &&
+      table_options_.no_block_cache) {
+    return Status::InvalidArgument(
+        "Enable pin_l0_filter_and_index_blocks_in_cache, "
+        ", but block cache is disabled");
+  }
+>>>>>>> forknote/master
   if (!BlockBasedTableSupportedVersion(table_options_.format_version)) {
     return Status::InvalidArgument(
         "Unsupported BlockBasedTable format_version. Please check "
@@ -103,11 +153,22 @@ std::string BlockBasedTableFactory::GetPrintableTableOptions() const {
 
   snprintf(buffer, kBufferSize, "  flush_block_policy_factory: %s (%p)\n",
            table_options_.flush_block_policy_factory->Name(),
+<<<<<<< HEAD
            table_options_.flush_block_policy_factory.get());
+=======
+           static_cast<void*>(table_options_.flush_block_policy_factory.get()));
+>>>>>>> forknote/master
   ret.append(buffer);
   snprintf(buffer, kBufferSize, "  cache_index_and_filter_blocks: %d\n",
            table_options_.cache_index_and_filter_blocks);
   ret.append(buffer);
+<<<<<<< HEAD
+=======
+  snprintf(buffer, kBufferSize,
+           "  pin_l0_filter_and_index_blocks_in_cache: %d\n",
+           table_options_.pin_l0_filter_and_index_blocks_in_cache);
+  ret.append(buffer);
+>>>>>>> forknote/master
   snprintf(buffer, kBufferSize, "  index_type: %d\n",
            table_options_.index_type);
   ret.append(buffer);
@@ -121,7 +182,11 @@ std::string BlockBasedTableFactory::GetPrintableTableOptions() const {
            table_options_.no_block_cache);
   ret.append(buffer);
   snprintf(buffer, kBufferSize, "  block_cache: %p\n",
+<<<<<<< HEAD
            table_options_.block_cache.get());
+=======
+           static_cast<void*>(table_options_.block_cache.get()));
+>>>>>>> forknote/master
   ret.append(buffer);
   if (table_options_.block_cache) {
     snprintf(buffer, kBufferSize, "  block_cache_size: %" ROCKSDB_PRIszt "\n",
@@ -129,7 +194,11 @@ std::string BlockBasedTableFactory::GetPrintableTableOptions() const {
     ret.append(buffer);
   }
   snprintf(buffer, kBufferSize, "  block_cache_compressed: %p\n",
+<<<<<<< HEAD
            table_options_.block_cache_compressed.get());
+=======
+           static_cast<void*>(table_options_.block_cache_compressed.get()));
+>>>>>>> forknote/master
   ret.append(buffer);
   if (table_options_.block_cache_compressed) {
     snprintf(buffer, kBufferSize,
@@ -146,25 +215,47 @@ std::string BlockBasedTableFactory::GetPrintableTableOptions() const {
   snprintf(buffer, kBufferSize, "  block_restart_interval: %d\n",
            table_options_.block_restart_interval);
   ret.append(buffer);
+<<<<<<< HEAD
+=======
+  snprintf(buffer, kBufferSize, "  index_block_restart_interval: %d\n",
+           table_options_.index_block_restart_interval);
+  ret.append(buffer);
+>>>>>>> forknote/master
   snprintf(buffer, kBufferSize, "  filter_policy: %s\n",
            table_options_.filter_policy == nullptr ?
              "nullptr" : table_options_.filter_policy->Name());
   ret.append(buffer);
   snprintf(buffer, kBufferSize, "  whole_key_filtering: %d\n",
            table_options_.whole_key_filtering);
+<<<<<<< HEAD
+=======
+  ret.append(buffer);
+  snprintf(buffer, kBufferSize, "  skip_table_builder_flush: %d\n",
+           table_options_.skip_table_builder_flush);
+  ret.append(buffer);
+>>>>>>> forknote/master
   snprintf(buffer, kBufferSize, "  format_version: %d\n",
            table_options_.format_version);
   ret.append(buffer);
   return ret;
 }
 
+<<<<<<< HEAD
 const BlockBasedTableOptions& BlockBasedTableFactory::GetTableOptions() const {
+=======
+const BlockBasedTableOptions& BlockBasedTableFactory::table_options() const {
+>>>>>>> forknote/master
   return table_options_;
 }
 
 TableFactory* NewBlockBasedTableFactory(
+<<<<<<< HEAD
     const BlockBasedTableOptions& table_options) {
   return new BlockBasedTableFactory(table_options);
+=======
+    const BlockBasedTableOptions& _table_options) {
+  return new BlockBasedTableFactory(_table_options);
+>>>>>>> forknote/master
 }
 
 const std::string BlockBasedTablePropertyNames::kIndexType =

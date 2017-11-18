@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -13,11 +17,15 @@
 #include <string>
 #include <vector>
 
+<<<<<<< HEAD
 #include "include/org_rocksdb_BackupableDB.h"
+=======
+>>>>>>> forknote/master
 #include "include/org_rocksdb_BackupableDBOptions.h"
 #include "rocksjni/portal.h"
 #include "rocksdb/utilities/backupable_db.h"
 
+<<<<<<< HEAD
 /*
  * Class:     org_rocksdb_BackupableDB
  * Method:    open
@@ -135,12 +143,15 @@ void Java_org_rocksdb_BackupableDB_garbageCollect(JNIEnv* env,
   }
 }
 
+=======
+>>>>>>> forknote/master
 ///////////////////////////////////////////////////////////////////////////
 // BackupDBOptions
 
 /*
  * Class:     org_rocksdb_BackupableDBOptions
  * Method:    newBackupableDBOptions
+<<<<<<< HEAD
  * Signature: (Ljava/lang/String;)V
  */
 void Java_org_rocksdb_BackupableDBOptions_newBackupableDBOptions(
@@ -149,6 +160,16 @@ void Java_org_rocksdb_BackupableDBOptions_newBackupableDBOptions(
   auto bopt = new rocksdb::BackupableDBOptions(cpath);
   env->ReleaseStringUTFChars(jpath, cpath);
   rocksdb::BackupableDBOptionsJni::setHandle(env, jobj, bopt);
+=======
+ * Signature: (Ljava/lang/String;)J
+ */
+jlong Java_org_rocksdb_BackupableDBOptions_newBackupableDBOptions(
+    JNIEnv* env, jclass jcls, jstring jpath) {
+  const char* cpath = env->GetStringUTFChars(jpath, NULL);
+  auto bopt = new rocksdb::BackupableDBOptions(cpath);
+  env->ReleaseStringUTFChars(jpath, cpath);
+  return reinterpret_cast<jlong>(bopt);
+>>>>>>> forknote/master
 }
 
 /*
@@ -326,5 +347,8 @@ void Java_org_rocksdb_BackupableDBOptions_disposeInternal(
   auto bopt = reinterpret_cast<rocksdb::BackupableDBOptions*>(jhandle);
   assert(bopt);
   delete bopt;
+<<<<<<< HEAD
   rocksdb::BackupableDBOptionsJni::setHandle(env, jopt, nullptr);
+=======
+>>>>>>> forknote/master
 }

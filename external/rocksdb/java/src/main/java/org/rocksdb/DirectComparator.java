@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -15,10 +19,28 @@ package org.rocksdb;
  * using @see org.rocksdb.Comparator
  */
 public abstract class DirectComparator extends AbstractComparator<DirectSlice> {
+<<<<<<< HEAD
   public DirectComparator(final ComparatorOptions copt) {
     super();
     createNewDirectComparator0(copt.nativeHandle_);
   }
 
   private native void createNewDirectComparator0(final long comparatorOptionsHandle);
+=======
+
+  private final long nativeHandle_;
+
+  public DirectComparator(final ComparatorOptions copt) {
+    super();
+    this.nativeHandle_ = createNewDirectComparator0(copt.nativeHandle_);
+  }
+
+  @Override
+  protected final long getNativeHandle() {
+    return nativeHandle_;
+  }
+
+  private native long createNewDirectComparator0(
+      final long comparatorOptionsHandle);
+>>>>>>> forknote/master
 }

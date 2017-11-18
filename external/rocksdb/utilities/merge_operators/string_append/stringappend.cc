@@ -55,6 +55,9 @@ std::shared_ptr<MergeOperator> MergeOperators::CreateStringAppendOperator() {
 }
 
 } // namespace rocksdb
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> forknote/master

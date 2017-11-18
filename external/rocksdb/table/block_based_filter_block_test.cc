@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -58,7 +62,11 @@ TEST_F(FilterBlockTest, EmptyBuilder) {
   BlockContents block(builder.Finish(), false, kNoCompression);
   ASSERT_EQ("\\x00\\x00\\x00\\x00\\x0b", EscapeString(block.data));
   BlockBasedFilterBlockReader reader(nullptr, table_options_, true,
+<<<<<<< HEAD
                                      std::move(block));
+=======
+                                     std::move(block), nullptr);
+>>>>>>> forknote/master
   ASSERT_TRUE(reader.KeyMayMatch("foo", 0));
   ASSERT_TRUE(reader.KeyMayMatch("foo", 100000));
 }
@@ -75,7 +83,11 @@ TEST_F(FilterBlockTest, SingleChunk) {
   builder.Add("hello");
   BlockContents block(builder.Finish(), false, kNoCompression);
   BlockBasedFilterBlockReader reader(nullptr, table_options_, true,
+<<<<<<< HEAD
                                      std::move(block));
+=======
+                                     std::move(block), nullptr);
+>>>>>>> forknote/master
   ASSERT_TRUE(reader.KeyMayMatch("foo", 100));
   ASSERT_TRUE(reader.KeyMayMatch("bar", 100));
   ASSERT_TRUE(reader.KeyMayMatch("box", 100));
@@ -107,7 +119,11 @@ TEST_F(FilterBlockTest, MultiChunk) {
 
   BlockContents block(builder.Finish(), false, kNoCompression);
   BlockBasedFilterBlockReader reader(nullptr, table_options_, true,
+<<<<<<< HEAD
                                      std::move(block));
+=======
+                                     std::move(block), nullptr);
+>>>>>>> forknote/master
 
   // Check first filter
   ASSERT_TRUE(reader.KeyMayMatch("foo", 0));
@@ -153,7 +169,11 @@ TEST_F(BlockBasedFilterBlockTest, BlockBasedEmptyBuilder) {
   BlockContents block(builder->Finish(), false, kNoCompression);
   ASSERT_EQ("\\x00\\x00\\x00\\x00\\x0b", EscapeString(block.data));
   FilterBlockReader* reader = new BlockBasedFilterBlockReader(
+<<<<<<< HEAD
       nullptr, table_options_, true, std::move(block));
+=======
+      nullptr, table_options_, true, std::move(block), nullptr);
+>>>>>>> forknote/master
   ASSERT_TRUE(reader->KeyMayMatch("foo", 0));
   ASSERT_TRUE(reader->KeyMayMatch("foo", 100000));
 
@@ -174,7 +194,11 @@ TEST_F(BlockBasedFilterBlockTest, BlockBasedSingleChunk) {
   builder->Add("hello");
   BlockContents block(builder->Finish(), false, kNoCompression);
   FilterBlockReader* reader = new BlockBasedFilterBlockReader(
+<<<<<<< HEAD
       nullptr, table_options_, true, std::move(block));
+=======
+      nullptr, table_options_, true, std::move(block), nullptr);
+>>>>>>> forknote/master
   ASSERT_TRUE(reader->KeyMayMatch("foo", 100));
   ASSERT_TRUE(reader->KeyMayMatch("bar", 100));
   ASSERT_TRUE(reader->KeyMayMatch("box", 100));
@@ -210,7 +234,11 @@ TEST_F(BlockBasedFilterBlockTest, BlockBasedMultiChunk) {
 
   BlockContents block(builder->Finish(), false, kNoCompression);
   FilterBlockReader* reader = new BlockBasedFilterBlockReader(
+<<<<<<< HEAD
       nullptr, table_options_, true, std::move(block));
+=======
+      nullptr, table_options_, true, std::move(block), nullptr);
+>>>>>>> forknote/master
 
   // Check first filter
   ASSERT_TRUE(reader->KeyMayMatch("foo", 0));

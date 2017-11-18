@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -16,8 +20,13 @@
 #include <inttypes.h>
 #include <vector>
 
+<<<<<<< HEAD
 #include "rocksdb/compaction_filter.h"
 #include "db/column_family.h"
+=======
+#include "db/column_family.h"
+#include "rocksdb/compaction_filter.h"
+>>>>>>> forknote/master
 #include "util/logging.h"
 #include "util/sync_point.h"
 
@@ -46,7 +55,11 @@ void Compaction::GetBoundaryKeys(
     Slice* largest_user_key) {
   bool initialized = false;
   const Comparator* ucmp = vstorage->InternalComparator()->user_comparator();
+<<<<<<< HEAD
   for (uint32_t i = 0; i < inputs.size(); ++i) {
+=======
+  for (size_t i = 0; i < inputs.size(); ++i) {
+>>>>>>> forknote/master
     if (inputs[i].files.empty()) {
       continue;
     }
@@ -128,8 +141,13 @@ bool Compaction::TEST_IsBottommostLevel(
 bool Compaction::IsFullCompaction(
     VersionStorageInfo* vstorage,
     const std::vector<CompactionInputFiles>& inputs) {
+<<<<<<< HEAD
   int num_files_in_compaction = 0;
   int total_num_files = 0;
+=======
+  size_t num_files_in_compaction = 0;
+  size_t total_num_files = 0;
+>>>>>>> forknote/master
   for (int l = 0; l < vstorage->num_levels(); l++) {
     total_num_files += vstorage->NumLevelFiles(l);
   }
@@ -147,7 +165,12 @@ Compaction::Compaction(VersionStorageInfo* vstorage,
                        uint32_t _output_path_id, CompressionType _compression,
                        std::vector<FileMetaData*> _grandparents,
                        bool _manual_compaction, double _score,
+<<<<<<< HEAD
                        bool _deletion_compaction)
+=======
+                       bool _deletion_compaction,
+                       CompactionReason _compaction_reason)
+>>>>>>> forknote/master
     : start_level_(_inputs[0].level),
       output_level_(_output_level),
       max_output_file_size_(_target_file_size),
@@ -161,6 +184,7 @@ Compaction::Compaction(VersionStorageInfo* vstorage,
       deletion_compaction_(_deletion_compaction),
       inputs_(std::move(_inputs)),
       grandparents_(std::move(_grandparents)),
+<<<<<<< HEAD
       grandparent_index_(0),
       seen_key_(false),
       overlapped_bytes_(0),
@@ -169,6 +193,17 @@ Compaction::Compaction(VersionStorageInfo* vstorage,
       is_full_compaction_(IsFullCompaction(vstorage, inputs_)),
       is_manual_compaction_(_manual_compaction) {
   MarkFilesBeingCompacted(true);
+=======
+      score_(_score),
+      bottommost_level_(IsBottommostLevel(output_level_, vstorage, inputs_)),
+      is_full_compaction_(IsFullCompaction(vstorage, inputs_)),
+      is_manual_compaction_(_manual_compaction),
+      compaction_reason_(_compaction_reason) {
+  MarkFilesBeingCompacted(true);
+  if (is_manual_compaction_) {
+    compaction_reason_ = CompactionReason::kManualCompaction;
+  }
+>>>>>>> forknote/master
 
 #ifndef NDEBUG
   for (size_t i = 1; i < inputs_.size(); ++i) {
@@ -184,6 +219,11 @@ Compaction::Compaction(VersionStorageInfo* vstorage,
                                 &arena_);
     }
   }
+<<<<<<< HEAD
+=======
+
+  GetBoundaryKeys(vstorage, inputs_, &smallest_user_key_, &largest_user_key_);
+>>>>>>> forknote/master
 }
 
 Compaction::~Compaction() {
@@ -198,9 +238,17 @@ Compaction::~Compaction() {
 }
 
 bool Compaction::InputCompressionMatchesOutput() const {
+<<<<<<< HEAD
   int base_level = input_version_->storage_info()->base_level();
   bool matches = (GetCompressionType(*cfd_->ioptions(), start_level_,
                                      base_level) == output_compression_);
+=======
+  VersionStorageInfo* vstorage = input_version_->storage_info();
+  int base_level = vstorage->base_level();
+  bool matches =
+      (GetCompressionType(*cfd_->ioptions(), vstorage, mutable_cf_options_,
+                          start_level_, base_level) == output_compression_);
+>>>>>>> forknote/master
   if (matches) {
     TEST_SYNC_POINT("Compaction::InputCompressionMatchesOutput:Matches");
     return true;
@@ -282,6 +330,7 @@ bool Compaction::KeyNotExistsBeyondOutputLevel(
   return true;
 }
 
+<<<<<<< HEAD
 bool Compaction::ShouldStopBefore(const Slice& internal_key) {
   // Scan to find earliest grandparent file that contains key.
   const InternalKeyComparator* icmp = &cfd_->internal_comparator();
@@ -314,6 +363,14 @@ void Compaction::MarkFilesBeingCompacted(bool mark_as_compacted) {
     for (unsigned int j = 0; j < inputs_[i].size(); j++) {
       assert(mark_as_compacted ? !inputs_[i][j]->being_compacted :
                                   inputs_[i][j]->being_compacted);
+=======
+// Mark (or clear) each file that is being compacted
+void Compaction::MarkFilesBeingCompacted(bool mark_as_compacted) {
+  for (size_t i = 0; i < num_input_levels(); i++) {
+    for (size_t j = 0; j < inputs_[i].size(); j++) {
+      assert(mark_as_compacted ? !inputs_[i][j]->being_compacted
+                               : inputs_[i][j]->being_compacted);
+>>>>>>> forknote/master
       inputs_[i][j]->being_compacted = mark_as_compacted;
     }
   }
@@ -371,7 +428,11 @@ int InputSummary(const std::vector<FileMetaData*>& files, char* output,
                  int len) {
   *output = '\0';
   int write = 0;
+<<<<<<< HEAD
   for (unsigned int i = 0; i < files.size(); i++) {
+=======
+  for (size_t i = 0; i < files.size(); i++) {
+>>>>>>> forknote/master
     int sz = len - write;
     int ret;
     char sztxt[16];
@@ -388,10 +449,15 @@ int InputSummary(const std::vector<FileMetaData*>& files, char* output,
 
 void Compaction::Summary(char* output, int len) {
   int write =
+<<<<<<< HEAD
       snprintf(output, len, "Base version %" PRIu64
                             " Base level %d, inputs: [",
                input_version_->GetVersionNumber(),
                start_level_);
+=======
+      snprintf(output, len, "Base version %" PRIu64 " Base level %d, inputs: [",
+               input_version_->GetVersionNumber(), start_level_);
+>>>>>>> forknote/master
   if (write < 0 || write >= len) {
     return;
   }
@@ -413,7 +479,11 @@ void Compaction::Summary(char* output, int len) {
   snprintf(output + write, len - write, "]");
 }
 
+<<<<<<< HEAD
 uint64_t Compaction::OutputFilePreallocationSize() {
+=======
+uint64_t Compaction::OutputFilePreallocationSize() const {
+>>>>>>> forknote/master
   uint64_t preallocation_size = 0;
 
   if (cfd_->ioptions()->compaction_style == kCompactionStyleLevel ||
@@ -428,7 +498,11 @@ uint64_t Compaction::OutputFilePreallocationSize() {
   }
   // Over-estimate slightly so we don't end up just barely crossing
   // the threshold
+<<<<<<< HEAD
   return preallocation_size * 1.1;
+=======
+  return preallocation_size + (preallocation_size / 10);
+>>>>>>> forknote/master
 }
 
 std::unique_ptr<CompactionFilter> Compaction::CreateCompactionFilter() const {
@@ -439,6 +513,10 @@ std::unique_ptr<CompactionFilter> Compaction::CreateCompactionFilter() const {
   CompactionFilter::Context context;
   context.is_full_compaction = is_full_compaction_;
   context.is_manual_compaction = is_manual_compaction_;
+<<<<<<< HEAD
+=======
+  context.column_family_id = cfd_->GetID();
+>>>>>>> forknote/master
   return cfd_->ioptions()->compaction_filter_factory->CreateCompactionFilter(
       context);
 }

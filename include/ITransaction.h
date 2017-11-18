@@ -28,8 +28,13 @@ namespace CryptoNote {
 
 namespace TransactionTypes {
   
+<<<<<<< HEAD
   enum class InputType : uint8_t { Invalid, Key, Multisignature, Generating };
   enum class OutputType : uint8_t { Invalid, Key, Multisignature };
+=======
+  enum class InputType : uint8_t { Invalid, Key, Generating };
+  enum class OutputType : uint8_t { Invalid, Key };
+>>>>>>> forknote/master
 
   struct GlobalOutput {
     Crypto::PublicKey targetKey;
@@ -74,14 +79,20 @@ public:
   virtual uint64_t getInputTotalAmount() const = 0;
   virtual TransactionTypes::InputType getInputType(size_t index) const = 0;
   virtual void getInput(size_t index, KeyInput& input) const = 0;
+<<<<<<< HEAD
   virtual void getInput(size_t index, MultisignatureInput& input) const = 0;
+=======
+>>>>>>> forknote/master
 
   // outputs
   virtual size_t getOutputCount() const = 0;
   virtual uint64_t getOutputTotalAmount() const = 0;
   virtual TransactionTypes::OutputType getOutputType(size_t index) const = 0;
   virtual void getOutput(size_t index, KeyOutput& output, uint64_t& amount) const = 0;
+<<<<<<< HEAD
   virtual void getOutput(size_t index, MultisignatureOutput& output, uint64_t& amount) const = 0;
+=======
+>>>>>>> forknote/master
 
   // signatures
   virtual size_t getRequiredSignaturesCount(size_t inputIndex) const = 0;
@@ -114,6 +125,7 @@ public:
 
   // Inputs/Outputs 
   virtual size_t addInput(const KeyInput& input) = 0;
+<<<<<<< HEAD
   virtual size_t addInput(const MultisignatureInput& input) = 0;
   virtual size_t addInput(const AccountKeys& senderKeys, const TransactionTypes::InputKeyInfo& info, KeyPair& ephKeys) = 0;
 
@@ -121,14 +133,23 @@ public:
   virtual size_t addOutput(uint64_t amount, const std::vector<AccountPublicAddress>& to, uint32_t requiredSignatures) = 0;
   virtual size_t addOutput(uint64_t amount, const KeyOutput& out) = 0;
   virtual size_t addOutput(uint64_t amount, const MultisignatureOutput& out) = 0;
+=======
+  virtual size_t addInput(const AccountKeys& senderKeys, const TransactionTypes::InputKeyInfo& info, KeyPair& ephKeys) = 0;
+
+  virtual size_t addOutput(uint64_t amount, const AccountPublicAddress& to) = 0;
+  virtual size_t addOutput(uint64_t amount, const KeyOutput& out) = 0;
+>>>>>>> forknote/master
 
   // transaction info
   virtual void setTransactionSecretKey(const Crypto::SecretKey& key) = 0;
 
   // signing
   virtual void signInputKey(size_t input, const TransactionTypes::InputKeyInfo& info, const KeyPair& ephKeys) = 0;
+<<<<<<< HEAD
   virtual void signInputMultisignature(size_t input, const Crypto::PublicKey& sourceTransactionKey, size_t outputIndex, const AccountKeys& accountKeys) = 0;
   virtual void signInputMultisignature(size_t input, const KeyPair& ephemeralKeys) = 0;
+=======
+>>>>>>> forknote/master
 };
 
 class ITransaction : 

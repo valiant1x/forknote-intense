@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -22,12 +26,20 @@
 /*
  * Class:     org_rocksdb_AbstractSlice
  * Method:    createNewSliceFromString
+<<<<<<< HEAD
  * Signature: (Ljava/lang/String;)V
  */
 void Java_org_rocksdb_AbstractSlice_createNewSliceFromString(
     JNIEnv* env, jobject jobj, jstring jstr) {
 
   const auto* str = env->GetStringUTFChars(jstr, 0);
+=======
+ * Signature: (Ljava/lang/String;)J
+ */
+jlong Java_org_rocksdb_AbstractSlice_createNewSliceFromString(
+    JNIEnv * env, jclass jcls, jstring jstr) {
+  const auto* str = env->GetStringUTFChars(jstr, NULL);
+>>>>>>> forknote/master
   const size_t len = strlen(str);
   char* buf = new char[len + 1];
   memcpy(buf, str, len);
@@ -35,7 +47,11 @@ void Java_org_rocksdb_AbstractSlice_createNewSliceFromString(
   env->ReleaseStringUTFChars(jstr, str);
 
   const auto* slice = new rocksdb::Slice(buf);
+<<<<<<< HEAD
   rocksdb::AbstractSliceJni::setHandle(env, jobj, slice);
+=======
+  return reinterpret_cast<jlong>(slice);
+>>>>>>> forknote/master
 }
 
 /*
@@ -115,10 +131,17 @@ void Java_org_rocksdb_AbstractSlice_disposeInternal(
 /*
  * Class:     org_rocksdb_Slice
  * Method:    createNewSlice0
+<<<<<<< HEAD
  * Signature: ([BI)V
  */
 void Java_org_rocksdb_Slice_createNewSlice0(
     JNIEnv * env, jobject jobj, jbyteArray data, jint offset) {
+=======
+ * Signature: ([BI)J
+ */
+jlong Java_org_rocksdb_Slice_createNewSlice0(
+    JNIEnv * env, jclass jcls, jbyteArray data, jint offset) {
+>>>>>>> forknote/master
 
   const jsize dataSize = env->GetArrayLength(data);
   const int len = dataSize - offset;
@@ -126,32 +149,55 @@ void Java_org_rocksdb_Slice_createNewSlice0(
   env->GetByteArrayRegion(data, offset, len, ptrData);
 
   const auto* slice = new rocksdb::Slice((const char*)ptrData, len);
+<<<<<<< HEAD
   rocksdb::AbstractSliceJni::setHandle(env, jobj, slice);
+=======
+  return reinterpret_cast<jlong>(slice);
+>>>>>>> forknote/master
 }
 
 /*
  * Class:     org_rocksdb_Slice
  * Method:    createNewSlice1
+<<<<<<< HEAD
  * Signature: ([B)V
  */
 void Java_org_rocksdb_Slice_createNewSlice1(
     JNIEnv * env, jobject jobj, jbyteArray data) {
+=======
+ * Signature: ([B)J
+ */
+jlong Java_org_rocksdb_Slice_createNewSlice1(
+    JNIEnv * env, jclass jcls, jbyteArray data) {
+>>>>>>> forknote/master
 
   const int len = env->GetArrayLength(data) + 1;
 
   jboolean isCopy;
   jbyte* ptrData = env->GetByteArrayElements(data, &isCopy);
+<<<<<<< HEAD
   char* buf = new char[len];
 
+=======
+
+  // NOTE: buf will be deleted in the org.rocksdb.Slice#dispose method
+  char* buf = new char[len];
+>>>>>>> forknote/master
   memcpy(buf, ptrData, len - 1);
   buf[len-1]='\0';
 
   const auto* slice =
       new rocksdb::Slice(buf, len - 1);
 
+<<<<<<< HEAD
   rocksdb::AbstractSliceJni::setHandle(env, jobj, slice);
   env->ReleaseByteArrayElements(data, ptrData, JNI_ABORT);
   // NOTE: buf will be deleted in the org.rocksdb.Slice#dispose method
+=======
+  env->ReleaseByteArrayElements(data, ptrData, JNI_ABORT);
+
+  return reinterpret_cast<jlong>(slice);
+>>>>>>> forknote/master
 }
 
 /*
@@ -187,6 +233,7 @@ void Java_org_rocksdb_Slice_disposeInternalBuf(
 /*
  * Class:     org_rocksdb_DirectSlice
  * Method:    createNewDirectSlice0
+<<<<<<< HEAD
  * Signature: (Ljava/nio/ByteBuffer;I)V
  */
 void Java_org_rocksdb_DirectSlice_createNewDirectSlice0(
@@ -195,11 +242,22 @@ void Java_org_rocksdb_DirectSlice_createNewDirectSlice0(
      reinterpret_cast<char*>(env->GetDirectBufferAddress(data));
   const auto* slice = new rocksdb::Slice(ptrData, length);
   rocksdb::AbstractSliceJni::setHandle(env, jobj, slice);
+=======
+ * Signature: (Ljava/nio/ByteBuffer;I)J
+ */
+jlong Java_org_rocksdb_DirectSlice_createNewDirectSlice0(
+    JNIEnv* env, jclass jcls, jobject data, jint length) {
+  const auto* ptrData =
+     reinterpret_cast<char*>(env->GetDirectBufferAddress(data));
+  const auto* slice = new rocksdb::Slice(ptrData, length);
+  return reinterpret_cast<jlong>(slice);
+>>>>>>> forknote/master
 }
 
 /*
  * Class:     org_rocksdb_DirectSlice
  * Method:    createNewDirectSlice1
+<<<<<<< HEAD
  * Signature: (Ljava/nio/ByteBuffer;)V
  */
 void Java_org_rocksdb_DirectSlice_createNewDirectSlice1(
@@ -208,6 +266,16 @@ void Java_org_rocksdb_DirectSlice_createNewDirectSlice1(
     reinterpret_cast<char*>(env->GetDirectBufferAddress(data));
   const auto* slice = new rocksdb::Slice(ptrData);
   rocksdb::AbstractSliceJni::setHandle(env, jobj, slice);
+=======
+ * Signature: (Ljava/nio/ByteBuffer;)J
+ */
+jlong Java_org_rocksdb_DirectSlice_createNewDirectSlice1(
+    JNIEnv* env, jclass jcls, jobject data) {
+  const auto* ptrData =
+    reinterpret_cast<char*>(env->GetDirectBufferAddress(data));
+  const auto* slice = new rocksdb::Slice(ptrData);
+  return reinterpret_cast<jlong>(slice);
+>>>>>>> forknote/master
 }
 
 /*

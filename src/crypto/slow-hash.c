@@ -88,7 +88,11 @@ struct cn_ctx {
   oaes_ctx* aes_ctx;
 };
 
+<<<<<<< HEAD
 _Static_assert(sizeof(struct cn_ctx) == SLOW_HASH_CONTEXT_SIZE, "Invalid structure size");
+=======
+static_assert(sizeof(struct cn_ctx) == SLOW_HASH_CONTEXT_SIZE, "Invalid structure size");
+>>>>>>> forknote/master
 
 static inline void ExpandAESKey256_sub1(__m128i *tmp1, __m128i *tmp2)
 {

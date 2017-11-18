@@ -1,9 +1,13 @@
 cmake_minimum_required(VERSION 2.8.6)
 
 set(VERSION "0.1")
+<<<<<<< HEAD
 # Packaged from commit 95276238d96bdee8be72f99df30a9ac35c2ecf1c
 set(COMMIT 95276238d)
 set(REFS " (HEAD -> master, tag: 2.1.0.1)")
+=======
+# $Format:Packaged from commit %H%nset(COMMIT %h)%nset(REFS "%d")$
+>>>>>>> forknote/master
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_CONFIGURATION_TYPES Debug RelWithDebInfo Release CACHE TYPE INTERNAL)

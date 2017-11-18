@@ -4,6 +4,10 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+<<<<<<< HEAD
+=======
+import org.rocksdb.util.Environment;
+>>>>>>> forknote/master
 
 import java.io.IOException;
 
@@ -23,6 +27,7 @@ public class InfoLogLevelTest {
   @Test
   public void testInfoLogLevel() throws RocksDBException,
       IOException {
+<<<<<<< HEAD
     RocksDB db = null;
     try {
       db = RocksDB.open(dbFolder.getRoot().getAbsolutePath());
@@ -32,10 +37,17 @@ public class InfoLogLevelTest {
       if (db != null) {
         db.close();
       }
+=======
+    try (final RocksDB db =
+             RocksDB.open(dbFolder.getRoot().getAbsolutePath())) {
+      db.put("key".getBytes(), "value".getBytes());
+      assertThat(getLogContentsWithoutHeader()).isNotEmpty();
+>>>>>>> forknote/master
     }
   }
 
   @Test
+<<<<<<< HEAD
      public void testFatalLogLevel() throws RocksDBException,
       IOException {
     RocksDB db = null;
@@ -48,10 +60,22 @@ public class InfoLogLevelTest {
           isEqualTo(InfoLogLevel.FATAL_LEVEL);
       db = RocksDB.open(options,
           dbFolder.getRoot().getAbsolutePath());
+=======
+  public void testFatalLogLevel() throws RocksDBException,
+      IOException {
+    try (final Options options = new Options().
+        setCreateIfMissing(true).
+        setInfoLogLevel(InfoLogLevel.FATAL_LEVEL);
+         final RocksDB db = RocksDB.open(options,
+             dbFolder.getRoot().getAbsolutePath())) {
+      assertThat(options.infoLogLevel()).
+          isEqualTo(InfoLogLevel.FATAL_LEVEL);
+>>>>>>> forknote/master
       db.put("key".getBytes(), "value".getBytes());
       // As InfoLogLevel is set to FATAL_LEVEL, here we expect the log
       // content to be empty.
       assertThat(getLogContentsWithoutHeader()).isEmpty();
+<<<<<<< HEAD
     } finally {
       if (db != null) {
         db.close();
@@ -59,12 +83,15 @@ public class InfoLogLevelTest {
       if (options != null) {
         options.dispose();
       }
+=======
+>>>>>>> forknote/master
     }
   }
 
   @Test
   public void testFatalLogLevelWithDBOptions()
       throws RocksDBException, IOException {
+<<<<<<< HEAD
     RocksDB db = null;
     Options options = null;
     DBOptions dbOptions = null;
@@ -74,10 +101,20 @@ public class InfoLogLevelTest {
       options = new Options(dbOptions,
           new ColumnFamilyOptions()).
           setCreateIfMissing(true);
+=======
+    try (final DBOptions dbOptions = new DBOptions().
+        setInfoLogLevel(InfoLogLevel.FATAL_LEVEL);
+         final Options options = new Options(dbOptions,
+             new ColumnFamilyOptions()).
+             setCreateIfMissing(true);
+         final RocksDB db =
+             RocksDB.open(options, dbFolder.getRoot().getAbsolutePath())) {
+>>>>>>> forknote/master
       assertThat(dbOptions.infoLogLevel()).
           isEqualTo(InfoLogLevel.FATAL_LEVEL);
       assertThat(options.infoLogLevel()).
           isEqualTo(InfoLogLevel.FATAL_LEVEL);
+<<<<<<< HEAD
       db = RocksDB.open(options,
           dbFolder.getRoot().getAbsolutePath());
       db.put("key".getBytes(), "value".getBytes());
@@ -92,12 +129,20 @@ public class InfoLogLevelTest {
       if (dbOptions != null) {
         dbOptions.dispose();
       }
+=======
+      db.put("key".getBytes(), "value".getBytes());
+      assertThat(getLogContentsWithoutHeader()).isEmpty();
+>>>>>>> forknote/master
     }
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void failIfIllegalByteValueProvided() {
+<<<<<<< HEAD
     InfoLogLevel.getInfoLogLevel((byte)-1);
+=======
+    InfoLogLevel.getInfoLogLevel((byte) -1);
+>>>>>>> forknote/master
   }
 
   @Test
@@ -113,9 +158,16 @@ public class InfoLogLevelTest {
    * @throws IOException if file is not found.
    */
   private String getLogContentsWithoutHeader() throws IOException {
+<<<<<<< HEAD
     final String separator = System.getProperty("line.separator");
     final String[] lines = new String(readAllBytes(get(
         dbFolder.getRoot().getAbsolutePath()+ "/LOG"))).split(separator);
+=======
+    final String separator = Environment.isWindows() ?
+        "\n" : System.getProperty("line.separator");
+    final String[] lines = new String(readAllBytes(get(
+        dbFolder.getRoot().getAbsolutePath() + "/LOG"))).split(separator);
+>>>>>>> forknote/master
 
     int first_non_header = lines.length;
     // Identify the last line of the header

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -16,6 +20,11 @@
 // in fact, we could use that one
 #define ROCKSDB_PRIszt "zu"
 
+<<<<<<< HEAD
+=======
+#define __declspec(S)
+
+>>>>>>> forknote/master
 #define ROCKSDB_NOEXCEPT noexcept
 
 #undef PLATFORM_IS_LITTLE_ENDIAN
@@ -32,6 +41,7 @@
   #else
     #define PLATFORM_IS_LITTLE_ENDIAN false
   #endif
+<<<<<<< HEAD
 #elif defined(OS_FREEBSD)
   #include <sys/endian.h>
   #include <sys/types.h>
@@ -40,14 +50,27 @@
       defined(OS_DRAGONFLYBSD) || defined(OS_ANDROID)
   #include <sys/types.h>
   #include <sys/endian.h>
+=======
+#elif defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_NETBSD) || \
+    defined(OS_DRAGONFLYBSD) || defined(OS_ANDROID)
+  #include <sys/endian.h>
+  #include <sys/types.h>
+  #define PLATFORM_IS_LITTLE_ENDIAN (_BYTE_ORDER == _LITTLE_ENDIAN)
+>>>>>>> forknote/master
 #else
   #include <endian.h>
 #endif
 #include <pthread.h>
 
 #include <stdint.h>
+<<<<<<< HEAD
 #include <string>
 #include <string.h>
+=======
+#include <string.h>
+#include <limits>
+#include <string>
+>>>>>>> forknote/master
 
 #ifndef PLATFORM_IS_LITTLE_ENDIAN
 #define PLATFORM_IS_LITTLE_ENDIAN (__BYTE_ORDER == __LITTLE_ENDIAN)
@@ -70,18 +93,29 @@
 
 #if defined(OS_ANDROID) && __ANDROID_API__ < 9
 // fdatasync() was only introduced in API level 9 on Android. Use fsync()
+<<<<<<< HEAD
 // when targetting older platforms.
 #define fdatasync fsync
 #endif
 
 #include <limits>
 
+=======
+// when targeting older platforms.
+#define fdatasync fsync
+#endif
+
+>>>>>>> forknote/master
 namespace rocksdb {
 namespace port {
 
 // For use at db/file_indexer.h kLevelMaxIndex
 const int kMaxInt32 = std::numeric_limits<int32_t>::max();
 const uint64_t kMaxUint64 = std::numeric_limits<uint64_t>::max();
+<<<<<<< HEAD
+=======
+const int64_t kMaxInt64 = std::numeric_limits<int64_t>::max();
+>>>>>>> forknote/master
 const size_t kMaxSizet = std::numeric_limits<size_t>::max();
 
 static const bool kLittleEndian = PLATFORM_IS_LITTLE_ENDIAN;
@@ -145,6 +179,23 @@ class CondVar {
   Mutex* mu_;
 };
 
+<<<<<<< HEAD
+=======
+static inline void AsmVolatilePause() {
+#if defined(__i386__) || defined(__x86_64__)
+  asm volatile("pause");
+#elif defined(__aarch64__)
+  asm volatile("wfe");
+#elif defined(__powerpc64__)
+  asm volatile("or 27,27,27");
+#endif
+  // it's okay for other platforms to be no-ops
+}
+
+// Returns -1 if not available on this platform
+extern int PhysicalCoreID();
+
+>>>>>>> forknote/master
 typedef pthread_once_t OnceType;
 #define LEVELDB_ONCE_INIT PTHREAD_ONCE_INIT
 extern void InitOnce(OnceType* once, void (*initializer)());
@@ -159,4 +210,7 @@ extern int GetMaxOpenFiles();
 
 } // namespace port
 } // namespace rocksdb
+<<<<<<< HEAD
 
+=======
+>>>>>>> forknote/master

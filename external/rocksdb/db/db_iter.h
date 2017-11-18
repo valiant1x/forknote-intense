@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -9,7 +13,13 @@
 
 #pragma once
 #include <stdint.h>
+<<<<<<< HEAD
 #include "rocksdb/db.h"
+=======
+#include <string>
+#include "rocksdb/db.h"
+#include "rocksdb/iterator.h"
+>>>>>>> forknote/master
 #include "db/dbformat.h"
 #include "util/arena.h"
 #include "util/autovector.h"
@@ -18,11 +28,16 @@ namespace rocksdb {
 
 class Arena;
 class DBIter;
+<<<<<<< HEAD
+=======
+class InternalIterator;
+>>>>>>> forknote/master
 
 // Return a new iterator that converts internal keys (yielded by
 // "*internal_iter") that were live at the specified "sequence" number
 // into appropriate user keys.
 extern Iterator* NewDBIterator(
+<<<<<<< HEAD
     Env* env,
     const ImmutableCFOptions& options,
     const Comparator *user_key_comparator,
@@ -30,6 +45,13 @@ extern Iterator* NewDBIterator(
     const SequenceNumber& sequence,
     uint64_t max_sequential_skip_in_iterations,
     const Slice* iterate_upper_bound = nullptr);
+=======
+    Env* env, const ImmutableCFOptions& options,
+    const Comparator* user_key_comparator, InternalIterator* internal_iter,
+    const SequenceNumber& sequence, uint64_t max_sequential_skip_in_iterations,
+    uint64_t version_number, const Slice* iterate_upper_bound = nullptr,
+    bool prefix_same_as_start = false, bool pin_data = false);
+>>>>>>> forknote/master
 
 // A wrapper iterator which wraps DB Iterator and the arena, with which the DB
 // iterator is supposed be allocated. This class is used as an entry point of
@@ -50,7 +72,11 @@ class ArenaWrappedDBIter : public Iterator {
 
   // Set the internal iterator wrapped inside the DB Iterator. Usually it is
   // a merging iterator.
+<<<<<<< HEAD
   virtual void SetIterUnderDBIter(Iterator* iter);
+=======
+  virtual void SetIterUnderDBIter(InternalIterator* iter);
+>>>>>>> forknote/master
   virtual bool Valid() const override;
   virtual void SeekToFirst() override;
   virtual void SeekToLast() override;
@@ -60,7 +86,13 @@ class ArenaWrappedDBIter : public Iterator {
   virtual Slice key() const override;
   virtual Slice value() const override;
   virtual Status status() const override;
+<<<<<<< HEAD
   void RegisterCleanup(CleanupFunction function, void* arg1, void* arg2);
+=======
+
+  void RegisterCleanup(CleanupFunction function, void* arg1, void* arg2);
+  virtual Status GetProperty(std::string prop_name, std::string* prop) override;
+>>>>>>> forknote/master
 
  private:
   DBIter* db_iter_;
@@ -70,8 +102,15 @@ class ArenaWrappedDBIter : public Iterator {
 // Generate the arena wrapped iterator class.
 extern ArenaWrappedDBIter* NewArenaWrappedDbIterator(
     Env* env, const ImmutableCFOptions& options,
+<<<<<<< HEAD
     const Comparator* user_key_comparator,
     const SequenceNumber& sequence, uint64_t max_sequential_skip_in_iterations,
     const Slice* iterate_upper_bound = nullptr);
+=======
+    const Comparator* user_key_comparator, const SequenceNumber& sequence,
+    uint64_t max_sequential_skip_in_iterations, uint64_t version_number,
+    const Slice* iterate_upper_bound = nullptr,
+    bool prefix_same_as_start = false, bool pin_data = false);
+>>>>>>> forknote/master
 
 }  // namespace rocksdb

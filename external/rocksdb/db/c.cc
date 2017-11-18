@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -269,6 +273,7 @@ struct rocksdb_mergeoperator_t : public MergeOperator {
 
   virtual const char* Name() const override { return (*name_)(state_); }
 
+<<<<<<< HEAD
   virtual bool FullMerge(const Slice& key, const Slice* existing_value,
                          const std::deque<std::string>& operand_list,
                          std::string* new_value,
@@ -278,24 +283,46 @@ struct rocksdb_mergeoperator_t : public MergeOperator {
     std::vector<size_t> operand_sizes(n);
     for (size_t i = 0; i < n; i++) {
       Slice operand(operand_list[i]);
+=======
+  virtual bool FullMergeV2(const MergeOperationInput& merge_in,
+                           MergeOperationOutput* merge_out) const override {
+    size_t n = merge_in.operand_list.size();
+    std::vector<const char*> operand_pointers(n);
+    std::vector<size_t> operand_sizes(n);
+    for (size_t i = 0; i < n; i++) {
+      Slice operand(merge_in.operand_list[i]);
+>>>>>>> forknote/master
       operand_pointers[i] = operand.data();
       operand_sizes[i] = operand.size();
     }
 
     const char* existing_value_data = nullptr;
     size_t existing_value_len = 0;
+<<<<<<< HEAD
     if (existing_value != nullptr) {
       existing_value_data = existing_value->data();
       existing_value_len = existing_value->size();
+=======
+    if (merge_in.existing_value != nullptr) {
+      existing_value_data = merge_in.existing_value->data();
+      existing_value_len = merge_in.existing_value->size();
+>>>>>>> forknote/master
     }
 
     unsigned char success;
     size_t new_value_len;
     char* tmp_new_value = (*full_merge_)(
+<<<<<<< HEAD
         state_, key.data(), key.size(), existing_value_data, existing_value_len,
         &operand_pointers[0], &operand_sizes[0], static_cast<int>(n), &success,
         &new_value_len);
     new_value->assign(tmp_new_value, new_value_len);
+=======
+        state_, merge_in.key.data(), merge_in.key.size(), existing_value_data,
+        existing_value_len, &operand_pointers[0], &operand_sizes[0],
+        static_cast<int>(n), &success, &new_value_len);
+    merge_out->new_value.assign(tmp_new_value, new_value_len);
+>>>>>>> forknote/master
 
     if (delete_value_ != nullptr) {
       (*delete_value_)(state_, tmp_new_value, new_value_len);
@@ -446,6 +473,15 @@ void rocksdb_backup_engine_create_new_backup(rocksdb_backup_engine_t* be,
   SaveError(errptr, be->rep->CreateNewBackup(db->rep));
 }
 
+<<<<<<< HEAD
+=======
+void rocksdb_backup_engine_purge_old_backups(rocksdb_backup_engine_t* be,
+                                             uint32_t num_backups_to_keep,
+                                             char** errptr) {
+  SaveError(errptr, be->rep->PurgeOldBackups(num_backups_to_keep));
+}
+
+>>>>>>> forknote/master
 rocksdb_restore_options_t* rocksdb_restore_options_create() {
   return new rocksdb_restore_options_t;
 }
@@ -825,6 +861,34 @@ rocksdb_iterator_t* rocksdb_create_iterator_cf(
   return result;
 }
 
+<<<<<<< HEAD
+=======
+void rocksdb_create_iterators(
+    rocksdb_t *db,
+    rocksdb_readoptions_t* opts,
+    rocksdb_column_family_handle_t** column_families,
+    rocksdb_iterator_t** iterators,
+    size_t size,
+    char** errptr) {
+  std::vector<ColumnFamilyHandle*> column_families_vec;
+  for (size_t i = 0; i < size; i++) {
+    column_families_vec.push_back(column_families[i]->rep);
+  }
+
+  std::vector<Iterator*> res;
+  Status status = db->rep->NewIterators(opts->rep, column_families_vec, &res);
+  assert(res.size() == size);
+  if (SaveError(errptr, status)) {
+    return;
+  }
+
+  for (size_t i = 0; i < size; i++) {
+    iterators[i] = new rocksdb_iterator_t;
+    iterators[i]->rep = res[i];
+  }
+}
+
+>>>>>>> forknote/master
 const rocksdb_snapshot_t* rocksdb_create_snapshot(
     rocksdb_t* db) {
   rocksdb_snapshot_t* result = new rocksdb_snapshot_t;
@@ -1288,6 +1352,19 @@ void rocksdb_block_based_options_set_cache_index_and_filter_blocks(
   options->rep.cache_index_and_filter_blocks = v;
 }
 
+<<<<<<< HEAD
+=======
+void rocksdb_block_based_options_set_pin_l0_filter_and_index_blocks_in_cache(
+    rocksdb_block_based_table_options_t* options, unsigned char v) {
+  options->rep.pin_l0_filter_and_index_blocks_in_cache = v;
+}
+
+void rocksdb_block_based_options_set_skip_table_builder_flush(
+    rocksdb_block_based_table_options_t* options, unsigned char v) {
+  options->rep.skip_table_builder_flush = v;
+}
+
+>>>>>>> forknote/master
 void rocksdb_options_set_block_based_table_factory(
     rocksdb_options_t *opt,
     rocksdb_block_based_table_options_t* table_options) {
@@ -1383,6 +1460,14 @@ void rocksdb_options_set_compaction_filter_factory(
       std::shared_ptr<CompactionFilterFactory>(factory);
 }
 
+<<<<<<< HEAD
+=======
+void rocksdb_options_compaction_readahead_size(
+    rocksdb_options_t* opt, size_t s) {
+  opt->rep.compaction_readahead_size = s;
+}
+
+>>>>>>> forknote/master
 void rocksdb_options_set_comparator(
     rocksdb_options_t* opt,
     rocksdb_comparator_t* cmp) {
@@ -1526,11 +1611,21 @@ void rocksdb_options_set_compression_per_level(rocksdb_options_t* opt,
   }
 }
 
+<<<<<<< HEAD
 void rocksdb_options_set_compression_options(
     rocksdb_options_t* opt, int w_bits, int level, int strategy) {
   opt->rep.compression_opts.window_bits = w_bits;
   opt->rep.compression_opts.level = level;
   opt->rep.compression_opts.strategy = strategy;
+=======
+void rocksdb_options_set_compression_options(rocksdb_options_t* opt, int w_bits,
+                                             int level, int strategy,
+                                             int max_dict_bytes) {
+  opt->rep.compression_opts.window_bits = w_bits;
+  opt->rep.compression_opts.level = level;
+  opt->rep.compression_opts.strategy = strategy;
+  opt->rep.compression_opts.max_dict_bytes = max_dict_bytes;
+>>>>>>> forknote/master
 }
 
 void rocksdb_options_set_prefix_extractor(
@@ -1644,11 +1739,14 @@ void rocksdb_options_set_verify_checksums_in_compaction(
   opt->rep.verify_checksums_in_compaction = v;
 }
 
+<<<<<<< HEAD
 void rocksdb_options_set_filter_deletes(
     rocksdb_options_t* opt, unsigned char v) {
   opt->rep.filter_deletes = v;
 }
 
+=======
+>>>>>>> forknote/master
 void rocksdb_options_set_max_sequential_skip_in_iterations(
     rocksdb_options_t* opt, uint64_t v) {
   opt->rep.max_sequential_skip_in_iterations = v;
@@ -1687,6 +1785,14 @@ void rocksdb_options_set_keep_log_file_num(rocksdb_options_t* opt, size_t v) {
   opt->rep.keep_log_file_num = v;
 }
 
+<<<<<<< HEAD
+=======
+void rocksdb_options_set_recycle_log_file_num(rocksdb_options_t* opt,
+                                              size_t v) {
+  opt->rep.recycle_log_file_num = v;
+}
+
+>>>>>>> forknote/master
 void rocksdb_options_set_soft_rate_limit(rocksdb_options_t* opt, double v) {
   opt->rep.soft_rate_limit = v;
 }
@@ -1746,6 +1852,7 @@ void rocksdb_options_set_memtable_vector_rep(rocksdb_options_t *opt) {
   opt->rep.memtable_factory.reset(factory);
 }
 
+<<<<<<< HEAD
 void rocksdb_options_set_memtable_prefix_bloom_bits(
     rocksdb_options_t* opt, uint32_t v) {
   opt->rep.memtable_prefix_bloom_bits = v;
@@ -1754,6 +1861,16 @@ void rocksdb_options_set_memtable_prefix_bloom_bits(
 void rocksdb_options_set_memtable_prefix_bloom_probes(
     rocksdb_options_t* opt, uint32_t v) {
   opt->rep.memtable_prefix_bloom_probes = v;
+=======
+void rocksdb_options_set_memtable_prefix_bloom_size_ratio(
+    rocksdb_options_t* opt, double v) {
+  opt->rep.memtable_prefix_bloom_size_ratio = v;
+}
+
+void rocksdb_options_set_memtable_huge_page_size(rocksdb_options_t* opt,
+                                                 size_t v) {
+  opt->rep.memtable_huge_page_size = v;
+>>>>>>> forknote/master
 }
 
 void rocksdb_options_set_hash_skip_list_rep(
@@ -1817,6 +1934,14 @@ void rocksdb_options_set_inplace_update_num_locks(
   opt->rep.inplace_update_num_locks = v;
 }
 
+<<<<<<< HEAD
+=======
+void rocksdb_options_set_report_bg_io_stats(
+    rocksdb_options_t* opt, int v) {
+  opt->rep.report_bg_io_stats = v;
+}
+
+>>>>>>> forknote/master
 void rocksdb_options_set_compaction_style(rocksdb_options_t *opt, int style) {
   opt->rep.compaction_style = static_cast<rocksdb::CompactionStyle>(style);
 }
@@ -1955,7 +2080,11 @@ void rocksdb_filterpolicy_destroy(rocksdb_filterpolicy_t* filter) {
   delete filter;
 }
 
+<<<<<<< HEAD
 rocksdb_filterpolicy_t* rocksdb_filterpolicy_create_bloom(int bits_per_key) {
+=======
+rocksdb_filterpolicy_t* rocksdb_filterpolicy_create_bloom_format(int bits_per_key, bool original_format) {
+>>>>>>> forknote/master
   // Make a rocksdb_filterpolicy_t, but override all of its methods so
   // they delegate to a NewBloomFilterPolicy() instead of user
   // supplied C functions.
@@ -1973,13 +2102,28 @@ rocksdb_filterpolicy_t* rocksdb_filterpolicy_create_bloom(int bits_per_key) {
     static void DoNothing(void*) { }
   };
   Wrapper* wrapper = new Wrapper;
+<<<<<<< HEAD
   wrapper->rep_ = NewBloomFilterPolicy(bits_per_key);
+=======
+  wrapper->rep_ = NewBloomFilterPolicy(bits_per_key, original_format);
+>>>>>>> forknote/master
   wrapper->state_ = nullptr;
   wrapper->delete_filter_ = nullptr;
   wrapper->destructor_ = &Wrapper::DoNothing;
   return wrapper;
 }
 
+<<<<<<< HEAD
+=======
+rocksdb_filterpolicy_t* rocksdb_filterpolicy_create_bloom_full(int bits_per_key) {
+  return rocksdb_filterpolicy_create_bloom_format(bits_per_key, false);
+}
+
+rocksdb_filterpolicy_t* rocksdb_filterpolicy_create_bloom(int bits_per_key) {
+  return rocksdb_filterpolicy_create_bloom_format(bits_per_key, true);
+}
+
+>>>>>>> forknote/master
 rocksdb_mergeoperator_t* rocksdb_mergeoperator_create(
     void* state, void (*destructor)(void*),
     char* (*full_merge)(void*, const char* key, size_t key_length,
@@ -2056,6 +2200,14 @@ void rocksdb_readoptions_set_tailing(
   opt->rep.tailing = v;
 }
 
+<<<<<<< HEAD
+=======
+void rocksdb_readoptions_set_readahead_size(
+    rocksdb_readoptions_t* opt, size_t v) {
+  opt->rep.readahead_size = v;
+}
+
+>>>>>>> forknote/master
 rocksdb_writeoptions_t* rocksdb_writeoptions_create() {
   return new rocksdb_writeoptions_t;
 }
@@ -2097,6 +2249,13 @@ void rocksdb_cache_destroy(rocksdb_cache_t* cache) {
   delete cache;
 }
 
+<<<<<<< HEAD
+=======
+void rocksdb_cache_set_capacity(rocksdb_cache_t* cache, size_t capacity) {
+  cache->rep->SetCapacity(capacity);
+}
+
+>>>>>>> forknote/master
 rocksdb_env_t* rocksdb_create_default_env() {
   rocksdb_env_t* result = new rocksdb_env_t;
   result->rep = Env::Default();
@@ -2104,6 +2263,16 @@ rocksdb_env_t* rocksdb_create_default_env() {
   return result;
 }
 
+<<<<<<< HEAD
+=======
+rocksdb_env_t* rocksdb_create_mem_env() {
+  rocksdb_env_t* result = new rocksdb_env_t;
+  result->rep = rocksdb::NewMemEnv(Env::Default());
+  result->is_default = false;
+  return result;
+}
+
+>>>>>>> forknote/master
 void rocksdb_env_set_background_threads(rocksdb_env_t* env, int n) {
   env->rep->SetBackgroundThreads(n);
 }
@@ -2315,6 +2484,34 @@ void rocksdb_get_options_from_string(const rocksdb_options_t* base_options,
                                  &new_options->rep));
 }
 
+<<<<<<< HEAD
+=======
+void rocksdb_delete_file_in_range(rocksdb_t* db, const char* start_key,
+                                  size_t start_key_len, const char* limit_key,
+                                  size_t limit_key_len, char** errptr) {
+  Slice a, b;
+  SaveError(
+      errptr,
+      DeleteFilesInRange(
+          db->rep, db->rep->DefaultColumnFamily(),
+          (start_key ? (a = Slice(start_key, start_key_len), &a) : nullptr),
+          (limit_key ? (b = Slice(limit_key, limit_key_len), &b) : nullptr)));
+}
+
+void rocksdb_delete_file_in_range_cf(
+    rocksdb_t* db, rocksdb_column_family_handle_t* column_family,
+    const char* start_key, size_t start_key_len, const char* limit_key,
+    size_t limit_key_len, char** errptr) {
+  Slice a, b;
+  SaveError(
+      errptr,
+      DeleteFilesInRange(
+          db->rep, column_family->rep,
+          (start_key ? (a = Slice(start_key, start_key_len), &a) : nullptr),
+          (limit_key ? (b = Slice(limit_key, limit_key_len), &b) : nullptr)));
+}
+
+>>>>>>> forknote/master
 void rocksdb_free(void* ptr) { free(ptr); }
 
 }  // end extern "C"

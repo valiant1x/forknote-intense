@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -15,12 +19,23 @@
 #include "rocksdb/options.h"
 #include "rocksdb/table.h"
 
+<<<<<<< HEAD
+=======
+#include "port/port.h" // noexcept
+#include "table/persistent_cache_helper.h"
+
+>>>>>>> forknote/master
 namespace rocksdb {
 
 class Block;
 class RandomAccessFile;
 struct ReadOptions;
 
+<<<<<<< HEAD
+=======
+extern bool ShouldReportDetailedTime(Env* env, Statistics* stats);
+
+>>>>>>> forknote/master
 // the length of the magic number in bytes.
 const int kMagicNumberLengthByte = 8;
 
@@ -69,6 +84,10 @@ inline uint32_t GetCompressFormatForVersion(CompressionType compression_type,
                                             uint32_t version) {
   // snappy is not versioned
   assert(compression_type != kSnappyCompression &&
+<<<<<<< HEAD
+=======
+         compression_type != kXpressCompression &&
+>>>>>>> forknote/master
          compression_type != kNoCompression);
   // As of version 2, we encode compressed block with
   // compress_format_version == 2. Before that, the version is 1.
@@ -192,7 +211,11 @@ struct BlockContents {
         compression_type(_compression_type),
         allocation(std::move(_data)) {}
 
+<<<<<<< HEAD
   BlockContents(BlockContents&& other) { *this = std::move(other); }
+=======
+  BlockContents(BlockContents&& other) ROCKSDB_NOEXCEPT { *this = std::move(other); }
+>>>>>>> forknote/master
 
   BlockContents& operator=(BlockContents&& other) {
     data = std::move(other.data);
@@ -205,12 +228,21 @@ struct BlockContents {
 
 // Read the block identified by "handle" from "file".  On failure
 // return non-OK.  On success fill *result and return OK.
+<<<<<<< HEAD
 extern Status ReadBlockContents(RandomAccessFileReader* file,
                                 const Footer& footer,
                                 const ReadOptions& options,
                                 const BlockHandle& handle,
                                 BlockContents* contents, Env* env,
                                 bool do_uncompress);
+=======
+extern Status ReadBlockContents(
+    RandomAccessFileReader* file, const Footer& footer,
+    const ReadOptions& options, const BlockHandle& handle,
+    BlockContents* contents, const ImmutableCFOptions &ioptions,
+    bool do_uncompress = true, const Slice& compression_dict = Slice(),
+    const PersistentCacheOptions& cache_options = PersistentCacheOptions());
+>>>>>>> forknote/master
 
 // The 'data' points to the raw block contents read in from file.
 // This method allocates a new heap buffer and the raw block
@@ -221,7 +253,21 @@ extern Status ReadBlockContents(RandomAccessFileReader* file,
 // util/compression.h
 extern Status UncompressBlockContents(const char* data, size_t n,
                                       BlockContents* contents,
+<<<<<<< HEAD
                                       uint32_t compress_format_version);
+=======
+                                      uint32_t compress_format_version,
+                                      const Slice& compression_dict,
+                                      const ImmutableCFOptions &ioptions);
+
+// This is an extension to UncompressBlockContents that accepts
+// a specific compression type. This is used by un-wrapped blocks
+// with no compression header.
+extern Status UncompressBlockContentsForCompressionType(
+    const char* data, size_t n, BlockContents* contents,
+    uint32_t compress_format_version, const Slice& compression_dict,
+    CompressionType compression_type, const ImmutableCFOptions &ioptions);
+>>>>>>> forknote/master
 
 // Implementation details follow.  Clients should ignore,
 

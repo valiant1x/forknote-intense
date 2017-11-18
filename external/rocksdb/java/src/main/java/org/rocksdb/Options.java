@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -12,8 +16,13 @@ import java.util.List;
  * Options to control the behavior of a database.  It will be used
  * during the creation of a {@link org.rocksdb.RocksDB} (i.e., RocksDB.open()).
  *
+<<<<<<< HEAD
  * If {@link #dispose()} function is not called, then it will be GC'd automatically
  * and native resources will be released as part of the process.
+=======
+ * If {@link #dispose()} function is not called, then it will be GC'd
+ * automaticallyand native resources will be released as part of the process.
+>>>>>>> forknote/master
  */
 public class Options extends RocksObject
     implements DBOptionsInterface, ColumnFamilyOptionsInterface {
@@ -27,8 +36,12 @@ public class Options extends RocksObject
    * an {@code rocksdb::Options} in the c++ side.
    */
   public Options() {
+<<<<<<< HEAD
     super();
     newOptions();
+=======
+    super(newOptions());
+>>>>>>> forknote/master
     env_ = Env.getDefault();
   }
 
@@ -42,28 +55,45 @@ public class Options extends RocksObject
    */
   public Options(final DBOptions dbOptions,
       final ColumnFamilyOptions columnFamilyOptions) {
+<<<<<<< HEAD
     super();
     newOptions(dbOptions.nativeHandle_, columnFamilyOptions.nativeHandle_);
+=======
+    super(newOptions(dbOptions.nativeHandle_,
+        columnFamilyOptions.nativeHandle_));
+>>>>>>> forknote/master
     env_ = Env.getDefault();
   }
 
   @Override
   public Options setIncreaseParallelism(final int totalThreads) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setIncreaseParallelism(nativeHandle_, totalThreads);
     return this;
   }
 
   @Override
   public Options setCreateIfMissing(final boolean flag) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setCreateIfMissing(nativeHandle_, flag);
     return this;
   }
 
   @Override
   public Options setCreateMissingColumnFamilies(final boolean flag) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setCreateMissingColumnFamilies(nativeHandle_, flag);
     return this;
   }
@@ -77,7 +107,11 @@ public class Options extends RocksObject
    * @return the instance of the current Options.
    */
   public Options setEnv(final Env env) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setEnv(nativeHandle_, env.nativeHandle_);
     env_ = env;
     return this;
@@ -111,13 +145,21 @@ public class Options extends RocksObject
 
   @Override
   public boolean createIfMissing() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return createIfMissing(nativeHandle_);
   }
 
   @Override
   public boolean createMissingColumnFamilies() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return createMissingColumnFamilies(nativeHandle_);
   }
 
@@ -161,7 +203,11 @@ public class Options extends RocksObject
 
   @Override
   public Options setComparator(final BuiltinComparator builtinComparator) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setComparatorHandle(nativeHandle_, builtinComparator.ordinal());
     return this;
   }
@@ -169,15 +215,24 @@ public class Options extends RocksObject
   @Override
   public Options setComparator(
       final AbstractComparator<? extends AbstractSlice<?>> comparator) {
+<<<<<<< HEAD
     assert (isInitialized());
     setComparatorHandle(nativeHandle_, comparator.nativeHandle_);
+=======
+    assert(isOwningHandle());
+    setComparatorHandle(nativeHandle_, comparator.getNativeHandle());
+>>>>>>> forknote/master
     comparator_ = comparator;
     return this;
   }
 
   @Override
   public Options setMergeOperatorName(final String name) {
+<<<<<<< HEAD
     assert (isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     if (name == null) {
       throw new IllegalArgumentException(
           "Merge operator name must not be null.");
@@ -194,164 +249,264 @@ public class Options extends RocksObject
 
   @Override
   public Options setWriteBufferSize(final long writeBufferSize) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setWriteBufferSize(nativeHandle_, writeBufferSize);
     return this;
   }
 
   @Override
   public long writeBufferSize()  {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return writeBufferSize(nativeHandle_);
   }
 
   @Override
   public Options setMaxWriteBufferNumber(final int maxWriteBufferNumber) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setMaxWriteBufferNumber(nativeHandle_, maxWriteBufferNumber);
     return this;
   }
 
   @Override
   public int maxWriteBufferNumber() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return maxWriteBufferNumber(nativeHandle_);
   }
 
   @Override
   public boolean errorIfExists() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return errorIfExists(nativeHandle_);
   }
 
   @Override
   public Options setErrorIfExists(final boolean errorIfExists) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setErrorIfExists(nativeHandle_, errorIfExists);
     return this;
   }
 
   @Override
   public boolean paranoidChecks() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return paranoidChecks(nativeHandle_);
   }
 
   @Override
   public Options setParanoidChecks(final boolean paranoidChecks) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setParanoidChecks(nativeHandle_, paranoidChecks);
     return this;
   }
 
   @Override
   public int maxOpenFiles() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return maxOpenFiles(nativeHandle_);
   }
 
   @Override
   public Options setMaxTotalWalSize(final long maxTotalWalSize) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setMaxTotalWalSize(nativeHandle_, maxTotalWalSize);
     return this;
   }
 
   @Override
   public long maxTotalWalSize() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return maxTotalWalSize(nativeHandle_);
   }
 
   @Override
   public Options setMaxOpenFiles(final int maxOpenFiles) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setMaxOpenFiles(nativeHandle_, maxOpenFiles);
     return this;
   }
 
   @Override
   public boolean disableDataSync() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return disableDataSync(nativeHandle_);
   }
 
   @Override
   public Options setDisableDataSync(final boolean disableDataSync) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setDisableDataSync(nativeHandle_, disableDataSync);
     return this;
   }
 
   @Override
   public boolean useFsync() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return useFsync(nativeHandle_);
   }
 
   @Override
   public Options setUseFsync(final boolean useFsync) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setUseFsync(nativeHandle_, useFsync);
     return this;
   }
 
   @Override
   public String dbLogDir() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return dbLogDir(nativeHandle_);
   }
 
   @Override
   public Options setDbLogDir(final String dbLogDir) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setDbLogDir(nativeHandle_, dbLogDir);
     return this;
   }
 
   @Override
   public String walDir() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return walDir(nativeHandle_);
   }
 
   @Override
   public Options setWalDir(final String walDir) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setWalDir(nativeHandle_, walDir);
     return this;
   }
 
   @Override
   public long deleteObsoleteFilesPeriodMicros() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return deleteObsoleteFilesPeriodMicros(nativeHandle_);
   }
 
   @Override
   public Options setDeleteObsoleteFilesPeriodMicros(
       final long micros) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setDeleteObsoleteFilesPeriodMicros(nativeHandle_, micros);
     return this;
   }
 
   @Override
   public int maxBackgroundCompactions() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return maxBackgroundCompactions(nativeHandle_);
   }
 
   @Override
   public Options createStatistics() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     createStatistics(nativeHandle_);
     return this;
   }
 
   @Override
   public Statistics statisticsPtr() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
 
     long statsPtr = statisticsPtr(nativeHandle_);
     if(statsPtr == 0) {
@@ -365,74 +520,118 @@ public class Options extends RocksObject
   @Override
   public Options setMaxBackgroundCompactions(
       final int maxBackgroundCompactions) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setMaxBackgroundCompactions(nativeHandle_, maxBackgroundCompactions);
     return this;
   }
 
   @Override
   public int maxBackgroundFlushes() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return maxBackgroundFlushes(nativeHandle_);
   }
 
   @Override
   public Options setMaxBackgroundFlushes(
       final int maxBackgroundFlushes) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setMaxBackgroundFlushes(nativeHandle_, maxBackgroundFlushes);
     return this;
   }
 
   @Override
   public long maxLogFileSize() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return maxLogFileSize(nativeHandle_);
   }
 
   @Override
   public Options setMaxLogFileSize(final long maxLogFileSize) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setMaxLogFileSize(nativeHandle_, maxLogFileSize);
     return this;
   }
 
   @Override
   public long logFileTimeToRoll() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return logFileTimeToRoll(nativeHandle_);
   }
 
   @Override
   public Options setLogFileTimeToRoll(final long logFileTimeToRoll) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setLogFileTimeToRoll(nativeHandle_, logFileTimeToRoll);
     return this;
   }
 
   @Override
   public long keepLogFileNum() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return keepLogFileNum(nativeHandle_);
   }
 
   @Override
   public Options setKeepLogFileNum(final long keepLogFileNum) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setKeepLogFileNum(nativeHandle_, keepLogFileNum);
     return this;
   }
 
   @Override
   public long maxManifestFileSize() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return maxManifestFileSize(nativeHandle_);
   }
 
   @Override
   public Options setMaxManifestFileSize(
       final long maxManifestFileSize) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setMaxManifestFileSize(nativeHandle_, maxManifestFileSize);
     return this;
   }
@@ -441,7 +640,11 @@ public class Options extends RocksObject
   public Options setMaxTableFilesSizeFIFO(
     final long maxTableFilesSize) {
     assert(maxTableFilesSize > 0); // unsigned native type
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setMaxTableFilesSizeFIFO(nativeHandle_, maxTableFilesSize);
     return this;
   }
@@ -453,118 +656,190 @@ public class Options extends RocksObject
 
   @Override
   public int tableCacheNumshardbits() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return tableCacheNumshardbits(nativeHandle_);
   }
 
   @Override
   public Options setTableCacheNumshardbits(
       final int tableCacheNumshardbits) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setTableCacheNumshardbits(nativeHandle_, tableCacheNumshardbits);
     return this;
   }
 
   @Override
   public long walTtlSeconds() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return walTtlSeconds(nativeHandle_);
   }
 
   @Override
   public Options setWalTtlSeconds(final long walTtlSeconds) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setWalTtlSeconds(nativeHandle_, walTtlSeconds);
     return this;
   }
 
   @Override
   public long walSizeLimitMB() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return walSizeLimitMB(nativeHandle_);
   }
 
   @Override
   public Options setWalSizeLimitMB(final long sizeLimitMB) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setWalSizeLimitMB(nativeHandle_, sizeLimitMB);
     return this;
   }
 
   @Override
   public long manifestPreallocationSize() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return manifestPreallocationSize(nativeHandle_);
   }
 
   @Override
   public Options setManifestPreallocationSize(final long size) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setManifestPreallocationSize(nativeHandle_, size);
     return this;
   }
 
   @Override
   public boolean allowOsBuffer() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return allowOsBuffer(nativeHandle_);
   }
 
   @Override
   public Options setAllowOsBuffer(final boolean allowOsBuffer) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setAllowOsBuffer(nativeHandle_, allowOsBuffer);
     return this;
   }
 
   @Override
   public boolean allowMmapReads() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return allowMmapReads(nativeHandle_);
   }
 
   @Override
   public Options setAllowMmapReads(final boolean allowMmapReads) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setAllowMmapReads(nativeHandle_, allowMmapReads);
     return this;
   }
 
   @Override
   public boolean allowMmapWrites() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return allowMmapWrites(nativeHandle_);
   }
 
   @Override
   public Options setAllowMmapWrites(final boolean allowMmapWrites) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setAllowMmapWrites(nativeHandle_, allowMmapWrites);
     return this;
   }
 
   @Override
   public boolean isFdCloseOnExec() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return isFdCloseOnExec(nativeHandle_);
   }
 
   @Override
   public Options setIsFdCloseOnExec(final boolean isFdCloseOnExec) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setIsFdCloseOnExec(nativeHandle_, isFdCloseOnExec);
     return this;
   }
 
   @Override
   public int statsDumpPeriodSec() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return statsDumpPeriodSec(nativeHandle_);
   }
 
   @Override
   public Options setStatsDumpPeriodSec(final int statsDumpPeriodSec) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setStatsDumpPeriodSec(nativeHandle_, statsDumpPeriodSec);
     return this;
   }
@@ -576,20 +851,32 @@ public class Options extends RocksObject
 
   @Override
   public Options setAdviseRandomOnOpen(final boolean adviseRandomOnOpen) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setAdviseRandomOnOpen(nativeHandle_, adviseRandomOnOpen);
     return this;
   }
 
   @Override
   public boolean useAdaptiveMutex() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return useAdaptiveMutex(nativeHandle_);
   }
 
   @Override
   public Options setUseAdaptiveMutex(final boolean useAdaptiveMutex) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setUseAdaptiveMutex(nativeHandle_, useAdaptiveMutex);
     return this;
   }
@@ -601,7 +888,11 @@ public class Options extends RocksObject
 
   @Override
   public Options setBytesPerSync(final long bytesPerSync) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setBytesPerSync(nativeHandle_, bytesPerSync);
     return this;
   }
@@ -622,28 +913,44 @@ public class Options extends RocksObject
 
   @Override
   public Options setLogger(final Logger logger) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setLogger(nativeHandle_, logger.nativeHandle_);
     return this;
   }
 
   @Override
   public Options setInfoLogLevel(final InfoLogLevel infoLogLevel) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setInfoLogLevel(nativeHandle_, infoLogLevel.getValue());
     return this;
   }
 
   @Override
   public InfoLogLevel infoLogLevel() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return InfoLogLevel.getInfoLogLevel(
         infoLogLevel(nativeHandle_));
   }
 
   @Override
   public String memTableFactoryName() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return memTableFactoryName(nativeHandle_);
   }
 
@@ -656,20 +963,32 @@ public class Options extends RocksObject
 
   @Override
   public String tableFactoryName() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return tableFactoryName(nativeHandle_);
   }
 
   @Override
   public Options useFixedLengthPrefixExtractor(final int n) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     useFixedLengthPrefixExtractor(nativeHandle_, n);
     return this;
   }
 
   @Override
   public Options useCappedPrefixExtractor(final int n) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     useCappedPrefixExtractor(nativeHandle_, n);
     return this;
   }
@@ -680,11 +999,20 @@ public class Options extends RocksObject
   }
 
   @Override
+<<<<<<< HEAD
   public Options setCompressionPerLevel(final List<CompressionType> compressionLevels) {
     final List<Byte> byteCompressionTypes = new ArrayList<>(
         compressionLevels.size());
     for (final CompressionType compressionLevel : compressionLevels) {
       byteCompressionTypes.add(compressionLevel.getValue());
+=======
+  public Options setCompressionPerLevel(
+      final List<CompressionType> compressionLevels) {
+    final byte[] byteCompressionTypes = new byte[
+        compressionLevels.size()];
+    for (int i = 0; i < compressionLevels.size(); i++) {
+      byteCompressionTypes[i] = compressionLevels.get(i).getValue();
+>>>>>>> forknote/master
     }
     setCompressionPerLevel(nativeHandle_, byteCompressionTypes);
     return this;
@@ -692,7 +1020,11 @@ public class Options extends RocksObject
 
   @Override
   public List<CompressionType> compressionPerLevel() {
+<<<<<<< HEAD
     final List<Byte> byteCompressionTypes =
+=======
+    final byte[] byteCompressionTypes =
+>>>>>>> forknote/master
         compressionPerLevel(nativeHandle_);
     final List<CompressionType> compressionLevels = new ArrayList<>();
     for (final Byte byteCompressionType : byteCompressionTypes) {
@@ -956,6 +1288,7 @@ public class Options extends RocksObject
   }
 
   @Override
+<<<<<<< HEAD
   public boolean filterDeletes() {
     return filterDeletes(nativeHandle_);
   }
@@ -968,6 +1301,8 @@ public class Options extends RocksObject
   }
 
   @Override
+=======
+>>>>>>> forknote/master
   public long maxSequentialSkipInIterations() {
     return maxSequentialSkipInIterations(nativeHandle_);
   }
@@ -975,7 +1310,12 @@ public class Options extends RocksObject
   @Override
   public Options setMaxSequentialSkipInIterations(
       final long maxSequentialSkipInIterations) {
+<<<<<<< HEAD
     setMaxSequentialSkipInIterations(nativeHandle_, maxSequentialSkipInIterations);
+=======
+    setMaxSequentialSkipInIterations(nativeHandle_,
+        maxSequentialSkipInIterations);
+>>>>>>> forknote/master
     return this;
   }
 
@@ -1004,6 +1344,7 @@ public class Options extends RocksObject
   }
 
   @Override
+<<<<<<< HEAD
   public int memtablePrefixBloomBits() {
     return memtablePrefixBloomBits(nativeHandle_);
   }
@@ -1024,6 +1365,15 @@ public class Options extends RocksObject
   public Options setMemtablePrefixBloomProbes(
       final int memtablePrefixBloomProbes) {
     setMemtablePrefixBloomProbes(nativeHandle_, memtablePrefixBloomProbes);
+=======
+  public double memtablePrefixBloomSizeRatio() {
+    return memtablePrefixBloomSizeRatio(nativeHandle_);
+  }
+
+  @Override
+  public Options setMemtablePrefixBloomSizeRatio(final double memtablePrefixBloomSizeRatio) {
+    setMemtablePrefixBloomSizeRatio(nativeHandle_, memtablePrefixBloomSizeRatio);
+>>>>>>> forknote/master
     return this;
   }
 
@@ -1085,6 +1435,7 @@ public class Options extends RocksObject
     return optimizeFiltersForHits(nativeHandle_);
   }
 
+<<<<<<< HEAD
   /**
    * Release the memory allocated for the current instance
    * in the c++ side.
@@ -1098,6 +1449,12 @@ public class Options extends RocksObject
   private native void newOptions(long dbOptHandle,
       long cfOptHandle);
   private native void disposeInternal(long handle);
+=======
+  private native static long newOptions();
+  private native static long newOptions(long dbOptHandle,
+      long cfOptHandle);
+  @Override protected final native void disposeInternal(final long handle);
+>>>>>>> forknote/master
   private native void setEnv(long optHandle, long envHandle);
   private native void prepareForBulkLoad(long handle);
 
@@ -1200,7 +1557,12 @@ public class Options extends RocksObject
   private native void optimizeUniversalStyleCompaction(long handle,
       long memtableMemoryBudget);
   private native void setComparatorHandle(long handle, int builtinComparator);
+<<<<<<< HEAD
   private native void setComparatorHandle(long optHandle, long comparatorHandle);
+=======
+  private native void setComparatorHandle(long optHandle,
+      long comparatorHandle);
+>>>>>>> forknote/master
   private native void setMergeOperatorName(
       long handle, String name);
   private native void setMergeOperator(
@@ -1217,8 +1579,13 @@ public class Options extends RocksObject
   private native void setCompressionType(long handle, byte compressionType);
   private native byte compressionType(long handle);
   private native void setCompressionPerLevel(long handle,
+<<<<<<< HEAD
       List<Byte> compressionLevels);
   private native List<Byte> compressionPerLevel(long handle);
+=======
+      byte[] compressionLevels);
+  private native byte[] compressionPerLevel(long handle);
+>>>>>>> forknote/master
   private native void useFixedLengthPrefixExtractor(
       long handle, int prefixLength);
   private native void useCappedPrefixExtractor(
@@ -1283,9 +1650,12 @@ public class Options extends RocksObject
   private native void setVerifyChecksumsInCompaction(
       long handle, boolean verifyChecksumsInCompaction);
   private native boolean verifyChecksumsInCompaction(long handle);
+<<<<<<< HEAD
   private native void setFilterDeletes(
       long handle, boolean filterDeletes);
   private native boolean filterDeletes(long handle);
+=======
+>>>>>>> forknote/master
   private native void setMaxSequentialSkipInIterations(
       long handle, long maxSequentialSkipInIterations);
   private native long maxSequentialSkipInIterations(long handle);
@@ -1300,12 +1670,18 @@ public class Options extends RocksObject
       long handle, long inplaceUpdateNumLocks)
       throws IllegalArgumentException;
   private native long inplaceUpdateNumLocks(long handle);
+<<<<<<< HEAD
   private native void setMemtablePrefixBloomBits(
       long handle, int memtablePrefixBloomBits);
   private native int memtablePrefixBloomBits(long handle);
   private native void setMemtablePrefixBloomProbes(
       long handle, int memtablePrefixBloomProbes);
   private native int memtablePrefixBloomProbes(long handle);
+=======
+  private native void setMemtablePrefixBloomSizeRatio(
+      long handle, double memtablePrefixBloomSizeRatio);
+  private native double memtablePrefixBloomSizeRatio(long handle);
+>>>>>>> forknote/master
   private native void setBloomLocality(
       long handle, int bloomLocality);
   private native int bloomLocality(long handle);

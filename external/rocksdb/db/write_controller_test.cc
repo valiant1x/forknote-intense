@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -19,6 +23,31 @@ class TimeSetEnv : public EnvWrapper {
   virtual uint64_t NowMicros() override { return now_micros_; }
 };
 
+<<<<<<< HEAD
+=======
+TEST_F(WriteControllerTest, ChangeDelayRateTest) {
+  TimeSetEnv env;
+  WriteController controller(10000000u);
+  auto delay_token_0 =
+      controller.GetDelayToken(controller.delayed_write_rate());
+  ASSERT_EQ(static_cast<uint64_t>(2000000),
+            controller.GetDelay(&env, 20000000u));
+  auto delay_token_1 = controller.GetDelayToken(2000000u);
+  ASSERT_EQ(static_cast<uint64_t>(10000000),
+            controller.GetDelay(&env, 20000000u));
+  auto delay_token_2 = controller.GetDelayToken(1000000u);
+  ASSERT_EQ(static_cast<uint64_t>(20000000),
+            controller.GetDelay(&env, 20000000u));
+  auto delay_token_3 = controller.GetDelayToken(20000000u);
+  ASSERT_EQ(static_cast<uint64_t>(1000000),
+            controller.GetDelay(&env, 20000000u));
+  auto delay_token_4 =
+      controller.GetDelayToken(controller.delayed_write_rate() * 2);
+  ASSERT_EQ(static_cast<uint64_t>(500000),
+            controller.GetDelay(&env, 20000000u));
+}
+
+>>>>>>> forknote/master
 TEST_F(WriteControllerTest, SanityTest) {
   WriteController controller(10000000u);
   auto stop_token_1 = controller.GetStopToken();
@@ -32,12 +61,27 @@ TEST_F(WriteControllerTest, SanityTest) {
 
   TimeSetEnv env;
 
+<<<<<<< HEAD
   auto delay_token_1 = controller.GetDelayToken();
+=======
+  auto delay_token_1 = controller.GetDelayToken(10000000u);
   ASSERT_EQ(static_cast<uint64_t>(2000000),
             controller.GetDelay(&env, 20000000u));
 
   env.now_micros_ += 1999900u;  // sleep debt 1000
+
+  auto delay_token_2 = controller.GetDelayToken(10000000u);
+  // Rate reset after changing the token.
+>>>>>>> forknote/master
+  ASSERT_EQ(static_cast<uint64_t>(2000000),
+            controller.GetDelay(&env, 20000000u));
+
+  env.now_micros_ += 1999900u;  // sleep debt 1000
+<<<<<<< HEAD
   auto delay_token_2 = controller.GetDelayToken();
+=======
+
+>>>>>>> forknote/master
   // One refill: 10240 bytes allowed, 1000 used, 9240 left
   ASSERT_EQ(static_cast<uint64_t>(1124), controller.GetDelay(&env, 1000u));
   env.now_micros_ += 1124u;  // sleep debt 0

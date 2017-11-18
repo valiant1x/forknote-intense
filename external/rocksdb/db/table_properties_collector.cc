@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -23,6 +27,11 @@ Status InternalKeyPropertiesCollector::InternalAdd(const Slice& key,
   if (ikey.type == ValueType::kTypeDeletion ||
       ikey.type == ValueType::kTypeSingleDeletion) {
     ++deleted_keys_;
+<<<<<<< HEAD
+=======
+  } else if (ikey.type == ValueType::kTypeMerge) {
+    ++merge_operands_;
+>>>>>>> forknote/master
   }
 
   return Status::OK();
@@ -33,19 +42,39 @@ Status InternalKeyPropertiesCollector::Finish(
   assert(properties);
   assert(properties->find(
         InternalKeyTablePropertiesNames::kDeletedKeys) == properties->end());
+<<<<<<< HEAD
   std::string val;
 
   PutVarint64(&val, deleted_keys_);
   properties->insert({ InternalKeyTablePropertiesNames::kDeletedKeys, val });
+=======
+  assert(properties->find(InternalKeyTablePropertiesNames::kMergeOperands) ==
+         properties->end());
+
+  std::string val_deleted_keys;
+  PutVarint64(&val_deleted_keys, deleted_keys_);
+  properties->insert(
+      {InternalKeyTablePropertiesNames::kDeletedKeys, val_deleted_keys});
+
+  std::string val_merge_operands;
+  PutVarint64(&val_merge_operands, merge_operands_);
+  properties->insert(
+      {InternalKeyTablePropertiesNames::kMergeOperands, val_merge_operands});
+>>>>>>> forknote/master
 
   return Status::OK();
 }
 
 UserCollectedProperties
 InternalKeyPropertiesCollector::GetReadableProperties() const {
+<<<<<<< HEAD
   return {
     { "kDeletedKeys", ToString(deleted_keys_) }
   };
+=======
+  return {{"kDeletedKeys", ToString(deleted_keys_)},
+          {"kMergeOperands", ToString(merge_operands_)}};
+>>>>>>> forknote/master
 }
 
 namespace {
@@ -65,6 +94,23 @@ EntryType GetEntryType(ValueType value_type) {
   }
 }
 
+<<<<<<< HEAD
+=======
+uint64_t GetUint64Property(const UserCollectedProperties& props,
+                           const std::string property_name,
+                           bool* property_present) {
+  auto pos = props.find(property_name);
+  if (pos == props.end()) {
+    *property_present = false;
+    return 0;
+  }
+  Slice raw = pos->second;
+  uint64_t val = 0;
+  *property_present = true;
+  return GetVarint64(&raw, &val) ? val : 0;
+}
+
+>>>>>>> forknote/master
 }  // namespace
 
 Status UserKeyTablePropertiesCollector::InternalAdd(const Slice& key,
@@ -92,6 +138,7 @@ UserKeyTablePropertiesCollector::GetReadableProperties() const {
 
 const std::string InternalKeyTablePropertiesNames::kDeletedKeys
   = "rocksdb.deleted.keys";
+<<<<<<< HEAD
 
 uint64_t GetDeletedKeys(
     const UserCollectedProperties& props) {
@@ -102,6 +149,22 @@ uint64_t GetDeletedKeys(
   Slice raw = pos->second;
   uint64_t val = 0;
   return GetVarint64(&raw, &val) ? val : 0;
+=======
+const std::string InternalKeyTablePropertiesNames::kMergeOperands =
+    "rocksdb.merge.operands";
+
+uint64_t GetDeletedKeys(
+    const UserCollectedProperties& props) {
+  bool property_present_ignored;
+  return GetUint64Property(props, InternalKeyTablePropertiesNames::kDeletedKeys,
+                           &property_present_ignored);
+}
+
+uint64_t GetMergeOperands(const UserCollectedProperties& props,
+                          bool* property_present) {
+  return GetUint64Property(
+      props, InternalKeyTablePropertiesNames::kMergeOperands, property_present);
+>>>>>>> forknote/master
 }
 
 }  // namespace rocksdb

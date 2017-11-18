@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -24,8 +28,12 @@ public class RocksEnv extends Env {
    * {@code dispose()} of the created RocksEnv will be no-op.</p>
    */
   RocksEnv(final long handle) {
+<<<<<<< HEAD
     super();
     nativeHandle_ = handle;
+=======
+    super(handle);
+>>>>>>> forknote/master
     disOwnNativeHandle();
   }
 
@@ -38,6 +46,11 @@ public class RocksEnv extends Env {
    * RocksEnv with RocksJava. The default env allocation is managed
    * by C++.</p>
    */
+<<<<<<< HEAD
   @Override protected void disposeInternal() {
+=======
+  @Override
+  protected final void disposeInternal(final long handle) {
+>>>>>>> forknote/master
   }
 }

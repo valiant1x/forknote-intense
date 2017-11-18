@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -24,6 +28,10 @@
 #include <map>
 #include <memory>
 #include <set>
+<<<<<<< HEAD
+=======
+#include <string>
+>>>>>>> forknote/master
 #include <utility>
 #include <vector>
 
@@ -48,15 +56,24 @@ class Writer;
 }
 
 class Compaction;
+<<<<<<< HEAD
 class Iterator;
+=======
+class InternalIterator;
+>>>>>>> forknote/master
 class LogBuffer;
 class LookupKey;
 class MemTable;
 class Version;
 class VersionSet;
+<<<<<<< HEAD
 class WriteBuffer;
 class MergeContext;
 class ColumnFamilyData;
+=======
+class WriteBufferManager;
+class MergeContext;
+>>>>>>> forknote/master
 class ColumnFamilySet;
 class TableCache;
 class MergeIteratorBuilder;
@@ -97,7 +114,11 @@ class VersionStorageInfo {
 
   void Reserve(int level, size_t size) { files_[level].reserve(size); }
 
+<<<<<<< HEAD
   void AddFile(int level, FileMetaData* f);
+=======
+  void AddFile(int level, FileMetaData* f, Logger* info_log = nullptr);
+>>>>>>> forknote/master
 
   void SetFinalized();
 
@@ -111,15 +132,25 @@ class VersionStorageInfo {
   // Update the accumulated stats from a file-meta.
   void UpdateAccumulatedStats(FileMetaData* file_meta);
 
+<<<<<<< HEAD
+=======
+  // Decrease the current stat form a to-be-delected file-meta
+  void RemoveCurrentStats(FileMetaData* file_meta);
+
+>>>>>>> forknote/master
   void ComputeCompensatedSizes();
 
   // Updates internal structures that keep track of compaction scores
   // We use compaction scores to figure out which compaction to do next
   // REQUIRES: db_mutex held!!
   // TODO find a better way to pass compaction_options_fifo.
+<<<<<<< HEAD
   void ComputeCompactionScore(
       const MutableCFOptions& mutable_cf_options,
       const CompactionOptionsFIFO& compaction_options_fifo);
+=======
+  void ComputeCompactionScore(const MutableCFOptions& mutable_cf_options);
+>>>>>>> forknote/master
 
   // Estimate est_comp_needed_bytes_
   void EstimateCompactionBytesNeeded(
@@ -143,12 +174,15 @@ class VersionStorageInfo {
 
   int MaxInputLevel() const;
 
+<<<<<<< HEAD
   // Returns the maxmimum compaction score for levels 1 to max
   double max_compaction_score() const { return max_compaction_score_; }
 
   // See field declaration
   int max_compaction_score_level() const { return max_compaction_score_level_; }
 
+=======
+>>>>>>> forknote/master
   // Return level number that has idx'th highest score
   int CompactionScoreLevel(int idx) const { return compaction_level_[idx]; }
 
@@ -159,23 +193,40 @@ class VersionStorageInfo {
       int level, const InternalKey* begin,  // nullptr means before all keys
       const InternalKey* end,               // nullptr means after all keys
       std::vector<FileMetaData*>* inputs,
+<<<<<<< HEAD
       int hint_index = -1,         // index of overlap file
       int* file_index = nullptr);  // return index of overlap file
+=======
+      int hint_index = -1,        // index of overlap file
+      int* file_index = nullptr,  // return index of overlap file
+      bool expand_range = true)   // if set, returns files which overlap the
+      const;                      // range and overlap each other. If false,
+                                  // then just files intersecting the range
+>>>>>>> forknote/master
 
   void GetOverlappingInputsBinarySearch(
       int level,
       const Slice& begin,  // nullptr means before all keys
       const Slice& end,    // nullptr means after all keys
       std::vector<FileMetaData*>* inputs,
+<<<<<<< HEAD
       int hint_index,    // index of overlap file
       int* file_index);  // return index of overlap file
+=======
+      int hint_index,          // index of overlap file
+      int* file_index) const;  // return index of overlap file
+>>>>>>> forknote/master
 
   void ExtendOverlappingInputs(
       int level,
       const Slice& begin,  // nullptr means before all keys
       const Slice& end,    // nullptr means after all keys
       std::vector<FileMetaData*>* inputs,
+<<<<<<< HEAD
       unsigned int index);  // start extending from this index
+=======
+      unsigned int index) const;  // start extending from this index
+>>>>>>> forknote/master
 
   // Returns true iff some file in the specified level overlaps
   // some part of [*smallest_user_key,*largest_user_key].
@@ -300,6 +351,11 @@ class VersionStorageInfo {
 
   uint64_t GetEstimatedActiveKeys() const;
 
+<<<<<<< HEAD
+=======
+  double GetEstimatedCompressionRatioAtLevel(int level) const;
+
+>>>>>>> forknote/master
   // re-initializes the index that is used to offset into
   // files_by_compaction_pri_
   // to find the next compaction candidate file.
@@ -325,6 +381,13 @@ class VersionStorageInfo {
     return estimated_compaction_needed_bytes_;
   }
 
+<<<<<<< HEAD
+=======
+  void TEST_set_estimated_compaction_needed_bytes(uint64_t v) {
+    estimated_compaction_needed_bytes_ = v;
+  }
+
+>>>>>>> forknote/master
  private:
   const InternalKeyComparator* internal_comparator_;
   const Comparator* user_comparator_;
@@ -381,8 +444,11 @@ class VersionStorageInfo {
   // These are used to pick the best compaction level
   std::vector<double> compaction_score_;
   std::vector<int> compaction_level_;
+<<<<<<< HEAD
   double max_compaction_score_ = 0.0;   // max score in l1 to ln-1
   int max_compaction_score_level_ = 0;  // level on which max score occurs
+=======
+>>>>>>> forknote/master
   int l0_delay_trigger_count_ = 0;  // Count used to trigger slow down and stop
                                     // for number of L0 files.
 
@@ -397,8 +463,17 @@ class VersionStorageInfo {
   uint64_t accumulated_num_non_deletions_;
   // total number of deletion entries
   uint64_t accumulated_num_deletions_;
+<<<<<<< HEAD
   // the number of samples
   uint64_t num_samples_;
+=======
+  // current number of non_deletion entries
+  uint64_t current_num_non_deletions_;
+  // current number of delection entries
+  uint64_t current_num_deletions_;
+  // current number of file samples
+  uint64_t current_num_samples_;
+>>>>>>> forknote/master
   // Estimated bytes needed to be compacted until all levels' size is down to
   // target sizes.
   uint64_t estimated_compaction_needed_bytes_;
@@ -422,11 +497,32 @@ class Version {
 
   // Lookup the value for key.  If found, store it in *val and
   // return OK.  Else return a non-OK status.
+<<<<<<< HEAD
   // Uses *operands to store merge_operator operations to apply later
   // REQUIRES: lock is not held
   void Get(const ReadOptions&, const LookupKey& key, std::string* val,
            Status* status, MergeContext* merge_context,
            bool* value_found = nullptr);
+=======
+  // Uses *operands to store merge_operator operations to apply later.
+  //
+  // If the ReadOptions.read_tier is set to do a read-only fetch, then
+  // *value_found will be set to false if it cannot be determined whether
+  // this value exists without doing IO.
+  //
+  // If the key is Deleted, *status will be set to NotFound and
+  //                        *key_exists will be set to true.
+  // If no key was found, *status will be set to NotFound and
+  //                      *key_exists will be set to false.
+  // If seq is non-null, *seq will be set to the sequence number found
+  // for the key if a key was found.
+  //
+  // REQUIRES: lock is not held
+  void Get(const ReadOptions&, const LookupKey& key, std::string* val,
+           Status* status, MergeContext* merge_context,
+           bool* value_found = nullptr, bool* key_exists = nullptr,
+           SequenceNumber* seq = nullptr);
+>>>>>>> forknote/master
 
   // Loads some stats information from files. Call without mutex held. It needs
   // to be called before applying the version to the version set.
@@ -456,15 +552,25 @@ class Version {
   // file-name conversion.
   Status GetTableProperties(std::shared_ptr<const TableProperties>* tp,
                             const FileMetaData* file_meta,
+<<<<<<< HEAD
                             const std::string* fname = nullptr);
+=======
+                            const std::string* fname = nullptr) const;
+>>>>>>> forknote/master
 
   // REQUIRES: lock is held
   // On success, *props will be populated with all SSTables' table properties.
   // The keys of `props` are the sst file name, the values of `props` are the
   // tables' propertis, represented as shared_ptr.
   Status GetPropertiesOfAllTables(TablePropertiesCollection* props);
+<<<<<<< HEAD
 
   Status GetPropertiesOfAllTables(TablePropertiesCollection* props, int level);
+=======
+  Status GetPropertiesOfAllTables(TablePropertiesCollection* props, int level);
+  Status GetPropertiesOfTablesInRange(const Range* range, std::size_t n,
+                                      TablePropertiesCollection* props) const;
+>>>>>>> forknote/master
 
   // REQUIRES: lock is held
   // On success, "tp" will contains the aggregated table property amoug
@@ -502,9 +608,22 @@ class Version {
     return storage_info_.user_comparator_;
   }
 
+<<<<<<< HEAD
   bool PrefixMayMatch(const ReadOptions& read_options, Iterator* level_iter,
                       const Slice& internal_prefix) const;
 
+=======
+  bool PrefixMayMatch(const ReadOptions& read_options,
+                      InternalIterator* level_iter,
+                      const Slice& internal_prefix) const;
+
+  // Returns true if the filter blocks in the specified level will not be
+  // checked during read operations. In certain cases (trivial move or preload),
+  // the filter block may already be cached, but we still do not access it such
+  // that it eventually expires from the cache.
+  bool IsFilterSkipped(int level, bool is_file_last_in_level = false);
+
+>>>>>>> forknote/master
   // The helper function of UpdateAccumulatedStats, which may fill the missing
   // fields of file_mata from its associated TableProperties.
   // Returns true if it does initialize FileMetaData.
@@ -548,7 +667,12 @@ class VersionSet {
  public:
   VersionSet(const std::string& dbname, const DBOptions* db_options,
              const EnvOptions& env_options, Cache* table_cache,
+<<<<<<< HEAD
              WriteBuffer* write_buffer, WriteController* write_controller);
+=======
+             WriteBufferManager* write_buffer_manager,
+             WriteController* write_controller);
+>>>>>>> forknote/master
   ~VersionSet();
 
   // Apply *edit to the current version to form a new descriptor that
@@ -562,6 +686,22 @@ class VersionSet {
       const MutableCFOptions& mutable_cf_options, VersionEdit* edit,
       InstrumentedMutex* mu, Directory* db_directory = nullptr,
       bool new_descriptor_log = false,
+<<<<<<< HEAD
+=======
+      const ColumnFamilyOptions* column_family_options = nullptr) {
+    autovector<VersionEdit*> edit_list;
+    edit_list.push_back(edit);
+    return LogAndApply(column_family_data, mutable_cf_options, edit_list, mu,
+                       db_directory, new_descriptor_log, column_family_options);
+  }
+  // The batch version. If edit_list.size() > 1, caller must ensure that
+  // no edit in the list column family add or drop
+  Status LogAndApply(
+      ColumnFamilyData* column_family_data,
+      const MutableCFOptions& mutable_cf_options,
+      const autovector<VersionEdit*>& edit_list, InstrumentedMutex* mu,
+      Directory* db_directory = nullptr, bool new_descriptor_log = false,
+>>>>>>> forknote/master
       const ColumnFamilyOptions* column_family_options = nullptr);
 
   // Recover the last saved descriptor from persistent storage.
@@ -599,6 +739,11 @@ class VersionSet {
   // Return the current manifest file number
   uint64_t manifest_file_number() const { return manifest_file_number_; }
 
+<<<<<<< HEAD
+=======
+  uint64_t options_file_number() const { return options_file_number_; }
+
+>>>>>>> forknote/master
   uint64_t pending_manifest_file_number() const {
     return pending_manifest_file_number_;
   }
@@ -643,7 +788,11 @@ class VersionSet {
 
   // Create an iterator that reads over the compaction inputs for "*c".
   // The caller should delete the iterator when no longer needed.
+<<<<<<< HEAD
   Iterator* MakeInputIterator(Compaction* c);
+=======
+  InternalIterator* MakeInputIterator(const Compaction* c);
+>>>>>>> forknote/master
 
   // Add all files listed in any live version to *live.
   void AddLiveFiles(std::vector<FileDescriptor>* live_list);
@@ -670,6 +819,10 @@ class VersionSet {
   void GetLiveFilesMetaData(std::vector<LiveFileMetaData> *metadata);
 
   void GetObsoleteFiles(std::vector<FileMetaData*>* files,
+<<<<<<< HEAD
+=======
+                        std::vector<std::string>* manifest_filenames,
+>>>>>>> forknote/master
                         uint64_t min_pending_output);
 
   ColumnFamilySet* GetColumnFamilySet() { return column_family_set_.get(); }
@@ -704,9 +857,12 @@ class VersionSet {
 
   void AppendVersion(ColumnFamilyData* column_family_data, Version* v);
 
+<<<<<<< HEAD
   bool ManifestContains(uint64_t manifest_file_number,
                         const std::string& record) const;
 
+=======
+>>>>>>> forknote/master
   ColumnFamilyData* CreateColumnFamily(const ColumnFamilyOptions& cf_options,
                                        VersionEdit* edit);
 
@@ -717,6 +873,10 @@ class VersionSet {
   const DBOptions* const db_options_;
   std::atomic<uint64_t> next_file_number_;
   uint64_t manifest_file_number_;
+<<<<<<< HEAD
+=======
+  uint64_t options_file_number_;
+>>>>>>> forknote/master
   uint64_t pending_manifest_file_number_;
   std::atomic<uint64_t> last_sequence_;
   uint64_t prev_log_number_;  // 0 or backing store for memtable being compacted
@@ -734,6 +894,10 @@ class VersionSet {
   uint64_t manifest_file_size_;
 
   std::vector<FileMetaData*> obsolete_files_;
+<<<<<<< HEAD
+=======
+  std::vector<std::string> obsolete_manifests_;
+>>>>>>> forknote/master
 
   // env options for all reads and writes except compactions
   const EnvOptions& env_options_;

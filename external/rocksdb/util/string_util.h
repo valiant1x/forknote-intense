@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -16,7 +20,11 @@ extern std::vector<std::string> StringSplit(const std::string& arg, char delim);
 
 template <typename T>
 inline std::string ToString(T value) {
+<<<<<<< HEAD
 #if !(defined OS_ANDROID) && !(defined CYGWIN)
+=======
+#if !(defined OS_ANDROID) && !(defined CYGWIN) && !(defined OS_FREEBSD)
+>>>>>>> forknote/master
   return std::to_string(value);
 #else
   // Andorid or cygwin doesn't support all of C++11, std::to_string() being

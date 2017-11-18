@@ -123,6 +123,7 @@ public:
 
 class TestGenerator;
 
+<<<<<<< HEAD
 class DoubleSpendBase : public test_chain_unit_base {
 public:
   // parameters to be checked
@@ -201,6 +202,8 @@ struct MultiSigTx_DoubleSpendAltChainDifferentBlocks : public DoubleSpendBase {
   bool generate(std::vector<test_event_entry>& events) const;
 };
 
+=======
+>>>>>>> forknote/master
 #define INIT_DOUBLE_SPEND_TEST()                                                                                       \
   GENERATE_ACCOUNT(miner_account);                                                                                     \
   MAKE_GENESIS_BLOCK(events, blk_0, miner_account, ts_start);                                                          \

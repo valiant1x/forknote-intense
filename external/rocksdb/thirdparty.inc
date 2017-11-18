@@ -7,7 +7,13 @@ set(USE_GFLAGS_DEFAULT 0)        # GFLAGS is disabled by default, enable with -D
 set(USE_SNAPPY_DEFAULT 0)        # SNAPPY is disabled by default, enable with -DSNAPPY=1 cmake command line agrument
 set(USE_LZ4_DEFAULT 0)           # LZ4 is disabled by default, enable with -DLZ4=1 cmake command line agrument
 set(USE_ZLIB_DEFAULT 0)          # ZLIB is disabled by default, enable with -DZLIB=1 cmake command line agrument
+<<<<<<< HEAD
 set(USE_JEMALLOC_DEFAULT 0)      # JEMALLOC is disabled by default, enable with -DJEMALLOC=1 cmake command line agrument
+=======
+set(USE_XPRESS_DEFAULT 0)        # XPRESS is disabled by default, enable with -DXPRESS=1 cmake command line agrument
+set(USE_JEMALLOC_DEFAULT 0)      # JEMALLOC is disabled by default, enable with -DJEMALLOC=1 cmake command line agrument
+set(USE_JENONINIT_DEFAULT 1)     # Default is enabled do not call je_init/je_uninit as the newer versions do not have it disable with -DJENONINIT=0
+>>>>>>> forknote/master
 
 #
 # This example assumes all the libraries locate in directories under THIRDPARTY_HOME environment variable
@@ -36,6 +42,22 @@ endif ()
 
 if (${USE_GFLAGS} EQUAL 1)
   message(STATUS "GFLAGS library is enabled")
+<<<<<<< HEAD
+=======
+  
+  if(DEFINED ENV{GFLAGS_INCLUDE})
+    set(GFLAGS_INCLUDE $ENV{GFLAGS_INCLUDE})
+  endif()
+  
+  if(DEFINED ENV{GFLAGS_LIB_DEBUG})
+    set(GFLAGS_LIB_DEBUG $ENV{GFLAGS_LIB_DEBUG})
+  endif()
+
+  if(DEFINED ENV{GFLAGS_LIB_RELEASE})
+    set(GFLAGS_LIB_RELEASE $ENV{GFLAGS_LIB_RELEASE})
+  endif()
+  
+>>>>>>> forknote/master
   set(GFLAGS_CXX_FLAGS -DGFLAGS=gflags)
   set(GFLAGS_LIBS debug ${GFLAGS_LIB_DEBUG} optimized ${GFLAGS_LIB_RELEASE})
 
@@ -66,6 +88,22 @@ endif ()
 
 if (${USE_SNAPPY} EQUAL 1)
   message(STATUS "SNAPPY library is enabled")
+<<<<<<< HEAD
+=======
+  
+  if(DEFINED ENV{SNAPPY_INCLUDE})
+    set(SNAPPY_INCLUDE $ENV{SNAPPY_INCLUDE})
+  endif()
+  
+  if(DEFINED ENV{SNAPPY_LIB_DEBUG})
+    set(SNAPPY_LIB_DEBUG $ENV{SNAPPY_LIB_DEBUG})
+  endif()
+
+  if(DEFINED ENV{SNAPPY_LIB_RELEASE})
+    set(SNAPPY_LIB_RELEASE $ENV{SNAPPY_LIB_RELEASE})
+  endif()
+  
+>>>>>>> forknote/master
   set(SNAPPY_CXX_FLAGS -DSNAPPY)
   set(SNAPPY_LIBS debug ${SNAPPY_LIB_DEBUG} optimized ${SNAPPY_LIB_RELEASE})
 
@@ -96,6 +134,22 @@ endif ()
 
 if (${USE_LZ4} EQUAL 1)
   message(STATUS "LZ4 library is enabled")
+<<<<<<< HEAD
+=======
+  
+  if(DEFINED ENV{LZ4_INCLUDE})
+    set(LZ4_INCLUDE $ENV{LZ4_INCLUDE})
+  endif()
+  
+  if(DEFINED ENV{LZ4_LIB_DEBUG})
+    set(LZ4_LIB_DEBUG $ENV{LZ4_LIB_DEBUG})
+  endif()
+
+  if(DEFINED ENV{LZ4_LIB_RELEASE})
+    set(LZ4_LIB_RELEASE $ENV{LZ4_LIB_RELEASE})
+  endif()
+  
+>>>>>>> forknote/master
   set(LZ4_CXX_FLAGS -DLZ4)
   set(LZ4_LIBS debug ${LZ4_LIB_DEBUG} optimized ${LZ4_LIB_RELEASE})
 
@@ -126,6 +180,22 @@ endif ()
 
 if (${USE_ZLIB} EQUAL 1)
   message(STATUS "ZLIB library is enabled")
+<<<<<<< HEAD
+=======
+
+  if(DEFINED ENV{ZLIB_INCLUDE})
+    set(ZLIB_INCLUDE $ENV{ZLIB_INCLUDE})
+  endif()
+  
+  if(DEFINED ENV{ZLIB_LIB_DEBUG})
+    set(ZLIB_LIB_DEBUG $ENV{ZLIB_LIB_DEBUG})
+  endif()
+
+  if(DEFINED ENV{ZLIB_LIB_RELEASE})
+    set(ZLIB_LIB_RELEASE $ENV{ZLIB_LIB_RELEASE})
+  endif()
+  
+>>>>>>> forknote/master
   set(ZLIB_CXX_FLAGS -DZLIB)
   set(ZLIB_LIBS debug ${ZLIB_LIB_DEBUG} optimized ${ZLIB_LIB_RELEASE})
 
@@ -136,6 +206,26 @@ else ()
   message(STATUS "ZLIB library is disabled")
 endif ()
 
+<<<<<<< HEAD
+=======
+if (DEFINED XPRESS)
+  set(USE_XPRESS ${XPRESS})
+else ()
+  set(USE_XPRESS ${USE_XPRESS_DEFAULT})
+endif ()
+
+if (${USE_XPRESS} EQUAL 1)
+  message(STATUS "XPRESS is enabled")
+
+  add_definitions(-DXPRESS)
+  
+  # We are using the implementation provided by the system
+  set (SYSTEM_LIBS ${SYSTEM_LIBS} Cabinet.lib)
+else ()
+  message(STATUS "XPRESS is disabled")
+endif ()
+
+>>>>>>> forknote/master
 #
 # Edit these 4 lines to define paths to Jemalloc
 #
@@ -156,13 +246,45 @@ endif ()
 
 if (${USE_JEMALLOC} EQUAL 1)
   message(STATUS "JEMALLOC library is enabled")
+<<<<<<< HEAD
   set(JEMALLOC_CXX_FLAGS -DJEMALLOC)
+=======
+  set(JEMALLOC_CXX_FLAGS "-DJEMALLOC -DJEMALLOC_EXPORT= ")
+  
+  if(DEFINED ENV{JEMALLOC_INCLUDE})
+    set(JEMALLOC_INCLUDE $ENV{JEMALLOC_INCLUDE})
+  endif()
+  
+  if(DEFINED ENV{JEMALLOC_LIB_DEBUG})
+    set(JEMALLOC_LIB_DEBUG $ENV{JEMALLOC_LIB_DEBUG})
+  endif()
+
+  if(DEFINED ENV{JEMALLOC_LIB_RELEASE})
+    set(JEMALLOC_LIB_RELEASE $ENV{JEMALLOC_LIB_RELEASE})
+  endif()
+
+>>>>>>> forknote/master
   set(JEMALLOC_LIBS debug ${JEMALLOC_LIB_DEBUG} optimized ${JEMALLOC_LIB_RELEASE})
 
   add_definitions(${JEMALLOC_CXX_FLAGS})
   include_directories(${JEMALLOC_INCLUDE})
   set (THIRDPARTY_LIBS ${THIRDPARTY_LIBS} ${JEMALLOC_LIBS})
   set (ARTIFACT_SUFFIX "_je")
+<<<<<<< HEAD
+=======
+  
+  set(USE_JENONINIT USE_JENONINIT_DEFAULT)
+ 
+  if(JENONINIT)
+    set(USE_JENONINIT ${JENONINIT})
+  endif()
+  
+  if(${USE_JENONINIT} EQUAL 1)
+    add_definitions(-DJEMALLOC_NON_INIT)
+    message(STATUS "JEMALLOC NONINIT version")
+  endif()
+  
+>>>>>>> forknote/master
 else ()
   set (ARTIFACT_SUFFIX "")
   message(STATUS "JEMALLOC library is disabled")

@@ -4,6 +4,7 @@
 # fbcode settings.  It uses the latest g++ compiler and also
 # uses jemalloc
 
+<<<<<<< HEAD
 # location of libgcc
 LIBGCC_BASE="/mnt/gvfs/third-party2/libgcc/7712e757d7355cb51292454ee0b7b46a467fdfed/4.8.1/gcc-4.8.1-glibc-2.17/8aac7fc"
 LIBGCC_INCLUDE="$LIBGCC_BASE/include"
@@ -50,22 +51,76 @@ NUMA_LIB=" /mnt/gvfs/third-party2/numa/$NUMA_REV/2.0.8/gcc-4.8.1-glibc-2.17/c3f9
 # location of libunwind
 LIBUNWIND_REV=2c060e64064559905d46fd194000d61592087bdc
 LIBUNWIND="/mnt/gvfs/third-party2/libunwind/$LIBUNWIND_REV/1.1/gcc-4.8.1-glibc-2.17/675d945/lib/libunwind.a"
+=======
+BASEDIR=`dirname $BASH_SOURCE`
+source "$BASEDIR/dependencies_4.8.1.sh"
+
+# location of libgcc
+LIBGCC_INCLUDE="$LIBGCC_BASE/include"
+LIBGCC_LIBS=" -L $LIBGCC_BASE/lib"
+
+# location of glibc
+GLIBC_INCLUDE="$GLIBC_BASE/include"
+GLIBC_LIBS=" -L $GLIBC_BASE/lib"
+
+# location of snappy headers and libraries
+SNAPPY_INCLUDE=" -I $SNAPPY_BASE/include"
+SNAPPY_LIBS=" $SNAPPY_BASE/lib/libsnappy.a"
+
+# location of zlib headers and libraries
+ZLIB_INCLUDE=" -I $ZLIB_BASE/include"
+ZLIB_LIBS=" $ZLIB_BASE/lib/libz.a"
+
+# location of bzip headers and libraries
+BZIP2_INCLUDE=" -I $BZIP2_BASE/include/"
+BZIP2_LIBS=" $BZIP2_BASE/lib/libbz2.a"
+
+LZ4_INCLUDE=" -I $LZ4_BASE/include"
+LZ4_LIBS=" $LZ4_BASE/lib/liblz4.a"
+
+ZSTD_INCLUDE=" -I $ZSTD_BASE/include"
+ZSTD_LIBS=" $ZSTD_BASE/lib/libzstd.a"
+
+# location of gflags headers and libraries
+GFLAGS_INCLUDE=" -I $GFLAGS_BASE/include/"
+GFLAGS_LIBS=" $GFLAGS_BASE/lib/libgflags.a"
+
+# location of jemalloc
+JEMALLOC_INCLUDE=" -I $JEMALLOC_BASE/include"
+JEMALLOC_LIB="$JEMALLOC_BASE/lib/libjemalloc.a"
+
+# location of numa
+NUMA_INCLUDE=" -I $NUMA_BASE/include/"
+NUMA_LIB=" $NUMA_BASE/lib/libnuma.a"
+
+# location of libunwind
+LIBUNWIND="$LIBUNWIND_BASE/lib/libunwind.a"
+>>>>>>> forknote/master
 
 # use Intel SSE support for checksum calculations
 export USE_SSE=1
 
+<<<<<<< HEAD
 BINUTILS="/mnt/gvfs/third-party2/binutils/2aff2e7b474cd3e6ab23495ad1224b7d214b9f8e/2.21.1/centos6-native/da39a3e/bin"
 AR="$BINUTILS/ar"
 
 DEPS_INCLUDE="$SNAPPY_INCLUDE $ZLIB_INCLUDE $BZIP_INCLUDE $LZ4_INCLUDE $ZSTD_INCLUDE $GFLAGS_INCLUDE $NUMA_INCLUDE"
 
 GCC_BASE="/mnt/gvfs/third-party2/gcc/1ec615e23800f0815d474478ba476a0adc3fe788/4.8.1/centos6-native/cc6c9dc"
+=======
+BINUTILS="$BINUTILS_BASE/bin"
+AR="$BINUTILS/ar"
+
+DEPS_INCLUDE="$SNAPPY_INCLUDE $ZLIB_INCLUDE $BZIP2_INCLUDE $LZ4_INCLUDE $ZSTD_INCLUDE $GFLAGS_INCLUDE $NUMA_INCLUDE"
+
+>>>>>>> forknote/master
 STDLIBS="-L $GCC_BASE/lib64"
 
 if [ -z "$USE_CLANG" ]; then
   # gcc
   CC="$GCC_BASE/bin/gcc"
   CXX="$GCC_BASE/bin/g++"
+<<<<<<< HEAD
   
   CFLAGS="-B$BINUTILS/gold -m64 -mtune=generic"
   CFLAGS+=" -isystem $GLIBC_INCLUDE"
@@ -78,6 +133,22 @@ else
   CXX="$CLANG_BASE/centos6-native/9cefd8a/bin/clang++"
 
   KERNEL_HEADERS_INCLUDE="/mnt/gvfs/third-party2/kernel-headers/a683ed7135276731065a9d76d3016c9731f4e2f9/3.2.18_70_fbk11_00129_gc8882d0/gcc-4.8.1-glibc-2.17/da39a3e/include/"
+=======
+
+  CFLAGS="-B$BINUTILS/gold -m64 -mtune=generic"
+  CFLAGS+=" -isystem $GLIBC_INCLUDE"
+  CFLAGS+=" -isystem $LIBGCC_INCLUDE"
+  JEMALLOC=1
+else
+  # clang
+  CLANG_BIN="$CLANG_BASE/bin"
+  CLANG_LIB="$CLANG_BASE/lib"
+  CLANG_INCLUDE="$CLANG_LIB/clang/*/include"
+  CC="$CLANG_BIN/clang"
+  CXX="$CLANG_BIN/clang++"
+
+  KERNEL_HEADERS_INCLUDE="$KERNEL_HEADERS_BASE/include/"
+>>>>>>> forknote/master
 
   CFLAGS="-B$BINUTILS/gold -nostdinc -nostdlib"
   CFLAGS+=" -isystem $LIBGCC_BASE/include/c++/4.8.1 "
@@ -91,20 +162,34 @@ else
 fi
 
 CFLAGS+=" $DEPS_INCLUDE"
+<<<<<<< HEAD
 CFLAGS+=" -DROCKSDB_PLATFORM_POSIX -DROCKSDB_FALLOCATE_PRESENT -DROCKSDB_MALLOC_USABLE_SIZE"
 CFLAGS+=" -DSNAPPY -DGFLAGS=google -DZLIB -DBZIP2 -DLZ4 -DZSTD -DNUMA"
 CXXFLAGS+=" $CFLAGS"
 
 EXEC_LDFLAGS=" $SNAPPY_LIBS $ZLIB_LIBS $BZIP_LIBS $LZ4_LIBS $ZSTD_LIBS $GFLAGS_LIBS $NUMA_LIB"
+=======
+CFLAGS+=" -DROCKSDB_PLATFORM_POSIX -DROCKSDB_LIB_IO_POSIX -DROCKSDB_FALLOCATE_PRESENT -DROCKSDB_MALLOC_USABLE_SIZE"
+CFLAGS+=" -DSNAPPY -DGFLAGS=google -DZLIB -DBZIP2 -DLZ4 -DZSTD -DNUMA"
+CXXFLAGS+=" $CFLAGS"
+
+EXEC_LDFLAGS=" $SNAPPY_LIBS $ZLIB_LIBS $BZIP2_LIBS $LZ4_LIBS $ZSTD_LIBS $GFLAGS_LIBS $NUMA_LIB"
+>>>>>>> forknote/master
 EXEC_LDFLAGS+=" -Wl,--dynamic-linker,/usr/local/fbcode/gcc-4.8.1-glibc-2.17/lib/ld.so"
 EXEC_LDFLAGS+=" $LIBUNWIND"
 EXEC_LDFLAGS+=" -Wl,-rpath=/usr/local/fbcode/gcc-4.8.1-glibc-2.17/lib"
 
 PLATFORM_LDFLAGS="$LIBGCC_LIBS $GLIBC_LIBS $STDLIBS -lgcc -lstdc++"
 
+<<<<<<< HEAD
 EXEC_LDFLAGS_SHARED="$SNAPPY_LIBS $ZLIB_LIBS $BZIP_LIBS $LZ4_LIBS $ZSTD_LIBS $GFLAGS_LIBS"
 
 VALGRIND_REV=b2a9f85e4b70cd03abc85a7f3027fbc4cef35bd0
 VALGRIND_VER="/mnt/gvfs/third-party2/valgrind/$VALGRIND_REV/3.8.1/gcc-4.8.1-glibc-2.17/c3f970a/bin/"
+=======
+EXEC_LDFLAGS_SHARED="$SNAPPY_LIBS $ZLIB_LIBS $BZIP2_LIBS $LZ4_LIBS $ZSTD_LIBS $GFLAGS_LIBS"
+
+VALGRIND_VER="$VALGRIND_BASE/bin/"
+>>>>>>> forknote/master
 
 export CC CXX AR CFLAGS CXXFLAGS EXEC_LDFLAGS EXEC_LDFLAGS_SHARED VALGRIND_VER JEMALLOC_LIB JEMALLOC_INCLUDE

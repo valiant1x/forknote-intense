@@ -42,11 +42,14 @@ TransactionBuilder& TransactionBuilder::setInput(const std::vector<CryptoNote::T
   return *this;
 }
 
+<<<<<<< HEAD
 TransactionBuilder& TransactionBuilder::addMultisignatureInput(const MultisignatureSource& source) {
   m_msigSources.push_back(source);
   return *this;
 }
 
+=======
+>>>>>>> forknote/master
 TransactionBuilder& TransactionBuilder::setOutput(const std::vector<CryptoNote::TransactionDestinationEntry>& destinations) {
   m_destinations = destinations;
   return *this;
@@ -57,6 +60,7 @@ TransactionBuilder& TransactionBuilder::addOutput(const CryptoNote::TransactionD
   return *this;
 }
 
+<<<<<<< HEAD
 TransactionBuilder& TransactionBuilder::addMultisignatureOut(uint64_t amount, const KeysVector& keys, uint32_t required) {
 
   MultisignatureDestination dst;
@@ -70,6 +74,8 @@ TransactionBuilder& TransactionBuilder::addMultisignatureOut(uint64_t amount, co
   return *this;
 }
 
+=======
+>>>>>>> forknote/master
 Transaction TransactionBuilder::build() const {
   Crypto::Hash prefixHash;
 
@@ -111,10 +117,13 @@ void TransactionBuilder::fillInputs(Transaction& tx, std::vector<CryptoNote::Key
     input_to_key.outputIndexes = absolute_output_offsets_to_relative(input_to_key.outputIndexes);
     tx.inputs.push_back(input_to_key);
   }
+<<<<<<< HEAD
 
   for (const auto& msrc : m_msigSources) {
     tx.inputs.push_back(msrc.input);
   }
+=======
+>>>>>>> forknote/master
 }
 
 void TransactionBuilder::fillOutputs(Transaction& tx) const {
@@ -134,6 +143,7 @@ void TransactionBuilder::fillOutputs(Transaction& tx) const {
     tx.outputs.push_back(out);
     output_index++;
   }
+<<<<<<< HEAD
 
   for (const auto& mdst : m_msigDestinations) {   
     TransactionOutput out;
@@ -153,6 +163,8 @@ void TransactionBuilder::fillOutputs(Transaction& tx) const {
     tx.outputs.push_back(out);
     output_index++;
   }
+=======
+>>>>>>> forknote/master
 }
 
 
@@ -176,6 +188,7 @@ void TransactionBuilder::signSources(const Crypto::Hash& prefixHash, const std::
     generate_ring_signature(prefixHash, boost::get<KeyInput>(tx.inputs[i]).keyImage, keys_ptrs, contexts[i].secretKey, src_entr.realOutput, sigs.data());
     i++;
   }
+<<<<<<< HEAD
 
   // sign multisignature source
   for (const auto& msrc : m_msigSources) {
@@ -196,4 +209,6 @@ void TransactionBuilder::signSources(const Crypto::Hash& prefixHash, const std::
       outsigs.push_back(sig);
     }
   }
+=======
+>>>>>>> forknote/master
 }

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -36,7 +40,12 @@ enum FileType {
   kTempFile,
   kInfoLogFile,  // Either the current one, or an old one
   kMetaDatabase,
+<<<<<<< HEAD
   kIdentityFile
+=======
+  kIdentityFile,
+  kOptionsFile
+>>>>>>> forknote/master
 };
 
 // Return the name of the log file with the specified number
@@ -114,6 +123,22 @@ extern std::string OldInfoLogFileName(const std::string& dbname, uint64_t ts,
                                       const std::string& db_path = "",
                                       const std::string& log_dir = "");
 
+<<<<<<< HEAD
+=======
+static const std::string kOptionsFileNamePrefix = "OPTIONS-";
+static const std::string kTempFileNameSuffix = "dbtmp";
+
+// Return a options file name given the "dbname" and file number.
+// Format:  OPTIONS-[number].dbtmp
+extern std::string OptionsFileName(const std::string& dbname,
+                                   uint64_t file_num);
+
+// Return a temp options file name given the "dbname" and file number.
+// Format:  OPTIONS-[number]
+extern std::string TempOptionsFileName(const std::string& dbname,
+                                       uint64_t file_num);
+
+>>>>>>> forknote/master
 // Return the name to use for a metadatabase. The result will be prefixed with
 // "dbname".
 extern std::string MetaDatabaseName(const std::string& dbname,

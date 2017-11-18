@@ -320,10 +320,13 @@ void TestBlockchainGenerator::addTx(const CryptoNote::Transaction& tx) {
       auto& keyOutsContainer = keyOutsIndex[out.amount];
       globalIndexes.push_back(static_cast<uint32_t>(keyOutsContainer.size()));
       keyOutsContainer.push_back({ txHash, outIndex });
+<<<<<<< HEAD
     } else if (out.target.type() == typeid(MultisignatureOutput)) {
       auto& msigOutsContainer = multisignatureOutsIndex[out.amount];
       globalIndexes.push_back(static_cast<uint32_t>(msigOutsContainer.size()));
       msigOutsContainer.push_back({ txHash, outIndex });
+=======
+>>>>>>> forknote/master
     }
   }
 }
@@ -338,6 +341,7 @@ bool TestBlockchainGenerator::getTransactionGlobalIndexesByHash(const Crypto::Ha
   return true;
 }
 
+<<<<<<< HEAD
 bool TestBlockchainGenerator::getMultisignatureOutputByGlobalIndex(uint64_t amount, uint32_t globalIndex, MultisignatureOutput& out) {
   auto it = multisignatureOutsIndex.find(amount);
   if (it == multisignatureOutsIndex.end()) {
@@ -356,6 +360,8 @@ bool TestBlockchainGenerator::getMultisignatureOutputByGlobalIndex(uint64_t amou
   return true;
 }
 
+=======
+>>>>>>> forknote/master
 bool TestBlockchainGenerator::generateFromBaseTx(const CryptoNote::AccountBase& address) {
   std::unique_lock<std::mutex> lock(m_mutex);
   addToBlockchain({}, address);

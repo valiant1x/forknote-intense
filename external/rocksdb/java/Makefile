@@ -2,7 +2,10 @@ NATIVE_JAVA_CLASSES = org.rocksdb.AbstractCompactionFilter\
         org.rocksdb.AbstractComparator\
 	org.rocksdb.AbstractSlice\
 	org.rocksdb.BackupEngine\
+<<<<<<< HEAD
 	org.rocksdb.BackupableDB\
+=======
+>>>>>>> forknote/master
 	org.rocksdb.BackupableDBOptions\
 	org.rocksdb.BlockBasedTableConfig\
 	org.rocksdb.BloomFilter\
@@ -26,7 +29,10 @@ NATIVE_JAVA_CLASSES = org.rocksdb.AbstractCompactionFilter\
 	org.rocksdb.PlainTableConfig\
 	org.rocksdb.ReadOptions\
 	org.rocksdb.RemoveEmptyValueCompactionFilter\
+<<<<<<< HEAD
 	org.rocksdb.RestoreBackupableDB\
+=======
+>>>>>>> forknote/master
 	org.rocksdb.RestoreOptions\
 	org.rocksdb.RocksDB\
 	org.rocksdb.RocksEnv\
@@ -62,8 +68,13 @@ endif
 
 JAVA_TESTS = org.rocksdb.BackupableDBOptionsTest\
         org.rocksdb.BackupEngineTest\
+<<<<<<< HEAD
 	org.rocksdb.BackupableDBTest\
 	org.rocksdb.BlockBasedTableConfigTest\
+=======
+	org.rocksdb.BlockBasedTableConfigTest\
+        org.rocksdb.util.BytewiseComparatorTest\
+>>>>>>> forknote/master
 	org.rocksdb.CheckPointTest\
 	org.rocksdb.ColumnFamilyOptionsTest\
 	org.rocksdb.ColumnFamilyTest\
@@ -99,6 +110,10 @@ JAVA_TESTS = org.rocksdb.BackupableDBOptionsTest\
 	org.rocksdb.StatisticsCollectorTest\
 	org.rocksdb.WriteBatchHandlerTest\
 	org.rocksdb.WriteBatchTest\
+<<<<<<< HEAD
+=======
+        org.rocksdb.WriteBatchThreadedTest\
+>>>>>>> forknote/master
 	org.rocksdb.WriteOptionsTest\
 	org.rocksdb.WriteBatchWithIndexTest
 
@@ -182,7 +197,13 @@ java_test: resolve_test_deps
 		$(TEST_SRC)/org/rocksdb/*.java
 	$(AM_V_at)javah -cp $(MAIN_CLASSES):$(TEST_CLASSES) -d $(NATIVE_INCLUDE) -jni $(NATIVE_JAVA_TEST_CLASSES)
 
+<<<<<<< HEAD
 test: java resolve_test_deps java_test
+=======
+test: java resolve_test_deps java_test run_test
+
+run_test:
+>>>>>>> forknote/master
 	java -ea -Xcheck:jni -Djava.library.path=target -cp "$(MAIN_CLASSES):$(TEST_CLASSES):$(JAVA_TESTCLASSPATH):target/*" org.rocksdb.test.RocksJunitRunner $(JAVA_TESTS)
 
 db_bench: java

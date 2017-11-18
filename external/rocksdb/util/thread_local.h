@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -54,7 +58,11 @@ class ThreadLocalPtr {
   void* Swap(void* ptr);
 
   // Atomically compare the stored value with expected. Set the new
+<<<<<<< HEAD
   // pointer value to thread local only if the comparision is true.
+=======
+  // pointer value to thread local only if the comparison is true.
+>>>>>>> forknote/master
   // Otherwise, expected returns the stored value.
   // Return true on success, false on failure
   bool CompareAndSwap(void* ptr, void*& expected);
@@ -63,6 +71,18 @@ class ThreadLocalPtr {
   // data for all existing threads
   void Scrape(autovector<void*>* ptrs, void* const replacement);
 
+<<<<<<< HEAD
+=======
+  // Initialize the static singletons of the ThreadLocalPtr.
+  //
+  // If this function is not called, then the singletons will be
+  // automatically initialized when they are used.
+  //
+  // Calling this function twice or after the singletons have been
+  // initialized will be no-op.
+  static void InitSingletons();
+
+>>>>>>> forknote/master
  protected:
   struct Entry {
     Entry() : ptr(nullptr) {}
@@ -70,6 +90,11 @@ class ThreadLocalPtr {
     std::atomic<void*> ptr;
   };
 
+<<<<<<< HEAD
+=======
+  class StaticMeta;
+
+>>>>>>> forknote/master
   // This is the structure that is declared as "thread_local" storage.
   // The vector keep list of atomic pointer for all instances for "current"
   // thread. The vector is indexed by an Id that is unique in process and
@@ -86,10 +111,18 @@ class ThreadLocalPtr {
   //     | thread 3 |    void*   |    void*   |    void*   | <- ThreadData
   //     ---------------------------------------------------
   struct ThreadData {
+<<<<<<< HEAD
     ThreadData() : entries() {}
     std::vector<Entry> entries;
     ThreadData* next;
     ThreadData* prev;
+=======
+    explicit ThreadData(StaticMeta* _inst) : entries(), inst(_inst) {}
+    std::vector<Entry> entries;
+    ThreadData* next;
+    ThreadData* prev;
+    StaticMeta* inst;
+>>>>>>> forknote/master
   };
 
   class StaticMeta {
@@ -98,7 +131,11 @@ class ThreadLocalPtr {
 
     // Return the next available Id
     uint32_t GetId();
+<<<<<<< HEAD
     // Return the next availabe Id without claiming it
+=======
+    // Return the next available Id without claiming it
+>>>>>>> forknote/master
     uint32_t PeekId() const;
     // Return the given Id back to the free pool. This also triggers
     // UnrefHandler for associated pointer value (if not NULL) for all threads.
@@ -121,6 +158,34 @@ class ThreadLocalPtr {
     // Register the UnrefHandler for id
     void SetHandler(uint32_t id, UnrefHandler handler);
 
+<<<<<<< HEAD
+=======
+    // protect inst, next_instance_id_, free_instance_ids_, head_,
+    // ThreadData.entries
+    //
+    // Note that here we prefer function static variable instead of the usual
+    // global static variable.  The reason is that c++ destruction order of
+    // static variables in the reverse order of their construction order.
+    // However, C++ does not guarantee any construction order when global
+    // static variables are defined in different files, while the function
+    // static variables are initialized when their function are first called.
+    // As a result, the construction order of the function static variables
+    // can be controlled by properly invoke their first function calls in
+    // the right order.
+    //
+    // For instance, the following function contains a function static
+    // variable.  We place a dummy function call of this inside
+    // Env::Default() to ensure the construction order of the construction
+    // order.
+    static port::Mutex* Mutex();
+
+    // Returns the member mutex of the current StaticMeta.  In general,
+    // Mutex() should be used instead of this one.  However, in case where
+    // the static variable inside Instance() goes out of scope, MemberMutex()
+    // should be used.  One example is OnThreadExit() function.
+    port::Mutex* MemberMutex() { return &mutex_; }
+
+>>>>>>> forknote/master
    private:
     // Get UnrefHandler for id with acquiring mutex
     // REQUIRES: mutex locked
@@ -151,9 +216,15 @@ class ThreadLocalPtr {
 
     std::unordered_map<uint32_t, UnrefHandler> handler_map_;
 
+<<<<<<< HEAD
     // protect inst, next_instance_id_, free_instance_ids_, head_,
     // ThreadData.entries
     static port::Mutex mutex_;
+=======
+    // The private mutex.  Developers should always use Mutex() instead of
+    // using this variable directly.
+    port::Mutex mutex_;
+>>>>>>> forknote/master
 #if ROCKSDB_SUPPORT_THREAD_LOCAL
     // Thread local storage
     static __thread ThreadData* tls_;

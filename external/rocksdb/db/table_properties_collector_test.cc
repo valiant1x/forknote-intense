@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -35,6 +39,12 @@ class TablePropertiesTest : public testing::Test,
 
 // Utilities test functions
 namespace {
+<<<<<<< HEAD
+=======
+static const uint32_t kTestColumnFamilyId = 66;
+static const std::string kTestColumnFamilyName = "test_column_fam";
+
+>>>>>>> forknote/master
 void MakeBuilder(const Options& options, const ImmutableCFOptions& ioptions,
                  const InternalKeyComparator& internal_comparator,
                  const std::vector<std::unique_ptr<IntTblPropCollectorFactory>>*
@@ -46,6 +56,10 @@ void MakeBuilder(const Options& options, const ImmutableCFOptions& ioptions,
 
   builder->reset(NewTableBuilder(
       ioptions, internal_comparator, int_tbl_prop_collector_factories,
+<<<<<<< HEAD
+=======
+      kTestColumnFamilyId, kTestColumnFamilyName,
+>>>>>>> forknote/master
       writable->get(), options.compression, options.compression_opts));
 }
 }  // namespace
@@ -178,14 +192,25 @@ class RegularKeysStartWithAFactory : public IntTblPropCollectorFactory,
  public:
   explicit RegularKeysStartWithAFactory(bool backward_mode)
       : backward_mode_(backward_mode) {}
+<<<<<<< HEAD
   virtual TablePropertiesCollector* CreateTablePropertiesCollector() override {
+=======
+  virtual TablePropertiesCollector* CreateTablePropertiesCollector(
+      TablePropertiesCollectorFactory::Context context) override {
+    EXPECT_EQ(kTestColumnFamilyId, context.column_family_id);
+>>>>>>> forknote/master
     if (!backward_mode_) {
       return new RegularKeysStartWithA();
     } else {
       return new RegularKeysStartWithABackwardCompatible();
     }
   }
+<<<<<<< HEAD
   virtual IntTblPropCollector* CreateIntTblPropCollector() override {
+=======
+  virtual IntTblPropCollector* CreateIntTblPropCollector(
+      uint32_t column_family_id) override {
+>>>>>>> forknote/master
     return new RegularKeysStartWithAInternal();
   }
   const char* Name() const override { return "RegularKeysStartWithA"; }
@@ -269,7 +294,11 @@ void TestCustomizedTablePropertiesCollector(
           new test::StringSource(fwf->contents())));
   TableProperties* props;
   Status s = ReadTableProperties(fake_file_reader.get(), fwf->contents().size(),
+<<<<<<< HEAD
                                  magic_number, Env::Default(), nullptr, &props);
+=======
+                                 magic_number, ioptions, &props);
+>>>>>>> forknote/master
   std::unique_ptr<TableProperties> props_guard(props);
   ASSERT_OK(s);
 
@@ -361,6 +390,11 @@ void TestInternalKeyPropertiesCollector(
       InternalKey("Y       ", 5, ValueType::kTypeDeletion),
       InternalKey("Z       ", 6, ValueType::kTypeDeletion),
       InternalKey("a       ", 7, ValueType::kTypeSingleDeletion),
+<<<<<<< HEAD
+=======
+      InternalKey("b       ", 8, ValueType::kTypeMerge),
+      InternalKey("c       ", 9, ValueType::kTypeMerge),
+>>>>>>> forknote/master
   };
 
   std::unique_ptr<TableBuilder> builder;
@@ -408,7 +442,11 @@ void TestInternalKeyPropertiesCollector(
     TableProperties* props;
     Status s =
         ReadTableProperties(reader.get(), fwf->contents().size(), magic_number,
+<<<<<<< HEAD
                             Env::Default(), nullptr, &props);
+=======
+                            ioptions, &props);
+>>>>>>> forknote/master
     ASSERT_OK(s);
 
     std::unique_ptr<TableProperties> props_guard(props);
@@ -416,6 +454,14 @@ void TestInternalKeyPropertiesCollector(
     uint64_t deleted = GetDeletedKeys(user_collected);
     ASSERT_EQ(5u, deleted);  // deletes + single-deletes
 
+<<<<<<< HEAD
+=======
+    bool property_present;
+    uint64_t merges = GetMergeOperands(user_collected, &property_present);
+    ASSERT_TRUE(property_present);
+    ASSERT_EQ(2u, merges);
+
+>>>>>>> forknote/master
     if (sanitized) {
       uint32_t starts_with_A = 0;
       ASSERT_NE(user_collected.find("Count"), user_collected.end());

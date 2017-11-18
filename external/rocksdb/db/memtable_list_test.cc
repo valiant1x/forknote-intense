@@ -1,8 +1,13 @@
+<<<<<<< HEAD
 //  Copyright (c) 2015, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
 
+<<<<<<< HEAD
 #include <algorithm>
 #include <string>
 #include <vector>
@@ -16,6 +21,21 @@
 #include "util/testutil.h"
 #include "util/string_util.h"
 #include "util/testharness.h"
+=======
+#include "db/memtable_list.h"
+#include <algorithm>
+#include <string>
+#include <vector>
+#include "db/merge_context.h"
+#include "db/version_set.h"
+#include "db/write_controller.h"
+#include "rocksdb/db.h"
+#include "rocksdb/status.h"
+#include "rocksdb/write_buffer_manager.h"
+#include "util/string_util.h"
+#include "util/testharness.h"
+#include "util/testutil.h"
+>>>>>>> forknote/master
 
 namespace rocksdb {
 
@@ -59,12 +79,20 @@ class MemTableListTest : public testing::Test {
     DBOptions db_options;
     EnvOptions env_options;
     shared_ptr<Cache> table_cache(NewLRUCache(50000, 16));
+<<<<<<< HEAD
     WriteBuffer write_buffer(db_options.db_write_buffer_size);
+=======
+    WriteBufferManager write_buffer_manager(db_options.db_write_buffer_size);
+>>>>>>> forknote/master
     WriteController write_controller(10000000u);
 
     CreateDB();
     VersionSet versions(dbname, &db_options, env_options, table_cache.get(),
+<<<<<<< HEAD
                         &write_buffer, &write_controller);
+=======
+                        &write_buffer_manager, &write_controller);
+>>>>>>> forknote/master
 
     // Create mock default ColumnFamilyData
     ColumnFamilyOptions cf_options;
@@ -126,7 +154,11 @@ TEST_F(MemTableListTest, GetTest) {
   options.memtable_factory = factory;
   ImmutableCFOptions ioptions(options);
 
+<<<<<<< HEAD
   WriteBuffer wb(options.db_write_buffer_size);
+=======
+  WriteBufferManager wb(options.db_write_buffer_size);
+>>>>>>> forknote/master
   MemTable* mem =
       new MemTable(cmp, ioptions, MutableCFOptions(options, ioptions), &wb,
                    kMaxSequenceNumber);
@@ -163,7 +195,11 @@ TEST_F(MemTableListTest, GetTest) {
   SequenceNumber saved_seq = seq;
 
   // Create another memtable and write some keys to it
+<<<<<<< HEAD
   WriteBuffer wb2(options.db_write_buffer_size);
+=======
+  WriteBufferManager wb2(options.db_write_buffer_size);
+>>>>>>> forknote/master
   MemTable* mem2 =
       new MemTable(cmp, ioptions, MutableCFOptions(options, ioptions), &wb2,
                    kMaxSequenceNumber);
@@ -228,7 +264,11 @@ TEST_F(MemTableListTest, GetFromHistoryTest) {
   options.memtable_factory = factory;
   ImmutableCFOptions ioptions(options);
 
+<<<<<<< HEAD
   WriteBuffer wb(options.db_write_buffer_size);
+=======
+  WriteBufferManager wb(options.db_write_buffer_size);
+>>>>>>> forknote/master
   MemTable* mem =
       new MemTable(cmp, ioptions, MutableCFOptions(options, ioptions), &wb,
                    kMaxSequenceNumber);
@@ -303,7 +343,11 @@ TEST_F(MemTableListTest, GetFromHistoryTest) {
   ASSERT_EQ("value2.2", value);
 
   // Create another memtable and write some keys to it
+<<<<<<< HEAD
   WriteBuffer wb2(options.db_write_buffer_size);
+=======
+  WriteBufferManager wb2(options.db_write_buffer_size);
+>>>>>>> forknote/master
   MemTable* mem2 =
       new MemTable(cmp, ioptions, MutableCFOptions(options, ioptions), &wb2,
                    kMaxSequenceNumber);
@@ -329,7 +373,11 @@ TEST_F(MemTableListTest, GetFromHistoryTest) {
   ASSERT_EQ(0, to_delete.size());
 
   // Add a third memtable to push the first memtable out of the history
+<<<<<<< HEAD
   WriteBuffer wb3(options.db_write_buffer_size);
+=======
+  WriteBufferManager wb3(options.db_write_buffer_size);
+>>>>>>> forknote/master
   MemTable* mem3 =
       new MemTable(cmp, ioptions, MutableCFOptions(options, ioptions), &wb3,
                    kMaxSequenceNumber);
@@ -390,7 +438,11 @@ TEST_F(MemTableListTest, FlushPendingTest) {
   options.memtable_factory = factory;
   ImmutableCFOptions ioptions(options);
   InternalKeyComparator cmp(BytewiseComparator());
+<<<<<<< HEAD
   WriteBuffer wb(options.db_write_buffer_size);
+=======
+  WriteBufferManager wb(options.db_write_buffer_size);
+>>>>>>> forknote/master
   autovector<MemTable*> to_delete;
 
   // Create MemTableList

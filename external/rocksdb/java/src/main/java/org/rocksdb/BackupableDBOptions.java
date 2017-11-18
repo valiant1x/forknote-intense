@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -6,7 +10,10 @@
 package org.rocksdb;
 
 import java.io.File;
+<<<<<<< HEAD
 import java.nio.file.Path;
+=======
+>>>>>>> forknote/master
 
 /**
  * <p>BackupableDBOptions to control the behavior of a backupable database.
@@ -22,6 +29,7 @@ public class BackupableDBOptions extends RocksObject {
   /**
    * <p>BackupableDBOptions constructor.</p>
    *
+<<<<<<< HEAD
    * @param path Where to keep the backup files. Has to be different than db name.
    *     Best to set this to {@code db name_ + "/backups"}
    * @throws java.lang.IllegalArgumentException if illegal path is used.
@@ -33,6 +41,24 @@ public class BackupableDBOptions extends RocksObject {
       throw new IllegalArgumentException("Illegal path provided.");
     }
     newBackupableDBOptions(path);
+=======
+   * @param path Where to keep the backup files. Has to be different than db
+   *   name. Best to set this to {@code db name_ + "/backups"}
+   * @throws java.lang.IllegalArgumentException if illegal path is used.
+   */
+  public BackupableDBOptions(final String path) {
+    super(newBackupableDBOptions(ensureWritableFile(path)));
+  }
+
+  private static String ensureWritableFile(final String path) {
+    final File backupPath = path == null ? null : new File(path);
+    if (backupPath == null || !backupPath.isDirectory() ||
+        !backupPath.canWrite()) {
+      throw new IllegalArgumentException("Illegal path provided.");
+    } else {
+      return path;
+    }
+>>>>>>> forknote/master
   }
 
   /**
@@ -41,24 +67,40 @@ public class BackupableDBOptions extends RocksObject {
    * @return the path to the BackupableDB directory.
    */
   public String backupDir() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return backupDir(nativeHandle_);
   }
 
   /**
    * <p>Share table files between backups.</p>
    *
+<<<<<<< HEAD
    * @param shareTableFiles If {@code share_table_files == true}, backup will assume
    *     that table files with same name have the same contents. This enables incremental
    *     backups and avoids unnecessary data copies. If {@code share_table_files == false},
    *     each backup will be on its own and will not share any data with other backups.
+=======
+   * @param shareTableFiles If {@code share_table_files == true}, backup will
+   *   assume that table files with same name have the same contents. This
+   *   enables incremental backups and avoids unnecessary data copies. If
+   *   {@code share_table_files == false}, each backup will be on its own and
+   *   will not share any data with other backups.
+>>>>>>> forknote/master
    *
    * <p>Default: true</p>
    *
    * @return instance of current BackupableDBOptions.
    */
   public BackupableDBOptions setShareTableFiles(final boolean shareTableFiles) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setShareTableFiles(nativeHandle_, shareTableFiles);
     return this;
   }
@@ -70,24 +112,39 @@ public class BackupableDBOptions extends RocksObject {
    *     backups.
    */
   public boolean shareTableFiles() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return shareTableFiles(nativeHandle_);
   }
 
   /**
    * <p>Set synchronous backups.</p>
    *
+<<<<<<< HEAD
    * @param sync If {@code sync == true}, we can guarantee you'll get consistent backup
    *     even on a machine crash/reboot. Backup process is slower with sync enabled.
    *     If {@code sync == false}, we don't guarantee anything on machine reboot.
    *     However,chances are some of the backups are consistent.
+=======
+   * @param sync If {@code sync == true}, we can guarantee you'll get consistent
+   *   backup even on a machine crash/reboot. Backup process is slower with sync
+   *   enabled. If {@code sync == false}, we don't guarantee anything on machine
+   *   reboot. However, chances are some of the backups are consistent.
+>>>>>>> forknote/master
    *
    * <p>Default: true</p>
    *
    * @return instance of current BackupableDBOptions.
    */
   public BackupableDBOptions setSync(final boolean sync) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setSync(nativeHandle_, sync);
     return this;
   }
@@ -98,21 +155,34 @@ public class BackupableDBOptions extends RocksObject {
    * @return boolean value if synchronous backups are configured.
    */
   public boolean sync() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return sync(nativeHandle_);
   }
 
   /**
    * <p>Set if old data will be destroyed.</p>
    *
+<<<<<<< HEAD
    * @param destroyOldData If true, it will delete whatever backups there are already.
+=======
+   * @param destroyOldData If true, it will delete whatever backups there are
+   *   already.
+>>>>>>> forknote/master
    *
    * <p>Default: false</p>
    *
    * @return instance of current BackupableDBOptions.
    */
   public BackupableDBOptions setDestroyOldData(final boolean destroyOldData) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setDestroyOldData(nativeHandle_, destroyOldData);
     return this;
   }
@@ -123,23 +193,37 @@ public class BackupableDBOptions extends RocksObject {
    * @return boolean value indicating if old data will be destroyed.
    */
   public boolean destroyOldData() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return destroyOldData(nativeHandle_);
   }
 
   /**
    * <p>Set if log files shall be persisted.</p>
    *
+<<<<<<< HEAD
    * @param backupLogFiles If false, we won't backup log files. This option can be
    *     useful for backing up in-memory databases where log file are persisted,but table
    *     files are in memory.
+=======
+   * @param backupLogFiles If false, we won't backup log files. This option can
+   *   be useful for backing up in-memory databases where log file are
+   *   persisted, but table files are in memory.
+>>>>>>> forknote/master
    *
    * <p>Default: true</p>
    *
    * @return instance of current BackupableDBOptions.
    */
   public BackupableDBOptions setBackupLogFiles(final boolean backupLogFiles) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setBackupLogFiles(nativeHandle_, backupLogFiles);
     return this;
   }
@@ -150,28 +234,42 @@ public class BackupableDBOptions extends RocksObject {
    * @return boolean value indicating if log files will be persisted.
    */
   public boolean backupLogFiles() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return backupLogFiles(nativeHandle_);
   }
 
   /**
    * <p>Set backup rate limit.</p>
    *
+<<<<<<< HEAD
    * @param backupRateLimit Max bytes that can be transferred in a second during backup.
    *     If 0 or negative, then go as fast as you can.
+=======
+   * @param backupRateLimit Max bytes that can be transferred in a second during
+   *   backup. If 0 or negative, then go as fast as you can.
+>>>>>>> forknote/master
    *
    * <p>Default: 0</p>
    *
    * @return instance of current BackupableDBOptions.
    */
   public BackupableDBOptions setBackupRateLimit(long backupRateLimit) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     backupRateLimit = (backupRateLimit <= 0) ? 0 : backupRateLimit;
     setBackupRateLimit(nativeHandle_, backupRateLimit);
     return this;
   }
 
   /**
+<<<<<<< HEAD
    * <p>Return backup rate limit which described the max bytes that can be transferred in a
    * second during backup.</p>
    *
@@ -179,27 +277,47 @@ public class BackupableDBOptions extends RocksObject {
    */
   public long backupRateLimit() {
     assert(isInitialized());
+=======
+   * <p>Return backup rate limit which described the max bytes that can be
+   * transferred in a second during backup.</p>
+   *
+   * @return numerical value describing the backup transfer limit in bytes per
+   *   second.
+   */
+  public long backupRateLimit() {
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return backupRateLimit(nativeHandle_);
   }
 
   /**
    * <p>Set restore rate limit.</p>
    *
+<<<<<<< HEAD
    * @param restoreRateLimit Max bytes that can be transferred in a second during restore.
    *     If 0 or negative, then go as fast as you can.
+=======
+   * @param restoreRateLimit Max bytes that can be transferred in a second
+   *   during restore. If 0 or negative, then go as fast as you can.
+>>>>>>> forknote/master
    *
    * <p>Default: 0</p>
    *
    * @return instance of current BackupableDBOptions.
    */
   public BackupableDBOptions setRestoreRateLimit(long restoreRateLimit) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     restoreRateLimit = (restoreRateLimit <= 0) ? 0 : restoreRateLimit;
     setRestoreRateLimit(nativeHandle_, restoreRateLimit);
     return this;
   }
 
   /**
+<<<<<<< HEAD
    * <p>Return restore rate limit which described the max bytes that can be transferred in a
    * second during restore.</p>
    *
@@ -207,16 +325,36 @@ public class BackupableDBOptions extends RocksObject {
    */
   public long restoreRateLimit() {
     assert(isInitialized());
+=======
+   * <p>Return restore rate limit which described the max bytes that can be
+   * transferred in a second during restore.</p>
+   *
+   * @return numerical value describing the restore transfer limit in bytes per
+   *   second.
+   */
+  public long restoreRateLimit() {
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return restoreRateLimit(nativeHandle_);
   }
 
   /**
+<<<<<<< HEAD
    * <p>Only used if share_table_files is set to true. If true, will consider that
    * backups can come from different databases, hence a sst is not uniquely
    * identified by its name, but by the triple (file name, crc32, file length)</p>
    *
    * @param shareFilesWithChecksum boolean value indicating if SST files are stored
    *     using the triple (file name, crc32, file length) and not its name.
+=======
+   * <p>Only used if share_table_files is set to true. If true, will consider
+   * that backups can come from different databases, hence a sst is not uniquely
+   * identified by its name, but by the triple (file name, crc32, file length)
+   * </p>
+   *
+   * @param shareFilesWithChecksum boolean value indicating if SST files are
+   *   stored using the triple (file name, crc32, file length) and not its name.
+>>>>>>> forknote/master
    *
    * <p>Note: this is an experimental option, and you'll need to set it manually
    * turn it on only if you know what you're doing*</p>
@@ -227,7 +365,11 @@ public class BackupableDBOptions extends RocksObject {
    */
   public BackupableDBOptions setShareFilesWithChecksum(
       final boolean shareFilesWithChecksum) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setShareFilesWithChecksum(nativeHandle_, shareFilesWithChecksum);
     return this;
   }
@@ -239,6 +381,7 @@ public class BackupableDBOptions extends RocksObject {
    *     is active.
    */
   public boolean shareFilesWithChecksum() {
+<<<<<<< HEAD
     assert(isInitialized());
     return shareFilesWithChecksum(nativeHandle_);
   }
@@ -252,6 +395,13 @@ public class BackupableDBOptions extends RocksObject {
   }
 
   private native void newBackupableDBOptions(String path);
+=======
+    assert(isOwningHandle());
+    return shareFilesWithChecksum(nativeHandle_);
+  }
+
+  private native static long newBackupableDBOptions(final String path);
+>>>>>>> forknote/master
   private native String backupDir(long handle);
   private native void setShareTableFiles(long handle, boolean flag);
   private native boolean shareTableFiles(long handle);
@@ -267,5 +417,9 @@ public class BackupableDBOptions extends RocksObject {
   private native long restoreRateLimit(long handle);
   private native void setShareFilesWithChecksum(long handle, boolean flag);
   private native boolean shareFilesWithChecksum(long handle);
+<<<<<<< HEAD
   private native void disposeInternal(long handle);
+=======
+  @Override protected final native void disposeInternal(final long handle);
+>>>>>>> forknote/master
 }

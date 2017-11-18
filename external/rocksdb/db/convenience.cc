@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -18,6 +22,16 @@ namespace rocksdb {
 void CancelAllBackgroundWork(DB* db, bool wait) {
   (dynamic_cast<DBImpl*>(db))->CancelAllBackgroundWork(wait);
 }
+<<<<<<< HEAD
+=======
+
+Status DeleteFilesInRange(DB* db, ColumnFamilyHandle* column_family,
+                          const Slice* begin, const Slice* end) {
+  return (dynamic_cast<DBImpl*>(db))
+      ->DeleteFilesInRange(column_family, begin, end);
+}
+
+>>>>>>> forknote/master
 }  // namespace rocksdb
 
 #endif  // ROCKSDB_LITE

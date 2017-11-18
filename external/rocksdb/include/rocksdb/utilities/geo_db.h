@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -59,6 +63,19 @@ class GeoObject {
   }
 };
 
+<<<<<<< HEAD
+=======
+class GeoIterator {
+ public:
+  GeoIterator() = default;
+  virtual ~GeoIterator() {}
+  virtual void Next() = 0;
+  virtual bool Valid() const = 0;
+  virtual const GeoObject& geo_object() = 0;
+  virtual Status status() const = 0;
+};
+
+>>>>>>> forknote/master
 //
 // Stack your DB with GeoDB to be able to get geo-spatial support
 //
@@ -91,6 +108,7 @@ class GeoDB : public StackableDB {
   // Delete the specified object
   virtual Status Remove(const Slice& id) = 0;
 
+<<<<<<< HEAD
   // Returns a list of all items within a circular radius from the
   // specified gps location. If 'number_of_values' is specified,
   // then this call returns at most that many number of objects.
@@ -99,6 +117,15 @@ class GeoDB : public StackableDB {
                               double radius,
                               std::vector<GeoObject>* values,
                               int number_of_values = INT_MAX) = 0;
+=======
+  // Returns an iterator for the items within a circular radius from the
+  // specified gps location. If 'number_of_values' is specified,
+  // then the iterator is capped to that number of objects.
+  // The radius is specified in 'meters'.
+  virtual GeoIterator* SearchRadial(const GeoPosition& pos,
+                                    double radius,
+                                    int number_of_values = INT_MAX) = 0;
+>>>>>>> forknote/master
 };
 
 }  // namespace rocksdb

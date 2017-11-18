@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -25,7 +29,11 @@ bool CheckMemoryAllocated(size_t allocated, size_t expected) {
   // The value returned by Arena::MemoryAllocatedBytes() may be greater than
   // the requested memory. We choose a somewhat arbitrary upper bound of
   // max_expected = expected * 1.1 to detect critical overallocation.
+<<<<<<< HEAD
   size_t max_expected = expected * 1.1;
+=======
+  size_t max_expected = expected + expected / 10;
+>>>>>>> forknote/master
   return allocated >= expected && allocated <= max_expected;
 }
 

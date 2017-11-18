@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -226,6 +230,11 @@ class BaseDeltaIterator : public Iterator {
   bool BaseValid() const { return base_iterator_->Valid(); }
   bool DeltaValid() const { return delta_iterator_->Valid(); }
   void UpdateCurrent() {
+<<<<<<< HEAD
+=======
+// Suppress false positive clang analyzer warnings.
+#ifndef __clang_analyzer__
+>>>>>>> forknote/master
     while (true) {
       WriteEntry delta_entry;
       if (DeltaValid()) {
@@ -275,6 +284,10 @@ class BaseDeltaIterator : public Iterator {
     }
 
     AssertInvariants();
+<<<<<<< HEAD
+=======
+#endif  // __clang_analyzer__
+>>>>>>> forknote/master
   }
 
   bool forward_;
@@ -311,13 +324,21 @@ class WBWIIteratorImpl : public WBWIIterator {
 
   virtual void SeekToFirst() override {
     WriteBatchIndexEntry search_entry(WriteBatchIndexEntry::kFlagMin,
+<<<<<<< HEAD
                                       column_family_id_);
+=======
+                                      column_family_id_, 0, 0);
+>>>>>>> forknote/master
     skip_list_iter_.Seek(&search_entry);
   }
 
   virtual void SeekToLast() override {
     WriteBatchIndexEntry search_entry(WriteBatchIndexEntry::kFlagMin,
+<<<<<<< HEAD
                                       column_family_id_ + 1);
+=======
+                                      column_family_id_ + 1, 0, 0);
+>>>>>>> forknote/master
     skip_list_iter_.Seek(&search_entry);
     if (!skip_list_iter_.Valid()) {
       skip_list_iter_.SeekToLast();
@@ -337,13 +358,22 @@ class WBWIIteratorImpl : public WBWIIterator {
 
   virtual WriteEntry Entry() const override {
     WriteEntry ret;
+<<<<<<< HEAD
     Slice blob;
+=======
+    Slice blob, xid;
+>>>>>>> forknote/master
     const WriteBatchIndexEntry* iter_entry = skip_list_iter_.key();
     // this is guaranteed with Valid()
     assert(iter_entry != nullptr &&
            iter_entry->column_family == column_family_id_);
+<<<<<<< HEAD
     auto s = write_batch_->GetEntryFromDataOffset(iter_entry->offset, &ret.type,
                                                   &ret.key, &ret.value, &blob);
+=======
+    auto s = write_batch_->GetEntryFromDataOffset(
+        iter_entry->offset, &ret.type, &ret.key, &ret.value, &blob, &xid);
+>>>>>>> forknote/master
     assert(s.ok());
     assert(ret.type == kPutRecord || ret.type == kDeleteRecord ||
            ret.type == kSingleDeleteRecord || ret.type == kMergeRecord);
@@ -454,9 +484,25 @@ void WriteBatchWithIndex::Rep::AddOrUpdateIndex(const Slice& key) {
 }
 
 void WriteBatchWithIndex::Rep::AddNewEntry(uint32_t column_family_id) {
+<<<<<<< HEAD
     auto* mem = arena.Allocate(sizeof(WriteBatchIndexEntry));
     auto* index_entry =
         new (mem) WriteBatchIndexEntry(last_entry_offset, column_family_id);
+=======
+  const std::string& wb_data = write_batch.Data();
+  Slice entry_ptr = Slice(wb_data.data() + last_entry_offset,
+                          wb_data.size() - last_entry_offset);
+  // Extract key
+  Slice key;
+  bool success __attribute__((__unused__)) =
+      ReadKeyFromWriteBatchEntry(&entry_ptr, &key, column_family_id != 0);
+  assert(success);
+
+    auto* mem = arena.Allocate(sizeof(WriteBatchIndexEntry));
+    auto* index_entry =
+        new (mem) WriteBatchIndexEntry(last_entry_offset, column_family_id,
+                                       key.data() - wb_data.data(), key.size());
+>>>>>>> forknote/master
     skip_list.Insert(index_entry);
   }
 
@@ -491,7 +537,11 @@ void WriteBatchWithIndex::Rep::AddNewEntry(uint32_t column_family_id) {
     // Loop through all entries in Rep and add each one to the index
     int found = 0;
     while (s.ok() && !input.empty()) {
+<<<<<<< HEAD
       Slice key, value, blob;
+=======
+      Slice key, value, blob, xid;
+>>>>>>> forknote/master
       uint32_t column_family_id = 0;  // default
       char tag = 0;
 
@@ -499,7 +549,11 @@ void WriteBatchWithIndex::Rep::AddNewEntry(uint32_t column_family_id) {
       last_entry_offset = input.data() - write_batch.Data().data();
 
       s = ReadRecordFromWriteBatch(&input, &tag, &column_family_id, &key,
+<<<<<<< HEAD
                                    &value, &blob);
+=======
+                                   &value, &blob, &xid);
+>>>>>>> forknote/master
       if (!s.ok()) {
         break;
       }
@@ -519,6 +573,14 @@ void WriteBatchWithIndex::Rep::AddNewEntry(uint32_t column_family_id) {
           }
           break;
         case kTypeLogData:
+<<<<<<< HEAD
+=======
+        case kTypeBeginPrepareXID:
+        case kTypeEndPrepareXID:
+        case kTypeCommitXID:
+        case kTypeRollbackXID:
+        case kTypeNoop:
+>>>>>>> forknote/master
           break;
         default:
           return Status::Corruption("unknown WriteBatch tag");
@@ -706,7 +768,11 @@ Status WriteBatchWithIndex::GetFromBatchAndDB(DB* db,
   // Did not find key in batch OR could not resolve Merges.  Try DB.
   s = db->Get(read_options, column_family, key, value);
 
+<<<<<<< HEAD
   if (s.ok() || s.IsNotFound()) {  // DB Get Suceeded
+=======
+  if (s.ok() || s.IsNotFound()) {  // DB Get Succeeded
+>>>>>>> forknote/master
     if (result == WriteBatchWithIndexInternal::Result::kMergeInProgress) {
       // Merge result from DB with merges in Batch
       auto cfh = reinterpret_cast<ColumnFamilyHandleImpl*>(column_family);
@@ -724,9 +790,19 @@ Status WriteBatchWithIndex::GetFromBatchAndDB(DB* db,
         merge_data = nullptr;
       }
 
+<<<<<<< HEAD
       s = MergeHelper::TimedFullMerge(
           key, merge_data, merge_context.GetOperands(), merge_operator,
           statistics, env, logger, value);
+=======
+      if (merge_operator) {
+        s = MergeHelper::TimedFullMerge(merge_operator, key, merge_data,
+                                        merge_context.GetOperands(), value,
+                                        logger, statistics, env);
+      } else {
+        s = Status::InvalidArgument("Options::merge_operator must be set");
+      }
+>>>>>>> forknote/master
     }
   }
 

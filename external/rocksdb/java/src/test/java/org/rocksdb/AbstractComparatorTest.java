@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -8,6 +12,10 @@ package org.rocksdb;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
+<<<<<<< HEAD
+=======
+import java.util.Arrays;
+>>>>>>> forknote/master
 import java.util.List;
 import java.util.Random;
 
@@ -39,6 +47,7 @@ public abstract class AbstractComparatorTest {
    *
    * @throws java.io.IOException if IO error happens.
    */
+<<<<<<< HEAD
   public void testRoundtrip(final Path db_path) throws IOException, RocksDBException {
 
     Options opt = null;
@@ -63,10 +72,34 @@ public abstract class AbstractComparatorTest {
         }
       }
       db.close();
+=======
+  public void testRoundtrip(final Path db_path) throws IOException,
+      RocksDBException {
+    try (final AbstractComparator comparator = getAscendingIntKeyComparator();
+         final Options opt = new Options()
+             .setCreateIfMissing(true)
+             .setComparator(comparator)) {
+
+      // store 10,000 random integer keys
+      final int ITERATIONS = 10000;
+      try (final RocksDB db = RocksDB.open(opt, db_path.toString())) {
+        final Random random = new Random();
+        for (int i = 0; i < ITERATIONS; i++) {
+          final byte key[] = intToByte(random.nextInt());
+          // does key already exist (avoid duplicates)
+          if (i > 0 && db.get(key) != null) {
+            i--; // generate a different key
+          } else {
+            db.put(key, "value".getBytes());
+          }
+        }
+      }
+>>>>>>> forknote/master
 
       // re-open db and read from start to end
       // integer keys should be in ascending
       // order as defined by SimpleIntComparator
+<<<<<<< HEAD
       db = RocksDB.open(opt, db_path.toString());
       final RocksIterator it = db.newIterator();
       it.seekToFirst();
@@ -90,6 +123,20 @@ public abstract class AbstractComparatorTest {
 
       if (opt != null) {
         opt.dispose();
+=======
+      try (final RocksDB db = RocksDB.open(opt, db_path.toString());
+           final RocksIterator it = db.newIterator()) {
+        it.seekToFirst();
+        int lastKey = Integer.MIN_VALUE;
+        int count = 0;
+        for (it.seekToFirst(); it.isValid(); it.next()) {
+          final int thisKey = byteToInt(it.key());
+          assertThat(thisKey).isGreaterThan(lastKey);
+          lastKey = thisKey;
+          count++;
+        }
+        assertThat(count).isEqualTo(ITERATIONS);
+>>>>>>> forknote/master
       }
     }
   }
@@ -109,6 +156,7 @@ public abstract class AbstractComparatorTest {
   public void testRoundtripCf(final Path db_path) throws IOException,
       RocksDBException {
 
+<<<<<<< HEAD
     DBOptions opt = null;
     RocksDB db = null;
     List<ColumnFamilyDescriptor> cfDescriptors =
@@ -183,6 +231,77 @@ public abstract class AbstractComparatorTest {
 
       if (opt != null) {
         opt.dispose();
+=======
+    try(final AbstractComparator comparator = getAscendingIntKeyComparator()) {
+      final List<ColumnFamilyDescriptor> cfDescriptors = Arrays.asList(
+          new ColumnFamilyDescriptor(RocksDB.DEFAULT_COLUMN_FAMILY),
+          new ColumnFamilyDescriptor("new_cf".getBytes(),
+              new ColumnFamilyOptions().setComparator(comparator))
+      );
+
+      final List<ColumnFamilyHandle> cfHandles = new ArrayList<>();
+
+      try (final DBOptions opt = new DBOptions().
+          setCreateIfMissing(true).
+          setCreateMissingColumnFamilies(true)) {
+
+        // store 10,000 random integer keys
+        final int ITERATIONS = 10000;
+
+        try (final RocksDB db = RocksDB.open(opt, db_path.toString(),
+            cfDescriptors, cfHandles)) {
+          try {
+            assertThat(cfDescriptors.size()).isEqualTo(2);
+            assertThat(cfHandles.size()).isEqualTo(2);
+
+            final Random random = new Random();
+            for (int i = 0; i < ITERATIONS; i++) {
+              final byte key[] = intToByte(random.nextInt());
+              if (i > 0 && db.get(cfHandles.get(1), key) != null) {
+                // does key already exist (avoid duplicates)
+                i--; // generate a different key
+              } else {
+                db.put(cfHandles.get(1), key, "value".getBytes());
+              }
+            }
+          } finally {
+            for (final ColumnFamilyHandle handle : cfHandles) {
+              handle.close();
+            }
+          }
+          cfHandles.clear();
+        }
+
+        // re-open db and read from start to end
+        // integer keys should be in ascending
+        // order as defined by SimpleIntComparator
+        try (final RocksDB db = RocksDB.open(opt, db_path.toString(),
+            cfDescriptors, cfHandles);
+             final RocksIterator it = db.newIterator(cfHandles.get(1))) {
+          try {
+            assertThat(cfDescriptors.size()).isEqualTo(2);
+            assertThat(cfHandles.size()).isEqualTo(2);
+
+            it.seekToFirst();
+            int lastKey = Integer.MIN_VALUE;
+            int count = 0;
+            for (it.seekToFirst(); it.isValid(); it.next()) {
+              final int thisKey = byteToInt(it.key());
+              assertThat(thisKey).isGreaterThan(lastKey);
+              lastKey = thisKey;
+              count++;
+            }
+
+            assertThat(count).isEqualTo(ITERATIONS);
+
+          } finally {
+            for (final ColumnFamilyHandle handle : cfHandles) {
+              handle.close();
+            }
+          }
+          cfHandles.clear();
+        }
+>>>>>>> forknote/master
       }
     }
   }

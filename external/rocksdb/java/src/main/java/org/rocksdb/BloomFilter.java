@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -22,8 +26,11 @@ public class BloomFilter extends Filter {
 
   private static final int DEFAULT_BITS_PER_KEY = 10;
   private static final boolean DEFAULT_MODE = true;
+<<<<<<< HEAD
   private final int bitsPerKey_;
   private final boolean useBlockBasedMode_;
+=======
+>>>>>>> forknote/master
 
   /**
    * BloomFilter constructor
@@ -73,6 +80,7 @@ public class BloomFilter extends Filter {
    * @param useBlockBasedMode use block based mode or full filter mode
    */
   public BloomFilter(final int bitsPerKey, final boolean useBlockBasedMode) {
+<<<<<<< HEAD
     super();
     bitsPerKey_ = bitsPerKey;
     useBlockBasedMode_ = useBlockBasedMode;
@@ -86,4 +94,11 @@ public class BloomFilter extends Filter {
 
   private native void createNewBloomFilter(int bitsKeyKey,
       boolean useBlockBasedMode);
+=======
+    super(createNewBloomFilter(bitsPerKey, useBlockBasedMode));
+  }
+
+  private native static long createNewBloomFilter(final int bitsKeyKey,
+      final boolean useBlockBasedMode);
+>>>>>>> forknote/master
 }

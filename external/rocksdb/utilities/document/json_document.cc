@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -307,7 +311,11 @@ JSONDocument JSONDocument::operator[](const std::string& key) const {
   assert(foundValue != nullptr);
   // No need to save paths in const objects
   JSONDocument ans(foundValue, false);
+<<<<<<< HEAD
   return std::move(ans);
+=======
+  return ans;
+>>>>>>> forknote/master
 }
 
 size_t JSONDocument::Count() const {
@@ -330,7 +338,11 @@ JSONDocument JSONDocument::operator[](size_t i) const {
   auto arrayVal = reinterpret_cast<fbson::ArrayVal*>(value_);
   auto foundValue = arrayVal->get(static_cast<int>(i));
   JSONDocument ans(foundValue, false);
+<<<<<<< HEAD
   return std::move(ans);
+=======
+  return ans;
+>>>>>>> forknote/master
 }
 
 bool JSONDocument::IsNull() const {
@@ -588,8 +600,13 @@ JSONDocument::const_item_iterator::~const_item_iterator() {
 
 JSONDocument::const_item_iterator::value_type
   JSONDocument::const_item_iterator::operator*() {
+<<<<<<< HEAD
   return {std::string(it_->getKeyStr(), it_->klen()),
     JSONDocument(it_->value(), false)};
+=======
+  return JSONDocument::const_item_iterator::value_type(std::string(it_->getKeyStr(), it_->klen()),
+    JSONDocument(it_->value(), false));
+>>>>>>> forknote/master
 }
 
 JSONDocument::ItemsIteratorGenerator::ItemsIteratorGenerator(

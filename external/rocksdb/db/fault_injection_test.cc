@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2015, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -11,10 +15,13 @@
 // the last "sync". It then checks for data loss errors by purposely dropping
 // file data (or entire files) not protected by a "sync".
 
+<<<<<<< HEAD
 #if !(defined NDEBUG) || !defined(OS_WIN)
 
 #include <map>
 #include <set>
+=======
+>>>>>>> forknote/master
 #include "db/db_impl.h"
 #include "db/filename.h"
 #include "db/log_format.h"
@@ -24,6 +31,10 @@
 #include "rocksdb/env.h"
 #include "rocksdb/table.h"
 #include "rocksdb/write_batch.h"
+<<<<<<< HEAD
+=======
+#include "util/fault_injection_test_env.h"
+>>>>>>> forknote/master
 #include "util/logging.h"
 #include "util/mock_env.h"
 #include "util/mutexlock.h"
@@ -37,6 +48,7 @@ static const int kValueSize = 1000;
 static const int kMaxNumValues = 2000;
 static const size_t kNumIterations = 3;
 
+<<<<<<< HEAD
 class TestWritableFile;
 class FaultInjectionTestEnv;
 
@@ -432,6 +444,8 @@ Status TestWritableFile::Sync() {
   return Status::OK();
 }
 
+=======
+>>>>>>> forknote/master
 class FaultInjectionTest : public testing::Test,
                            public testing::WithParamInterface<bool> {
  protected:
@@ -647,6 +661,7 @@ class FaultInjectionTest : public testing::Test,
     return test::RandomString(&r, kValueSize, storage);
   }
 
+<<<<<<< HEAD
   Status OpenDB() {
     delete db_;
     db_ = NULL;
@@ -657,6 +672,17 @@ class FaultInjectionTest : public testing::Test,
   void CloseDB() {
     delete db_;
     db_ = NULL;
+=======
+  void CloseDB() {
+    delete db_;
+    db_ = NULL;
+  }
+
+  Status OpenDB() {
+    CloseDB();
+    env_->ResetState();
+    return DB::Open(options_, dbname_, &db_);
+>>>>>>> forknote/master
   }
 
   void DeleteAllData() {
@@ -735,7 +761,11 @@ class FaultInjectionTest : public testing::Test,
   }
 
   void WaitCompactionFinish() {
+<<<<<<< HEAD
     static_cast<DBImpl*>(db_)->TEST_WaitForCompact();
+=======
+    static_cast<DBImpl*>(db_->GetRootDB())->TEST_WaitForCompact();
+>>>>>>> forknote/master
     ASSERT_OK(db_->Put(WriteOptions(), "", ""));
   }
 };
@@ -786,6 +816,10 @@ TEST_P(FaultInjectionTest, WriteOptionSyncTest) {
   // Block the job queue to prevent flush job from running.
   env_->Schedule(&test::SleepingBackgroundTask::DoSleepTask, &sleeping_task_low,
                  Env::Priority::HIGH);
+<<<<<<< HEAD
+=======
+  sleeping_task_low.WaitUntilSleeping();
+>>>>>>> forknote/master
 
   WriteOptions write_options;
   write_options.sync = false;
@@ -869,6 +903,10 @@ TEST_P(FaultInjectionTest, ManualLogSyncTest) {
   // Block the job queue to prevent flush job from running.
   env_->Schedule(&test::SleepingBackgroundTask::DoSleepTask, &sleeping_task_low,
                  Env::Priority::HIGH);
+<<<<<<< HEAD
+=======
+  sleeping_task_low.WaitUntilSleeping();
+>>>>>>> forknote/master
 
   WriteOptions write_options;
   write_options.sync = false;
@@ -902,6 +940,7 @@ INSTANTIATE_TEST_CASE_P(FaultTest, FaultInjectionTest, ::testing::Bool());
 
 }  // namespace rocksdb
 
+<<<<<<< HEAD
 #endif // #if !(defined NDEBUG) || !defined(OS_WIN)
 
 int main(int argc, char** argv) {
@@ -911,4 +950,9 @@ int main(int argc, char** argv) {
 #else
   return 0;
 #endif
+=======
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+>>>>>>> forknote/master
 }

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -16,17 +20,33 @@
 #include "port/sys_time.h"
 #include <time.h>
 #include <fcntl.h>
+<<<<<<< HEAD
 #ifdef OS_LINUX
 #include <linux/falloc.h>
 #endif
 #include "rocksdb/env.h"
 #include "util/iostats_context_imp.h"
+=======
+
+#ifdef OS_LINUX
+#ifndef FALLOC_FL_KEEP_SIZE
+#include <linux/falloc.h>
+#endif
+#endif
+
+#include "rocksdb/env.h"
+#include "util/iostats_context_imp.h"
+#include "util/sync_point.h"
+>>>>>>> forknote/master
 #include <atomic>
 
 namespace rocksdb {
 
+<<<<<<< HEAD
 const int kDebugLogChunkSize = 128 * 1024;
 
+=======
+>>>>>>> forknote/master
 class PosixLogger : public Logger {
  private:
   FILE* file_;
@@ -52,6 +72,11 @@ class PosixLogger : public Logger {
     fclose(file_);
   }
   virtual void Flush() override {
+<<<<<<< HEAD
+=======
+    TEST_SYNC_POINT("PosixLogger::Flush:Begin1");
+    TEST_SYNC_POINT("PosixLogger::Flush:Begin2");
+>>>>>>> forknote/master
     if (flush_pending_) {
       flush_pending_ = false;
       fflush(file_);
@@ -123,6 +148,11 @@ class PosixLogger : public Logger {
       const size_t write_size = p - base;
 
 #ifdef ROCKSDB_FALLOCATE_PRESENT
+<<<<<<< HEAD
+=======
+      const int kDebugLogChunkSize = 128 * 1024;
+
+>>>>>>> forknote/master
       // If this write would cross a boundary of kDebugLogChunkSize
       // space, pre-allocate more space to avoid overly large
       // allocations from filesystem allocsize options.

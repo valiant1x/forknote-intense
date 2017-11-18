@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -8,6 +12,13 @@
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
 #pragma once
+<<<<<<< HEAD
+=======
+#include <assert.h>
+#include <atomic>
+#include <mutex>
+#include <thread>
+>>>>>>> forknote/master
 #include "port/port.h"
 
 namespace rocksdb {
@@ -55,6 +66,23 @@ class ReadLock {
   void operator=(const ReadLock&);
 };
 
+<<<<<<< HEAD
+=======
+//
+// Automatically unlock a locked mutex when the object is destroyed
+//
+class ReadUnlock {
+ public:
+  explicit ReadUnlock(port::RWMutex *mu) : mu_(mu) { mu->AssertHeld(); }
+  ~ReadUnlock() { mu_->ReadUnlock(); }
+
+ private:
+  port::RWMutex *const mu_;
+  // No copying allowed
+  ReadUnlock(const ReadUnlock &) = delete;
+  ReadUnlock &operator=(const ReadUnlock &) = delete;
+};
+>>>>>>> forknote/master
 
 //
 // Acquire a WriteLock on the specified RWMutex.
@@ -75,4 +103,42 @@ class WriteLock {
   void operator=(const WriteLock&);
 };
 
+<<<<<<< HEAD
+=======
+//
+// SpinMutex has very low overhead for low-contention cases.  Method names
+// are chosen so you can use std::unique_lock or std::lock_guard with it.
+//
+class SpinMutex {
+ public:
+  SpinMutex() : locked_(false) {}
+
+  bool try_lock() {
+    auto currently_locked = locked_.load(std::memory_order_relaxed);
+    return !currently_locked &&
+           locked_.compare_exchange_weak(currently_locked, true,
+                                         std::memory_order_acquire,
+                                         std::memory_order_relaxed);
+  }
+
+  void lock() {
+    for (size_t tries = 0;; ++tries) {
+      if (try_lock()) {
+        // success
+        break;
+      }
+      port::AsmVolatilePause();
+      if (tries > 100) {
+        std::this_thread::yield();
+      }
+    }
+  }
+
+  void unlock() { locked_.store(false, std::memory_order_release); }
+
+ private:
+  std::atomic<bool> locked_;
+};
+
+>>>>>>> forknote/master
 }  // namespace rocksdb

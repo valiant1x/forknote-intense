@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -107,8 +111,14 @@ class SkipList {
   };
 
  private:
+<<<<<<< HEAD
   const int32_t kMaxHeight_;
   const int32_t kBranching_;
+=======
+  const uint16_t kMaxHeight_;
+  const uint16_t kBranching_;
+  const uint32_t kScaledInverseBranching_;
+>>>>>>> forknote/master
 
   // Immutable after construction
   Comparator const compare_;
@@ -131,9 +141,12 @@ class SkipList {
     return max_height_.load(std::memory_order_relaxed);
   }
 
+<<<<<<< HEAD
   // Read/written only by Insert().
   Random rnd_;
 
+=======
+>>>>>>> forknote/master
   Node* NewNode(const Key& key, int height);
   int RandomHeight();
   bool Equal(const Key& a, const Key& b) const { return (compare_(a, b) == 0); }
@@ -264,9 +277,17 @@ inline void SkipList<Key, Comparator>::Iterator::SeekToLast() {
 
 template<typename Key, class Comparator>
 int SkipList<Key, Comparator>::RandomHeight() {
+<<<<<<< HEAD
   // Increase height with probability 1 in kBranching
   int height = 1;
   while (height < kMaxHeight_ && ((rnd_.Next() % kBranching_) == 0)) {
+=======
+  auto rnd = Random::GetTLSInstance();
+
+  // Increase height with probability 1 in kBranching
+  int height = 1;
+  while (height < kMaxHeight_ && rnd->Next() < kScaledInverseBranching_) {
+>>>>>>> forknote/master
     height++;
   }
   assert(height > 0);
@@ -391,14 +412,26 @@ SkipList<Key, Comparator>::SkipList(const Comparator cmp, Allocator* allocator,
                                     int32_t branching_factor)
     : kMaxHeight_(max_height),
       kBranching_(branching_factor),
+<<<<<<< HEAD
+=======
+      kScaledInverseBranching_((Random::kMaxNext + 1) / kBranching_),
+>>>>>>> forknote/master
       compare_(cmp),
       allocator_(allocator),
       head_(NewNode(0 /* any key will do */, max_height)),
       max_height_(1),
+<<<<<<< HEAD
       prev_height_(1),
       rnd_(0xdeadbeef) {
   assert(kMaxHeight_ > 0);
   assert(kBranching_ > 0);
+=======
+      prev_height_(1) {
+  assert(max_height > 0 && kMaxHeight_ == static_cast<uint32_t>(max_height));
+  assert(branching_factor > 0 &&
+         kBranching_ == static_cast<uint32_t>(branching_factor));
+  assert(kScaledInverseBranching_ > 0);
+>>>>>>> forknote/master
   // Allocate the prev_ Node* array, directly from the passed-in allocator.
   // prev_ does not need to be freed, as its life cycle is tied up with
   // the allocator as a whole.

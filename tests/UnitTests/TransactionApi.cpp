@@ -150,6 +150,7 @@ TEST_F(TransactionApi, addAndSignInput) {
   EXPECT_NO_FATAL_FAILURE(checkHashChanged());
 }
 
+<<<<<<< HEAD
 TEST_F(TransactionApi, addAndSignInputMsig) {
 
   MultisignatureInput inputMsig;
@@ -186,6 +187,8 @@ TEST_F(TransactionApi, addAndSignInputMsig) {
   EXPECT_NO_FATAL_FAILURE(checkHashChanged());
 }
 
+=======
+>>>>>>> forknote/master
 TEST_F(TransactionApi, addOutputKey) {
   ASSERT_EQ(0, tx->getOutputCount());
   ASSERT_EQ(0, tx->getOutputTotalAmount());
@@ -199,6 +202,7 @@ TEST_F(TransactionApi, addOutputKey) {
   EXPECT_NO_FATAL_FAILURE(checkHashChanged());
 }
 
+<<<<<<< HEAD
 TEST_F(TransactionApi, addOutputMsig) {
   ASSERT_EQ(0, tx->getOutputCount());
   ASSERT_EQ(0, tx->getOutputTotalAmount());
@@ -218,6 +222,8 @@ TEST_F(TransactionApi, addOutputMsig) {
   EXPECT_NO_FATAL_FAILURE(checkHashChanged());
 }
 
+=======
+>>>>>>> forknote/master
 TEST_F(TransactionApi, secretKey) {
   tx->addOutput(1000, sender.address);
   ASSERT_EQ(1000, tx->getOutputTotalAmount()); 
@@ -333,6 +339,7 @@ TEST_F(TransactionApi, doubleSpendInTransactionKey) {
   tx->addInput(sender, info, ephKeys);
   ASSERT_FALSE(tx->validateInputs());
 }
+<<<<<<< HEAD
 
 TEST_F(TransactionApi, doubleSpendInTransactionMultisignature) {
   MultisignatureInput inputMsig = { 1000, 0, 2 };
@@ -373,3 +380,5 @@ TEST_F(TransactionApi, unableToModifySignedTransaction) {
 
   EXPECT_NO_FATAL_FAILURE(checkHashChanged());
 }
+=======
+>>>>>>> forknote/master

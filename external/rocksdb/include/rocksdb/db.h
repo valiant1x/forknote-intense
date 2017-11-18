@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -12,6 +16,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <memory>
+<<<<<<< HEAD
 #include <vector>
 #include <string>
 #include <unordered_map>
@@ -24,6 +29,22 @@
 #include "rocksdb/listener.h"
 #include "rocksdb/snapshot.h"
 #include "rocksdb/thread_status.h"
+=======
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include "rocksdb/immutable_options.h"
+#include "rocksdb/iterator.h"
+#include "rocksdb/listener.h"
+#include "rocksdb/metadata.h"
+#include "rocksdb/options.h"
+#include "rocksdb/snapshot.h"
+#include "rocksdb/sst_file_writer.h"
+#include "rocksdb/thread_status.h"
+#include "rocksdb/transaction_log.h"
+#include "rocksdb/types.h"
+#include "rocksdb/version.h"
+>>>>>>> forknote/master
 
 #ifdef _WIN32
 // Windows API macro interference
@@ -49,6 +70,7 @@ class EventListener;
 
 using std::unique_ptr;
 
+<<<<<<< HEAD
 class ColumnFamilyHandle {
  public:
   virtual ~ColumnFamilyHandle() {}
@@ -57,6 +79,9 @@ class ColumnFamilyHandle {
 };
 extern const std::string kDefaultColumnFamilyName;
 
+=======
+extern const std::string kDefaultColumnFamilyName;
+>>>>>>> forknote/master
 struct ColumnFamilyDescriptor {
   std::string name;
   ColumnFamilyOptions options;
@@ -67,6 +92,26 @@ struct ColumnFamilyDescriptor {
       : name(_name), options(_options) {}
 };
 
+<<<<<<< HEAD
+=======
+class ColumnFamilyHandle {
+ public:
+  virtual ~ColumnFamilyHandle() {}
+  // Returns the name of the column family associated with the current handle.
+  virtual const std::string& GetName() const = 0;
+  // Returns the ID of the column family associated with the current handle.
+  virtual uint32_t GetID() const = 0;
+  // Fills "*desc" with the up-to-date descriptor of the column family
+  // associated with this handle. Since it fills "*desc" with the up-to-date
+  // information, this call might internally lock and release DB mutex to
+  // access the up-to-date CF options.  In addition, all the pointer-typed
+  // options cannot be referenced any longer than the original options exist.
+  //
+  // Note that this function is not supported in RocksDBLite.
+  virtual Status GetDescriptor(ColumnFamilyDescriptor* desc) = 0;
+};
+
+>>>>>>> forknote/master
 static const int kMajorVersion = __ROCKSDB_MAJOR__;
 static const int kMinorVersion = __ROCKSDB_MINOR__;
 
@@ -135,7 +180,13 @@ class DB {
   // in rocksdb::kDefaultColumnFamilyName.
   // If everything is OK, handles will on return be the same size
   // as column_families --- handles[i] will be a handle that you
+<<<<<<< HEAD
   // will use to operate on column family column_family[i]
+=======
+  // will use to operate on column family column_family[i].
+  // Before delete DB, you have to close All column families by calling
+  // DestroyColumnFamilyHandle() with all the handles.
+>>>>>>> forknote/master
   static Status Open(const DBOptions& db_options, const std::string& name,
                      const std::vector<ColumnFamilyDescriptor>& column_families,
                      std::vector<ColumnFamilyHandle*>* handles, DB** dbptr);
@@ -161,6 +212,14 @@ class DB {
   // only records a drop record in the manifest and prevents the column
   // family from flushing and compacting.
   virtual Status DropColumnFamily(ColumnFamilyHandle* column_family);
+<<<<<<< HEAD
+=======
+  // Close a column family specified by column_family handle and destroy
+  // the column family handle specified to avoid double deletion. This call
+  // deletes the column family handle by default. Use this method to
+  // close column family instead of deleting column family handle directly
+  virtual Status DestroyColumnFamilyHandle(ColumnFamilyHandle* column_family);
+>>>>>>> forknote/master
 
   // Set the database entry for "key" to "value".
   // If "key" already exists, it will be overwritten.
@@ -188,6 +247,21 @@ class DB {
   // Remove the database entry for "key". Requires that the key exists
   // and was not overwritten. Returns OK on success, and a non-OK status
   // on error.  It is not an error if "key" did not exist in the database.
+<<<<<<< HEAD
+=======
+  //
+  // If a key is overwritten (by calling Put() multiple times), then the result
+  // of calling SingleDelete() on this key is undefined.  SingleDelete() only
+  // behaves correctly if there has been only one Put() for this key since the
+  // previous call to SingleDelete() for this key.
+  //
+  // This feature is currently an experimental performance optimization
+  // for a very specific workload.  It is up to the caller to ensure that
+  // SingleDelete is only used for a key that is not deleted using Delete() or
+  // written using Merge().  Mixing SingleDelete operations with Deletes and
+  // Merges can result in undefined behavior.
+  //
+>>>>>>> forknote/master
   // Note: consider setting options.sync = true.
   virtual Status SingleDelete(const WriteOptions& options,
                               ColumnFamilyHandle* column_family,
@@ -258,9 +332,16 @@ class DB {
   // This check is potentially lighter-weight than invoking DB::Get(). One way
   // to make this lighter weight is to avoid doing any IOs.
   // Default implementation here returns true and sets 'value_found' to false
+<<<<<<< HEAD
   virtual bool KeyMayExist(const ReadOptions& options,
                            ColumnFamilyHandle* column_family, const Slice& key,
                            std::string* value, bool* value_found = nullptr) {
+=======
+  virtual bool KeyMayExist(const ReadOptions& /*options*/,
+                           ColumnFamilyHandle* /*column_family*/,
+                           const Slice& /*key*/, std::string* /*value*/,
+                           bool* value_found = nullptr) {
+>>>>>>> forknote/master
     if (value_found != nullptr) {
       *value_found = false;
     }
@@ -303,6 +384,7 @@ class DB {
   // use "snapshot" after this call.
   virtual void ReleaseSnapshot(const Snapshot* snapshot) = 0;
 
+<<<<<<< HEAD
   // DB implementations can export properties about their state
   // via this method.  If "property" is a valid property understood by this
   // DB implementation, fills "*value" with its current value and returns
@@ -380,10 +462,175 @@ class DB {
     static const std::string kTotalSstFilesSize;
     static const std::string kEstimatePendingCompactionBytes;
     static const std::string kAggregatedTableProperties;
+=======
+#ifndef ROCKSDB_LITE
+  // Contains all valid property arguments for GetProperty().
+  //
+  // NOTE: Property names cannot end in numbers since those are interpreted as
+  //       arguments, e.g., see kNumFilesAtLevelPrefix.
+  struct Properties {
+    //  "rocksdb.num-files-at-level<N>" - returns string containing the number
+    //      of files at level <N>, where <N> is an ASCII representation of a
+    //      level number (e.g., "0").
+    static const std::string kNumFilesAtLevelPrefix;
+
+    //  "rocksdb.compression-ratio-at-level<N>" - returns string containing the
+    //      compression ratio of data at level <N>, where <N> is an ASCII
+    //      representation of a level number (e.g., "0"). Here, compression
+    //      ratio is defined as uncompressed data size / compressed file size.
+    //      Returns "-1.0" if no open files at level <N>.
+    static const std::string kCompressionRatioAtLevelPrefix;
+
+    //  "rocksdb.stats" - returns a multi-line string containing the data
+    //      described by kCFStats followed by the data described by kDBStats.
+    static const std::string kStats;
+
+    //  "rocksdb.sstables" - returns a multi-line string summarizing current
+    //      SST files.
+    static const std::string kSSTables;
+
+    //  "rocksdb.cfstats" - returns a multi-line string with general column
+    //      family stats per-level over db's lifetime ("L<n>"), aggregated over
+    //      db's lifetime ("Sum"), and aggregated over the interval since the
+    //      last retrieval ("Int").
+    static const std::string kCFStats;
+
+    //  "rocksdb.dbstats" - returns a multi-line string with general database
+    //      stats, both cumulative (over the db's lifetime) and interval (since
+    //      the last retrieval of kDBStats).
+    static const std::string kDBStats;
+
+    //  "rocksdb.levelstats" - returns multi-line string containing the number
+    //      of files per level and total size of each level (MB).
+    static const std::string kLevelStats;
+
+    //  "rocksdb.num-immutable-mem-table" - returns number of immutable
+    //      memtables that have not yet been flushed.
+    static const std::string kNumImmutableMemTable;
+
+    //  "rocksdb.num-immutable-mem-table-flushed" - returns number of immutable
+    //      memtables that have already been flushed.
+    static const std::string kNumImmutableMemTableFlushed;
+
+    //  "rocksdb.mem-table-flush-pending" - returns 1 if a memtable flush is
+    //      pending; otherwise, returns 0.
+    static const std::string kMemTableFlushPending;
+
+    //  "rocksdb.num-running-flushes" - returns the number of currently running
+    //      flushes.
+    static const std::string kNumRunningFlushes;
+
+    //  "rocksdb.compaction-pending" - returns 1 if at least one compaction is
+    //      pending; otherwise, returns 0.
+    static const std::string kCompactionPending;
+
+    //  "rocksdb.num-running-compactions" - returns the number of currently
+    //      running compactions.
+    static const std::string kNumRunningCompactions;
+
+    //  "rocksdb.background-errors" - returns accumulated number of background
+    //      errors.
+    static const std::string kBackgroundErrors;
+
+    //  "rocksdb.cur-size-active-mem-table" - returns approximate size of active
+    //      memtable (bytes).
+    static const std::string kCurSizeActiveMemTable;
+
+    //  "rocksdb.cur-size-all-mem-tables" - returns approximate size of active
+    //      and unflushed immutable memtables (bytes).
+    static const std::string kCurSizeAllMemTables;
+
+    //  "rocksdb.size-all-mem-tables" - returns approximate size of active,
+    //      unflushed immutable, and pinned immutable memtables (bytes).
+    static const std::string kSizeAllMemTables;
+
+    //  "rocksdb.num-entries-active-mem-table" - returns total number of entries
+    //      in the active memtable.
+    static const std::string kNumEntriesActiveMemTable;
+
+    //  "rocksdb.num-entries-imm-mem-tables" - returns total number of entries
+    //      in the unflushed immutable memtables.
+    static const std::string kNumEntriesImmMemTables;
+
+    //  "rocksdb.num-deletes-active-mem-table" - returns total number of delete
+    //      entries in the active memtable.
+    static const std::string kNumDeletesActiveMemTable;
+
+    //  "rocksdb.num-deletes-imm-mem-tables" - returns total number of delete
+    //      entries in the unflushed immutable memtables.
+    static const std::string kNumDeletesImmMemTables;
+
+    //  "rocksdb.estimate-num-keys" - returns estimated number of total keys in
+    //      the active and unflushed immutable memtables.
+    static const std::string kEstimateNumKeys;
+
+    //  "rocksdb.estimate-table-readers-mem" - returns estimated memory used for
+    //      reading SST tables, excluding memory used in block cache (e.g.,
+    //      filter and index blocks).
+    static const std::string kEstimateTableReadersMem;
+
+    //  "rocksdb.is-file-deletions-enabled" - returns 0 if deletion of obsolete
+    //      files is enabled; otherwise, returns a non-zero number.
+    static const std::string kIsFileDeletionsEnabled;
+
+    //  "rocksdb.num-snapshots" - returns number of unreleased snapshots of the
+    //      database.
+    static const std::string kNumSnapshots;
+
+    //  "rocksdb.oldest-snapshot-time" - returns number representing unix
+    //      timestamp of oldest unreleased snapshot.
+    static const std::string kOldestSnapshotTime;
+
+    //  "rocksdb.num-live-versions" - returns number of live versions. `Version`
+    //      is an internal data structure. See version_set.h for details. More
+    //      live versions often mean more SST files are held from being deleted,
+    //      by iterators or unfinished compactions.
+    static const std::string kNumLiveVersions;
+
+    //  "rocksdb.current-super-version-number" - returns number of curent LSM
+    //  version. It is a uint64_t integer number, incremented after there is
+    //  any change to the LSM tree. The number is not preserved after restarting
+    //  the DB. After DB restart, it will start from 0 again.
+    static const std::string kCurrentSuperVersionNumber;
+
+    //  "rocksdb.estimate-live-data-size" - returns an estimate of the amount of
+    //      live data in bytes.
+    static const std::string kEstimateLiveDataSize;
+
+    //  "rocksdb.total-sst-files-size" - returns total size (bytes) of all SST
+    //      files.
+    //  WARNING: may slow down online queries if there are too many files.
+    static const std::string kTotalSstFilesSize;
+
+    //  "rocksdb.base-level" - returns number of level to which L0 data will be
+    //      compacted.
+    static const std::string kBaseLevel;
+
+    //  "rocksdb.estimate-pending-compaction-bytes" - returns estimated total
+    //      number of bytes compaction needs to rewrite to get all levels down
+    //      to under target size. Not valid for other compactions than level-
+    //      based.
+    static const std::string kEstimatePendingCompactionBytes;
+
+    //  "rocksdb.aggregated-table-properties" - returns a string representation
+    //      of the aggregated table properties of the target column family.
+    static const std::string kAggregatedTableProperties;
+
+    //  "rocksdb.aggregated-table-properties-at-level<N>", same as the previous
+    //      one but only returns the aggregated table properties of the
+    //      specified level "N" at the target column family.
+>>>>>>> forknote/master
     static const std::string kAggregatedTablePropertiesAtLevel;
   };
 #endif /* ROCKSDB_LITE */
 
+<<<<<<< HEAD
+=======
+  // DB implementations can export properties about their state via this method.
+  // If "property" is a valid property understood by this DB implementation (see
+  // Properties struct above for valid options), fills "*value" with its current
+  // value and returns true.  Otherwise, returns false.
+>>>>>>> forknote/master
   virtual bool GetProperty(ColumnFamilyHandle* column_family,
                            const Slice& property, std::string* value) = 0;
   virtual bool GetProperty(const Slice& property, std::string* value) {
@@ -410,16 +657,33 @@ class DB {
   //  "rocksdb.num-snapshots"
   //  "rocksdb.oldest-snapshot-time"
   //  "rocksdb.num-live-versions"
+<<<<<<< HEAD
+=======
+  //  "rocksdb.current-super-version-number"
+>>>>>>> forknote/master
   //  "rocksdb.estimate-live-data-size"
   //  "rocksdb.total-sst-files-size"
   //  "rocksdb.base-level"
   //  "rocksdb.estimate-pending-compaction-bytes"
+<<<<<<< HEAD
+=======
+  //  "rocksdb.num-running-compactions"
+  //  "rocksdb.num-running-flushes"
+>>>>>>> forknote/master
   virtual bool GetIntProperty(ColumnFamilyHandle* column_family,
                               const Slice& property, uint64_t* value) = 0;
   virtual bool GetIntProperty(const Slice& property, uint64_t* value) {
     return GetIntProperty(DefaultColumnFamily(), property, value);
   }
 
+<<<<<<< HEAD
+=======
+  // Same as GetIntProperty(), but this one returns the aggregated int
+  // property from all column families.
+  virtual bool GetAggregatedIntProperty(const Slice& property,
+                                        uint64_t* value) = 0;
+
+>>>>>>> forknote/master
   // For each i in [0,n-1], store in "sizes[i]", the approximate
   // file system space used by keys in "[range[i].start .. range[i].limit)".
   //
@@ -465,6 +729,7 @@ class DB {
   }
 
 #if defined(__GNUC__) || defined(__clang__)
+<<<<<<< HEAD
   __attribute__((deprecated))
 #elif _WIN32
   __declspec(deprecated)
@@ -473,6 +738,16 @@ class DB {
       CompactRange(ColumnFamilyHandle* column_family, const Slice* begin,
                    const Slice* end, bool change_level = false,
                    int target_level = -1, uint32_t target_path_id = 0) {
+=======
+  __attribute__((__deprecated__))
+#elif _WIN32
+  __declspec(deprecated)
+#endif
+  virtual Status
+  CompactRange(ColumnFamilyHandle* column_family, const Slice* begin,
+               const Slice* end, bool change_level = false,
+               int target_level = -1, uint32_t target_path_id = 0) {
+>>>>>>> forknote/master
     CompactRangeOptions options;
     options.change_level = change_level;
     options.target_level = target_level;
@@ -480,6 +755,7 @@ class DB {
     return CompactRange(options, column_family, begin, end);
   }
 #if defined(__GNUC__) || defined(__clang__)
+<<<<<<< HEAD
   __attribute__((deprecated))
 #elif _WIN32
   __declspec(deprecated)
@@ -488,6 +764,15 @@ class DB {
       CompactRange(const Slice* begin, const Slice* end,
                    bool change_level = false, int target_level = -1,
                    uint32_t target_path_id = 0) {
+=======
+  __attribute__((__deprecated__))
+#elif _WIN32
+  __declspec(deprecated)
+#endif
+  virtual Status
+  CompactRange(const Slice* begin, const Slice* end, bool change_level = false,
+               int target_level = -1, uint32_t target_path_id = 0) {
+>>>>>>> forknote/master
     CompactRangeOptions options;
     options.change_level = change_level;
     options.target_level = target_level;
@@ -495,8 +780,14 @@ class DB {
     return CompactRange(options, DefaultColumnFamily(), begin, end);
   }
 
+<<<<<<< HEAD
   virtual Status SetOptions(ColumnFamilyHandle* column_family,
       const std::unordered_map<std::string, std::string>& new_options) {
+=======
+  virtual Status SetOptions(
+      ColumnFamilyHandle* /*column_family*/,
+      const std::unordered_map<std::string, std::string>& /*new_options*/) {
+>>>>>>> forknote/master
     return Status::NotSupported("Not implemented");
   }
   virtual Status SetOptions(
@@ -531,6 +822,21 @@ class DB {
   virtual Status PauseBackgroundWork() = 0;
   virtual Status ContinueBackgroundWork() = 0;
 
+<<<<<<< HEAD
+=======
+  // This function will enable automatic compactions for the given column
+  // families if they were previously disabled. The function will first set the
+  // disable_auto_compactions option for each column family to 'false', after
+  // which it will schedule a flush/compaction.
+  //
+  // NOTE: Setting disable_auto_compactions to 'false' through SetOptions() API
+  // does NOT schedule a flush/compaction afterwards, and only changes the
+  // parameter itself within the column family option.
+  //
+  virtual Status EnableAutoCompaction(
+      const std::vector<ColumnFamilyHandle*>& column_family_handles) = 0;
+
+>>>>>>> forknote/master
   // Number of levels used for this DB.
   virtual int NumberLevels(ColumnFamilyHandle* column_family) = 0;
   virtual int NumberLevels() { return NumberLevels(DefaultColumnFamily()); }
@@ -646,7 +952,12 @@ class DB {
 
   // Returns a list of all table files with their level, start key
   // and end key
+<<<<<<< HEAD
   virtual void GetLiveFilesMetaData(std::vector<LiveFileMetaData>* metadata) {}
+=======
+  virtual void GetLiveFilesMetaData(
+      std::vector<LiveFileMetaData>* /*metadata*/) {}
+>>>>>>> forknote/master
 
   // Obtains the meta data of the specified column family of the DB.
   // Status::NotFound() will be returned if the current DB does not have
@@ -654,9 +965,14 @@ class DB {
   //
   // If cf_name is not specified, then the metadata of the default
   // column family will be returned.
+<<<<<<< HEAD
   virtual void GetColumnFamilyMetaData(
       ColumnFamilyHandle* column_family,
       ColumnFamilyMetaData* metadata) {}
+=======
+  virtual void GetColumnFamilyMetaData(ColumnFamilyHandle* /*column_family*/,
+                                       ColumnFamilyMetaData* /*metadata*/) {}
+>>>>>>> forknote/master
 
   // Get the metadata of the default column family.
   void GetColumnFamilyMetaData(
@@ -664,6 +980,7 @@ class DB {
     GetColumnFamilyMetaData(DefaultColumnFamily(), metadata);
   }
 
+<<<<<<< HEAD
   // Load table file located at "file_path" into "column_family", a pointer to
   // ExternalSstFileInfo can be used instead of "file_path" to do a blind add
   // that wont need to read the file, move_file can be set to true to
@@ -682,15 +999,87 @@ class DB {
                          bool move_file = false) = 0;
   virtual Status AddFile(const std::string& file_path, bool move_file = false) {
     return AddFile(DefaultColumnFamily(), file_path, move_file);
+=======
+  // Batch load table files whose paths stored in  "file_path_list" into
+  // "column_family", a vector of  ExternalSstFileInfo can be used
+  // instead of "file_path_list" to do a blind batch add that wont
+  // need to read the file, move_file can be set to true to
+  // move the files instead of copying them.
+  //
+  // Current Requirements:
+  // (1) The key ranges of the files don't overlap with each other
+  // (1) The key range of any file in list doesn't overlap with
+  //     existing keys or tombstones in DB.
+  // (2) No snapshots are held.
+  //
+  // Notes: We will try to ingest the files to the lowest possible level
+  //        even if the file compression dont match the level compression
+  virtual Status AddFile(ColumnFamilyHandle* column_family,
+                         const std::vector<std::string>& file_path_list,
+                         bool move_file = false) = 0;
+  virtual Status AddFile(const std::vector<std::string>& file_path_list,
+                         bool move_file = false) {
+    return AddFile(DefaultColumnFamily(), file_path_list, move_file);
+  }
+#if defined(__GNUC__) || defined(__clang__)
+  __attribute__((__deprecated__))
+#elif _WIN32
+  __declspec(deprecated)
+#endif
+  virtual Status
+  AddFile(ColumnFamilyHandle* column_family, const std::string& file_path,
+          bool move_file = false) {
+    return AddFile(column_family, std::vector<std::string>(1, file_path),
+                   move_file);
+  }
+#if defined(__GNUC__) || defined(__clang__)
+  __attribute__((__deprecated__))
+#elif _WIN32
+  __declspec(deprecated)
+#endif
+  virtual Status
+  AddFile(const std::string& file_path, bool move_file = false) {
+    return AddFile(DefaultColumnFamily(),
+                   std::vector<std::string>(1, file_path), move_file);
+>>>>>>> forknote/master
   }
 
   // Load table file with information "file_info" into "column_family"
   virtual Status AddFile(ColumnFamilyHandle* column_family,
+<<<<<<< HEAD
                          const ExternalSstFileInfo* file_info,
                          bool move_file = false) = 0;
   virtual Status AddFile(const ExternalSstFileInfo* file_info,
                          bool move_file = false) {
     return AddFile(DefaultColumnFamily(), file_info, move_file);
+=======
+                         const std::vector<ExternalSstFileInfo>& file_info_list,
+                         bool move_file = false) = 0;
+  virtual Status AddFile(const std::vector<ExternalSstFileInfo>& file_info_list,
+                         bool move_file = false) {
+    return AddFile(DefaultColumnFamily(), file_info_list, move_file);
+  }
+#if defined(__GNUC__) || defined(__clang__)
+  __attribute__((__deprecated__))
+#elif _WIN32
+  __declspec(deprecated)
+#endif
+  virtual Status
+  AddFile(ColumnFamilyHandle* column_family,
+          const ExternalSstFileInfo* file_info, bool move_file = false) {
+    return AddFile(column_family,
+                   std::vector<ExternalSstFileInfo>(1, *file_info), move_file);
+  }
+#if defined(__GNUC__) || defined(__clang__)
+  __attribute__((__deprecated__))
+#elif _WIN32
+  __declspec(deprecated)
+#endif
+  virtual Status
+  AddFile(const ExternalSstFileInfo* file_info, bool move_file = false) {
+    return AddFile(DefaultColumnFamily(),
+                   std::vector<ExternalSstFileInfo>(1, *file_info), move_file);
+>>>>>>> forknote/master
   }
 
 #endif  // ROCKSDB_LITE
@@ -709,6 +1098,12 @@ class DB {
   virtual Status GetPropertiesOfAllTables(TablePropertiesCollection* props) {
     return GetPropertiesOfAllTables(DefaultColumnFamily(), props);
   }
+<<<<<<< HEAD
+=======
+  virtual Status GetPropertiesOfTablesInRange(
+      ColumnFamilyHandle* column_family, const Range* range, std::size_t n,
+      TablePropertiesCollection* props) = 0;
+>>>>>>> forknote/master
 #endif  // ROCKSDB_LITE
 
   // Needed for StackableDB
@@ -729,7 +1124,28 @@ Status DestroyDB(const std::string& name, const Options& options);
 // resurrect as much of the contents of the database as possible.
 // Some data may be lost, so be careful when calling this function
 // on a database that contains important information.
+<<<<<<< HEAD
 Status RepairDB(const std::string& dbname, const Options& options);
+=======
+//
+// With this API, we will warn and skip data associated with column families not
+// specified in column_families.
+//
+// @param column_families Descriptors for known column families
+Status RepairDB(const std::string& dbname, const DBOptions& db_options,
+                const std::vector<ColumnFamilyDescriptor>& column_families);
+
+// @param unknown_cf_opts Options for column families encountered during the
+//                        repair that were not specified in column_families.
+Status RepairDB(const std::string& dbname, const DBOptions& db_options,
+                const std::vector<ColumnFamilyDescriptor>& column_families,
+                const ColumnFamilyOptions& unknown_cf_opts);
+
+// @param options These options will be used for the database and for ALL column
+//                families encountered during the repair
+Status RepairDB(const std::string& dbname, const Options& options);
+
+>>>>>>> forknote/master
 #endif
 
 }  // namespace rocksdb

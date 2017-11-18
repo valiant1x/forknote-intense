@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -14,10 +18,18 @@
 #include "db/log_format.h"
 #include "rocksdb/slice.h"
 #include "rocksdb/status.h"
+<<<<<<< HEAD
+=======
+#include "rocksdb/options.h"
+>>>>>>> forknote/master
 
 namespace rocksdb {
 
 class SequentialFileReader;
+<<<<<<< HEAD
+=======
+class Logger;
+>>>>>>> forknote/master
 using std::unique_ptr;
 
 namespace log {
@@ -51,8 +63,15 @@ class Reader {
   //
   // The Reader will start reading at the first record located at physical
   // position >= initial_offset within the file.
+<<<<<<< HEAD
   Reader(unique_ptr<SequentialFileReader>&& file, Reporter* reporter,
          bool checksum, uint64_t initial_offset);
+=======
+  Reader(std::shared_ptr<Logger> info_log,
+	 unique_ptr<SequentialFileReader>&& file,
+         Reporter* reporter, bool checksum, uint64_t initial_offset,
+         uint64_t log_num);
+>>>>>>> forknote/master
 
   ~Reader();
 
@@ -62,7 +81,12 @@ class Reader {
   // will only be valid until the next mutating operation on this
   // reader or the next mutation to *scratch.
   bool ReadRecord(Slice* record, std::string* scratch,
+<<<<<<< HEAD
                   bool report_eof_inconsistency = false);
+=======
+                  WALRecoveryMode wal_recovery_mode =
+                      WALRecoveryMode::kTolerateCorruptedTailRecords);
+>>>>>>> forknote/master
 
   // Returns the physical offset of the last record returned by ReadRecord.
   //
@@ -84,6 +108,10 @@ class Reader {
   SequentialFileReader* file() { return file_.get(); }
 
  private:
+<<<<<<< HEAD
+=======
+  std::shared_ptr<Logger> info_log_;
+>>>>>>> forknote/master
   const unique_ptr<SequentialFileReader> file_;
   Reporter* const reporter_;
   bool const checksum_;
@@ -104,6 +132,15 @@ class Reader {
   // Offset at which to start looking for the first record to return
   uint64_t const initial_offset_;
 
+<<<<<<< HEAD
+=======
+  // which log number this is
+  uint64_t const log_number_;
+
+  // Whether this is a recycled log file
+  bool recycled_;
+
+>>>>>>> forknote/master
   // Extend record types with the following special values
   enum {
     kEof = kMaxRecordType + 1,
@@ -112,7 +149,19 @@ class Reader {
     // * The record has an invalid CRC (ReadPhysicalRecord reports a drop)
     // * The record is a 0-length record (No drop is reported)
     // * The record is below constructor's initial_offset (No drop is reported)
+<<<<<<< HEAD
     kBadRecord = kMaxRecordType + 2
+=======
+    kBadRecord = kMaxRecordType + 2,
+    // Returned when we fail to read a valid header.
+    kBadHeader = kMaxRecordType + 3,
+    // Returned when we read an old record from a previous user of the log.
+    kOldRecord = kMaxRecordType + 4,
+    // Returned when we get a bad record length
+    kBadRecordLen = kMaxRecordType + 5,
+    // Returned when we get a bad record checksum
+    kBadRecordChecksum = kMaxRecordType + 6,
+>>>>>>> forknote/master
   };
 
   // Skips all blocks that are completely before "initial_offset_".
@@ -121,8 +170,15 @@ class Reader {
   bool SkipToInitialBlock();
 
   // Return type, or one of the preceding special values
+<<<<<<< HEAD
   unsigned int ReadPhysicalRecord(Slice* result,
                                   bool report_eof_inconsistency = false);
+=======
+  unsigned int ReadPhysicalRecord(Slice* result, size_t* drop_size);
+
+  // Read some more
+  bool ReadMore(size_t* drop_size, int *error);
+>>>>>>> forknote/master
 
   // Reports dropped bytes to the reporter.
   // buffer_ must be updated to remove the dropped bytes prior to invocation.

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -14,19 +18,35 @@
 #endif
 
 #include <inttypes.h>
+<<<<<<< HEAD
 #include <algorithm>
 #include <string>
 #include <stdint.h>
+=======
+#include <stdint.h>
+#include <algorithm>
+#include <string>
+>>>>>>> forknote/master
 #include "db/db_impl.h"
 #include "db/filename.h"
 #include "db/job_context.h"
 #include "db/version_set.h"
+<<<<<<< HEAD
 #include "rocksdb/db.h"
 #include "rocksdb/env.h"
 #include "port/port.h"
 #include "util/mutexlock.h"
 #include "util/sync_point.h"
 #include "util/file_util.h"
+=======
+#include "port/port.h"
+#include "rocksdb/db.h"
+#include "rocksdb/env.h"
+#include "util/file_util.h"
+#include "util/mutexlock.h"
+#include "util/sync_point.h"
+#include "util/testharness.h"
+>>>>>>> forknote/master
 
 namespace rocksdb {
 
@@ -83,7 +103,10 @@ int DBImpl::IsFileDeletionsEnabled() const {
 Status DBImpl::GetLiveFiles(std::vector<std::string>& ret,
                             uint64_t* manifest_file_size,
                             bool flush_memtable) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> forknote/master
   *manifest_file_size = 0;
 
   mutex_.Lock();
@@ -126,7 +149,11 @@ Status DBImpl::GetLiveFiles(std::vector<std::string>& ret,
   }
 
   ret.clear();
+<<<<<<< HEAD
   ret.reserve(live.size() + 2); //*.sst + CURRENT + MANIFEST
+=======
+  ret.reserve(live.size() + 3);  // *.sst + CURRENT + MANIFEST + OPTIONS
+>>>>>>> forknote/master
 
   // create names of the live files. The names are not absolute
   // paths, instead they are relative to dbname_;
@@ -136,6 +163,10 @@ Status DBImpl::GetLiveFiles(std::vector<std::string>& ret,
 
   ret.push_back(CurrentFileName(""));
   ret.push_back(DescriptorFileName("", versions_->manifest_file_number()));
+<<<<<<< HEAD
+=======
+  ret.push_back(OptionsFileName("", versions_->options_file_number()));
+>>>>>>> forknote/master
 
   // find length of manifest file while holding the mutex lock
   *manifest_file_size = versions_->manifest_file_size();

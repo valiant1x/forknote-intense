@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -29,7 +33,10 @@ public class Slice extends AbstractSlice<byte[]> {
    */
   private Slice() {
     super();
+<<<<<<< HEAD
     disOwnNativeHandle();
+=======
+>>>>>>> forknote/master
   }
 
   /**
@@ -39,8 +46,12 @@ public class Slice extends AbstractSlice<byte[]> {
    * @param str String value.
    */
   public Slice(final String str) {
+<<<<<<< HEAD
     super();
     createNewSliceFromString(str);
+=======
+    super(createNewSliceFromString(str));
+>>>>>>> forknote/master
   }
 
   /**
@@ -51,8 +62,12 @@ public class Slice extends AbstractSlice<byte[]> {
    * @param offset offset within the byte array.
    */
   public Slice(final byte[] data, final int offset) {
+<<<<<<< HEAD
     super();
     createNewSlice0(data, offset);
+=======
+    super(createNewSlice0(data, offset));
+>>>>>>> forknote/master
   }
 
   /**
@@ -62,8 +77,12 @@ public class Slice extends AbstractSlice<byte[]> {
    * @param data byte array.
    */
   public Slice(final byte[] data) {
+<<<<<<< HEAD
     super();
     createNewSlice1(data);
+=======
+    super(createNewSlice1(data));
+>>>>>>> forknote/master
   }
 
   /**
@@ -77,6 +96,7 @@ public class Slice extends AbstractSlice<byte[]> {
    */
   @Override
   protected void disposeInternal() {
+<<<<<<< HEAD
     disposeInternalBuf(nativeHandle_);
     super.disposeInternal();
   }
@@ -85,4 +105,16 @@ public class Slice extends AbstractSlice<byte[]> {
   private native void createNewSlice0(byte[] data, int length);
   private native void createNewSlice1(byte[] data);
   private native void disposeInternalBuf(long handle);
+=======
+    final long nativeHandle = getNativeHandle();
+    disposeInternalBuf(nativeHandle);
+    super.disposeInternal(nativeHandle);
+  }
+
+  @Override protected final native byte[] data0(long handle);
+  private native static long createNewSlice0(final byte[] data,
+      final int length);
+  private native static long createNewSlice1(final byte[] data);
+  private native void disposeInternalBuf(final long handle);
+>>>>>>> forknote/master
 }

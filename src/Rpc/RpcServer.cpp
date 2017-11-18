@@ -817,6 +817,15 @@ bool RpcServer::f_on_get_blockchain_settings(const F_COMMAND_RPC_GET_BLOCKCHAIN_
   res.extensions.push_back("bug-fixes.json");
   res.extensions.push_back("print-genesis-tx.json");
 
+<<<<<<< HEAD
+=======
+  if (m_core.getCurrency().minMixin() != 0 || m_core.getCurrency().mandatoryMixinBlockVersion() != 0) {
+    res.extensions.push_back("mix-mixin.json");
+  }
+  if (m_core.getCurrency().mixinStartHeight() != 0) {
+    res.extensions.push_back("mixin-start-height.json");
+  }
+>>>>>>> forknote/master
   if (m_core.getCurrency().mandatoryTransaction() == 1) {
     res.extensions.push_back("mandatory-transaction-in-block.json");
   }
@@ -837,10 +846,20 @@ bool RpcServer::f_on_get_blockchain_settings(const F_COMMAND_RPC_GET_BLOCKCHAIN_
     m_core.getCurrency().difficultyCutByBlockVersion(1) != m_core.getCurrency().difficultyCutByBlockVersion(2) || m_core.getCurrency().difficultyCutByBlockVersion(1) != m_core.getCurrency().difficultyCutByBlockVersion(3)) {
     res.extensions.push_back("versionized-parameters.json");
   }
+<<<<<<< HEAD
   if (m_core.getCurrency().zawyDifficultyV2() != 0 || m_core.getCurrency().zawyDifficultyV3() != 0 ||
        m_core.getCurrency().zawyDifficultyV4() != 0 || m_core.getCurrency().zawyDifficultyBlockIndex() != 0 ) {
     res.extensions.push_back("zawy-difficulty-algorithm.json");
   }
+=======
+  if (m_core.getCurrency().zawyDifficultyV2() != 0 || m_core.getCurrency().zawyDifficultyBlockVersion() != 0 ||
+       m_core.getCurrency().zawyDifficultyBlockIndex() != 0 ) {
+    res.extensions.push_back("zawy-difficulty-algorithm.json");
+  }
+  if (m_core.getCurrency().buggedZawyDifficultyBlockIndex() != 0 ) {
+    res.extensions.push_back("bugged-zawy-difficulty-algorithm.json");
+  }
+>>>>>>> forknote/master
   res.core.CRYPTONOTE_NAME = m_core.getCurrency().cryptonoteName();
 
   res.core.EMISSION_SPEED_FACTOR = m_core.getCurrency().emissionSpeedFactor();
@@ -862,6 +881,16 @@ bool RpcServer::f_on_get_blockchain_settings(const F_COMMAND_RPC_GET_BLOCKCHAIN_
   res.core.DIFFICULTY_CUT = m_core.getCurrency().difficultyCut();
   res.core.DIFFICULTY_LAG = m_core.getCurrency().difficultyLag();
 
+<<<<<<< HEAD
+=======
+  if (m_core.getCurrency().minMixin() != 0 || m_core.getCurrency().mandatoryMixinBlockVersion() != 0) {
+    res.core.MIN_MIXIN = m_core.getCurrency().minMixin();
+    res.core.MANDATORY_MIXIN_BLOCK_VERSION = m_core.getCurrency().mandatoryMixinBlockVersion();
+  }
+  if (m_core.getCurrency().mixinStartHeight() != 0) {
+    res.core.MIXIN_START_HEIGHT = m_core.getCurrency().mixinStartHeight();
+  }
+>>>>>>> forknote/master
   res.core.MANDATORY_TRANSACTION = m_core.getCurrency().mandatoryTransaction();
   res.core.KILL_HEIGHT = m_core.getCurrency().killHeight();
   res.core.TAIL_EMISSION_REWARD = m_core.getCurrency().tailEmissionReward();
@@ -875,8 +904,13 @@ bool RpcServer::f_on_get_blockchain_settings(const F_COMMAND_RPC_GET_BLOCKCHAIN_
   res.core.DIFFICULTY_LAG_V2 = m_core.getCurrency().difficultyLagV2();
   res.core.ZAWY_DIFFICULTY_BLOCK_INDEX = m_core.getCurrency().zawyDifficultyBlockIndex();
   res.core.ZAWY_DIFFICULTY_V2 = m_core.getCurrency().zawyDifficultyV2();
+<<<<<<< HEAD
   res.core.ZAWY_DIFFICULTY_V3 = m_core.getCurrency().zawyDifficultyV3();
   res.core.ZAWY_DIFFICULTY_V4 = m_core.getCurrency().zawyDifficultyV4();
+=======
+  res.core.ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION = m_core.getCurrency().zawyDifficultyBlockVersion();
+  res.core.BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX = m_core.getCurrency().buggedZawyDifficultyBlockIndex();
+>>>>>>> forknote/master
   res.core.P2P_DEFAULT_PORT = m_p2p.get_this_peer_port();
   // Not real. Change
   res.core.RPC_DEFAULT_PORT = m_p2p.get_this_peer_port() + 1;

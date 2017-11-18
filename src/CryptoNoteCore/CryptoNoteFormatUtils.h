@@ -69,7 +69,10 @@ bool generate_key_image_helper(const AccountKeys& ack, const Crypto::PublicKey& 
 bool getInputsMoneyAmount(const Transaction& tx, uint64_t& money);
 bool checkInputTypesSupported(const TransactionPrefix& tx);
 bool checkOutsValid(const TransactionPrefix& tx, std::string* error = nullptr);
+<<<<<<< HEAD
 bool checkMultisignatureInputsDiff(const TransactionPrefix& tx);
+=======
+>>>>>>> forknote/master
 bool checkMoneyOverflow(const TransactionPrefix &tx);
 bool checkInputsOverflow(const TransactionPrefix &tx);
 bool checkOutsOverflow(const TransactionPrefix& tx);

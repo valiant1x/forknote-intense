@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -6,6 +10,7 @@
 // Copyright (c) 2011 The LevelDB Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
+<<<<<<< HEAD
 
 #include <deque>
 #include <set>
@@ -13,6 +18,16 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <pthread.h>
+=======
+#include <dirent.h>
+#include <errno.h>
+#include <fcntl.h>
+#if defined(OS_LINUX)
+#include <linux/fs.h>
+#endif
+#include <pthread.h>
+#include <signal.h>
+>>>>>>> forknote/master
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,6 +41,7 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <time.h>
+<<<<<<< HEAD
 #include <unistd.h>
 #if defined(OS_LINUX)
 #include <linux/fs.h>
@@ -45,6 +61,9 @@
 #include "util/thread_status_updater.h"
 #include "util/thread_status_util.h"
 
+=======
+#include <algorithm>
+>>>>>>> forknote/master
 // Get nano time includes
 #if defined(OS_LINUX) || defined(OS_FREEBSD)
 #elif defined(__MACH__)
@@ -53,6 +72,24 @@
 #else
 #include <chrono>
 #endif
+<<<<<<< HEAD
+=======
+#include <deque>
+#include <set>
+#include "port/port.h"
+#include "rocksdb/slice.h"
+#include "util/coding.h"
+#include "util/io_posix.h"
+#include "util/threadpool.h"
+#include "util/iostats_context_imp.h"
+#include "util/logging.h"
+#include "util/posix_logger.h"
+#include "util/random.h"
+#include "util/string_util.h"
+#include "util/sync_point.h"
+#include "util/thread_local.h"
+#include "util/thread_status_updater.h"
+>>>>>>> forknote/master
 
 #if !defined(TMPFS_MAGIC)
 #define TMPFS_MAGIC 0x01021994
@@ -64,6 +101,7 @@
 #define EXT4_SUPER_MAGIC 0xEF53
 #endif
 
+<<<<<<< HEAD
 // For non linux platform, the following macros are used only as place
 // holder.
 #if !(defined OS_LINUX) && !(defined CYGWIN)
@@ -75,10 +113,13 @@
 #endif
 
 
+=======
+>>>>>>> forknote/master
 namespace rocksdb {
 
 namespace {
 
+<<<<<<< HEAD
 // A wrapper for fadvise, if the platform doesn't support fadvise,
 // it will simply return Status::NotSupport.
 int Fadvise(int fd, off_t offset, size_t len, int advice) {
@@ -89,6 +130,8 @@ int Fadvise(int fd, off_t offset, size_t len, int advice) {
 #endif
 }
 
+=======
+>>>>>>> forknote/master
 ThreadStatusUpdater* CreateThreadStatusUpdater() {
   return new ThreadStatusUpdater();
 }
@@ -97,6 +140,7 @@ ThreadStatusUpdater* CreateThreadStatusUpdater() {
 static std::set<std::string> lockedFiles;
 static port::Mutex mutex_lockedFiles;
 
+<<<<<<< HEAD
 static Status IOError(const std::string& context, int err_number) {
   return Status::IOError(context, strerror(err_number));
 }
@@ -768,6 +812,8 @@ class PosixDirectory : public Directory {
   int fd_;
 };
 
+=======
+>>>>>>> forknote/master
 static int LockOrUnlock(const std::string& fname, int fd, bool lock) {
   mutex_lockedFiles.Lock();
   if (lock) {
@@ -812,6 +858,7 @@ class PosixFileLock : public FileLock {
   std::string filename;
 };
 
+<<<<<<< HEAD
 void PthreadCall(const char* label, int result) {
   if (result != 0) {
     fprintf(stderr, "pthread %s: %s\n", label, strerror(result));
@@ -819,6 +866,8 @@ void PthreadCall(const char* label, int result) {
   }
 }
 
+=======
+>>>>>>> forknote/master
 class PosixEnv : public Env {
  public:
   PosixEnv();
@@ -830,9 +879,19 @@ class PosixEnv : public Env {
     for (int pool_id = 0; pool_id < Env::Priority::TOTAL; ++pool_id) {
       thread_pools_[pool_id].JoinAllThreads();
     }
+<<<<<<< HEAD
     // All threads must be joined before the deletion of
     // thread_status_updater_.
     delete thread_status_updater_;
+=======
+    // Delete the thread_status_updater_ only when the current Env is not
+    // Env::Default().  This is to avoid the free-after-use error when
+    // Env::Default() is destructed while some other child threads are
+    // still trying to update thread status.
+    if (this != Env::Default()) {
+      delete thread_status_updater_;
+    }
+>>>>>>> forknote/master
   }
 
   void SetFD_CLOEXEC(int fd, const EnvOptions* options) {
@@ -853,6 +912,30 @@ class PosixEnv : public Env {
     if (f == nullptr) {
       *result = nullptr;
       return IOError(fname, errno);
+<<<<<<< HEAD
+=======
+    } else if (options.use_direct_reads && !options.use_mmap_writes) {
+#ifdef OS_MACOSX
+      int flags = O_RDONLY;
+#else
+      int flags = O_RDONLY | O_DIRECT;
+      TEST_SYNC_POINT_CALLBACK("NewSequentialFile:O_DIRECT", &flags);
+#endif
+      int fd = open(fname.c_str(), flags, 0644);
+      if (fd < 0) {
+        return IOError(fname, errno);
+      }
+#ifdef OS_MACOSX
+      if (fcntl(fd, F_NOCACHE, 1) == -1) {
+        close(fd);
+        return IOError(fname, errno);
+      }
+#endif
+      std::unique_ptr<PosixDirectIOSequentialFile> file(
+          new PosixDirectIOSequentialFile(fname, fd));
+      *result = std::move(file);
+      return Status::OK();
+>>>>>>> forknote/master
     } else {
       int fd = fileno(f);
       SetFD_CLOEXEC(fd, &options);
@@ -890,6 +973,31 @@ class PosixEnv : public Env {
         }
       }
       close(fd);
+<<<<<<< HEAD
+=======
+    } else if (options.use_direct_reads) {
+#ifdef OS_MACOSX
+      int flags = O_RDONLY;
+#else
+      int flags = O_RDONLY | O_DIRECT;
+      TEST_SYNC_POINT_CALLBACK("NewRandomAccessFile:O_DIRECT", &flags);
+#endif
+      fd = open(fname.c_str(), flags, 0644);
+      if (fd < 0) {
+        s = IOError(fname, errno);
+      } else {
+        std::unique_ptr<PosixDirectIORandomAccessFile> file(
+            new PosixDirectIORandomAccessFile(fname, fd));
+        *result = std::move(file);
+        s = Status::OK();
+#ifdef OS_MACOSX
+        if (fcntl(fd, F_NOCACHE, 1) == -1) {
+          close(fd);
+          s = IOError(fname, errno);
+        }
+#endif
+      }
+>>>>>>> forknote/master
     } else {
       result->reset(new PosixRandomAccessFile(fname, fd, options));
     }
@@ -922,6 +1030,75 @@ class PosixEnv : public Env {
       }
       if (options.use_mmap_writes && !forceMmapOff) {
         result->reset(new PosixMmapFile(fname, fd, page_size_, options));
+<<<<<<< HEAD
+=======
+      } else if (options.use_direct_writes) {
+#ifdef OS_MACOSX
+        int flags = O_WRONLY | O_APPEND | O_TRUNC | O_CREAT;
+#else
+        int flags = O_WRONLY | O_APPEND | O_TRUNC | O_CREAT | O_DIRECT;
+#endif
+        TEST_SYNC_POINT_CALLBACK("NewWritableFile:O_DIRECT", &flags);
+        fd = open(fname.c_str(), flags, 0644);
+        if (fd < 0) {
+          s = IOError(fname, errno);
+        } else {
+          std::unique_ptr<PosixDirectIOWritableFile> file(
+              new PosixDirectIOWritableFile(fname, fd));
+          *result = std::move(file);
+          s = Status::OK();
+#ifdef OS_MACOSX
+          if (fcntl(fd, F_NOCACHE, 1) == -1) {
+            close(fd);
+            s = IOError(fname, errno);
+          }
+#endif
+        }
+      } else {
+        // disable mmap writes
+        EnvOptions no_mmap_writes_options = options;
+        no_mmap_writes_options.use_mmap_writes = false;
+
+        result->reset(new PosixWritableFile(fname, fd, no_mmap_writes_options));
+      }
+    }
+    return s;
+  }
+
+  virtual Status ReuseWritableFile(const std::string& fname,
+                                   const std::string& old_fname,
+                                   unique_ptr<WritableFile>* result,
+                                   const EnvOptions& options) override {
+    result->reset();
+    Status s;
+    int fd = -1;
+    do {
+      IOSTATS_TIMER_GUARD(open_nanos);
+      fd = open(old_fname.c_str(), O_RDWR, 0644);
+    } while (fd < 0 && errno == EINTR);
+    if (fd < 0) {
+      s = IOError(fname, errno);
+    } else {
+      SetFD_CLOEXEC(fd, &options);
+      // rename into place
+      if (rename(old_fname.c_str(), fname.c_str()) != 0) {
+        Status r = IOError(old_fname, errno);
+        close(fd);
+        return r;
+      }
+      if (options.use_mmap_writes) {
+        if (!checkedDiskForMmap_) {
+          // this will be executed once in the program's lifetime.
+          // do not use mmapWrite on non ext-3/xfs/tmpfs systems.
+          if (!SupportsFastAllocate(fname)) {
+            forceMmapOff = true;
+          }
+          checkedDiskForMmap_ = true;
+        }
+      }
+      if (options.use_mmap_writes && !forceMmapOff) {
+        result->reset(new PosixMmapFile(fname, fd, page_size_, options));
+>>>>>>> forknote/master
       } else {
         // disable mmap writes
         EnvOptions no_mmap_writes_options = options;
@@ -1101,7 +1278,12 @@ class PosixEnv : public Env {
   }
 
   virtual void Schedule(void (*function)(void* arg1), void* arg,
+<<<<<<< HEAD
                         Priority pri = LOW, void* tag = nullptr) override;
+=======
+                        Priority pri = LOW, void* tag = nullptr,
+                        void (*unschedFunction)(void* arg) = 0) override;
+>>>>>>> forknote/master
 
   virtual int UnSchedule(void* arg, Priority pri) override;
 
@@ -1326,6 +1508,7 @@ class PosixEnv : public Env {
 
   size_t page_size_;
 
+<<<<<<< HEAD
 
   class ThreadPool {
    public:
@@ -1620,6 +1803,11 @@ class PosixEnv : public Env {
   pthread_mutex_t mu_;
   std::vector<pthread_t> threads_to_join_;
 
+=======
+  std::vector<ThreadPool> thread_pools_;
+  pthread_mutex_t mu_;
+  std::vector<pthread_t> threads_to_join_;
+>>>>>>> forknote/master
 };
 
 PosixEnv::PosixEnv()
@@ -1627,7 +1815,11 @@ PosixEnv::PosixEnv()
       forceMmapOff(false),
       page_size_(getpagesize()),
       thread_pools_(Priority::TOTAL) {
+<<<<<<< HEAD
   PthreadCall("mutex_init", pthread_mutex_init(&mu_, nullptr));
+=======
+  ThreadPool::PthreadCall("mutex_init", pthread_mutex_init(&mu_, nullptr));
+>>>>>>> forknote/master
   for (int pool_id = 0; pool_id < Env::Priority::TOTAL; ++pool_id) {
     thread_pools_[pool_id].SetThreadPriority(
         static_cast<Env::Priority>(pool_id));
@@ -1638,9 +1830,15 @@ PosixEnv::PosixEnv()
 }
 
 void PosixEnv::Schedule(void (*function)(void* arg1), void* arg, Priority pri,
+<<<<<<< HEAD
                         void* tag) {
   assert(pri >= Priority::LOW && pri <= Priority::HIGH);
   thread_pools_[pri].Schedule(function, arg, tag);
+=======
+                        void* tag, void (*unschedFunction)(void* arg)) {
+  assert(pri >= Priority::LOW && pri <= Priority::HIGH);
+  thread_pools_[pri].Schedule(function, arg, tag, unschedFunction);
+>>>>>>> forknote/master
 }
 
 int PosixEnv::UnSchedule(void* arg, Priority pri) {
@@ -1669,11 +1867,19 @@ void PosixEnv::StartThread(void (*function)(void* arg), void* arg) {
   StartThreadState* state = new StartThreadState;
   state->user_function = function;
   state->arg = arg;
+<<<<<<< HEAD
   PthreadCall("start thread",
               pthread_create(&t, nullptr,  &StartThreadWrapper, state));
   PthreadCall("lock", pthread_mutex_lock(&mu_));
   threads_to_join_.push_back(t);
   PthreadCall("unlock", pthread_mutex_unlock(&mu_));
+=======
+  ThreadPool::PthreadCall(
+      "start thread", pthread_create(&t, nullptr, &StartThreadWrapper, state));
+  ThreadPool::PthreadCall("lock", pthread_mutex_lock(&mu_));
+  threads_to_join_.push_back(t);
+  ThreadPool::PthreadCall("unlock", pthread_mutex_unlock(&mu_));
+>>>>>>> forknote/master
 }
 
 void PosixEnv::WaitForJoin() {
@@ -1710,7 +1916,25 @@ std::string Env::GenerateUniqueId() {
   return uuid2;
 }
 
+<<<<<<< HEAD
 Env* Env::Default() {
+=======
+//
+// Default Posix Env
+//
+Env* Env::Default() {
+  // The following function call initializes the singletons of ThreadLocalPtr
+  // right before the static default_env.  This guarantees default_env will
+  // always being destructed before the ThreadLocalPtr singletons get
+  // destructed as C++ guarantees that the destructions of static variables
+  // is in the reverse order of their constructions.
+  //
+  // Since static members are destructed in the reverse order
+  // of their construction, having this call here guarantees that
+  // the destructor of static PosixEnv will go first, then the
+  // the singletons of ThreadLocalPtr.
+  ThreadLocalPtr::InitSingletons();
+>>>>>>> forknote/master
   static PosixEnv default_env;
   return &default_env;
 }

@@ -40,7 +40,11 @@ namespace CryptoNote {
 struct AccountKeys;
 struct TransactionExtraMergeMiningTag;
 
+<<<<<<< HEAD
 enum class SerializationTag : uint8_t { Base = 0xff, Key = 0x2, Multisignature = 0x3, Transaction = 0xcc, Block = 0xbb };
+=======
+enum class SerializationTag : uint8_t { Base = 0xff, Key = 0x2, Transaction = 0xcc, Block = 0xbb };
+>>>>>>> forknote/master
 
 void serialize(TransactionPrefix& txP, ISerializer& serializer);
 void serialize(Transaction& tx, ISerializer& serializer);
@@ -50,12 +54,18 @@ void serialize(TransactionOutput& in, ISerializer& serializer);
 
 void serialize(BaseInput& gen, ISerializer& serializer);
 void serialize(KeyInput& key, ISerializer& serializer);
+<<<<<<< HEAD
 void serialize(MultisignatureInput& multisignature, ISerializer& serializer);
+=======
+>>>>>>> forknote/master
 
 void serialize(TransactionOutput& output, ISerializer& serializer);
 void serialize(TransactionOutputTarget& output, ISerializer& serializer);
 void serialize(KeyOutput& key, ISerializer& serializer);
+<<<<<<< HEAD
 void serialize(MultisignatureOutput& multisignature, ISerializer& serializer);
+=======
+>>>>>>> forknote/master
 
 void serialize(BlockHeader& header, ISerializer& serializer);
 void serialize(BlockTemplate& block, ISerializer& serializer);

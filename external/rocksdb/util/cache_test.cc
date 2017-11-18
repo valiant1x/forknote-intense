@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -73,8 +77,13 @@ class CacheTest : public testing::Test {
   }
 
   void Insert(shared_ptr<Cache> cache, int key, int value, int charge = 1) {
+<<<<<<< HEAD
     cache->Release(cache->Insert(EncodeKey(key), EncodeValue(value), charge,
                                   &CacheTest::Deleter));
+=======
+    cache->Insert(EncodeKey(key), EncodeValue(value), charge,
+                  &CacheTest::Deleter);
+>>>>>>> forknote/master
   }
 
   void Erase(shared_ptr<Cache> cache, int key) {
@@ -118,14 +127,22 @@ TEST_F(CacheTest, UsageTest) {
   auto cache = NewLRUCache(kCapacity, 8);
 
   size_t usage = 0;
+<<<<<<< HEAD
   const char* value = "abcdef";
+=======
+  char value[10] = "abcdef";
+>>>>>>> forknote/master
   // make sure everything will be cached
   for (int i = 1; i < 100; ++i) {
     std::string key(i, 'a');
     auto kv_size = key.size() + 5;
+<<<<<<< HEAD
     cache->Release(
         cache->Insert(key, (void*)value, kv_size, dumbDeleter)
     );
+=======
+    cache->Insert(key, reinterpret_cast<void*>(value), kv_size, dumbDeleter);
+>>>>>>> forknote/master
     usage += kv_size;
     ASSERT_EQ(usage, cache->GetUsage());
   }
@@ -133,9 +150,14 @@ TEST_F(CacheTest, UsageTest) {
   // make sure the cache will be overloaded
   for (uint64_t i = 1; i < kCapacity; ++i) {
     auto key = ToString(i);
+<<<<<<< HEAD
     cache->Release(
         cache->Insert(key, (void*)value, key.size() + 5, dumbDeleter)
     );
+=======
+    cache->Insert(key, reinterpret_cast<void*>(value), key.size() + 5,
+                  dumbDeleter);
+>>>>>>> forknote/master
   }
 
   // the usage should be close to the capacity
@@ -149,7 +171,11 @@ TEST_F(CacheTest, PinnedUsageTest) {
   auto cache = NewLRUCache(kCapacity, 8);
 
   size_t pinned_usage = 0;
+<<<<<<< HEAD
   const char* value = "abcdef";
+=======
+  char value[10] = "abcdef";
+>>>>>>> forknote/master
 
   std::forward_list<Cache::Handle*> unreleased_handles;
 
@@ -158,7 +184,13 @@ TEST_F(CacheTest, PinnedUsageTest) {
   for (int i = 1; i < 100; ++i) {
     std::string key(i, 'a');
     auto kv_size = key.size() + 5;
+<<<<<<< HEAD
     auto handle = cache->Insert(key, (void*)value, kv_size, dumbDeleter);
+=======
+    Cache::Handle* handle;
+    cache->Insert(key, reinterpret_cast<void*>(value), kv_size, dumbDeleter,
+                  &handle);
+>>>>>>> forknote/master
     pinned_usage += kv_size;
     ASSERT_EQ(pinned_usage, cache->GetPinnedUsage());
     if (i % 2 == 0) {
@@ -182,8 +214,13 @@ TEST_F(CacheTest, PinnedUsageTest) {
   // check that overloading the cache does not change the pinned usage
   for (uint64_t i = 1; i < 2 * kCapacity; ++i) {
     auto key = ToString(i);
+<<<<<<< HEAD
     cache->Release(
         cache->Insert(key, (void*)value, key.size() + 5, dumbDeleter));
+=======
+    cache->Insert(key, reinterpret_cast<void*>(value), key.size() + 5,
+                  dumbDeleter);
+>>>>>>> forknote/master
   }
   ASSERT_EQ(pinned_usage, cache->GetPinnedUsage());
 
@@ -408,7 +445,12 @@ TEST_F(CacheTest, SetCapacity) {
   // Insert 5 entries, but not releasing.
   for (size_t i = 0; i < 5; i++) {
     std::string key = ToString(i+1);
+<<<<<<< HEAD
     handles[i] = cache->Insert(key, new Value(i+1), 1, &deleter);
+=======
+    Status s = cache->Insert(key, new Value(i + 1), 1, &deleter, &handles[i]);
+    ASSERT_TRUE(s.ok());
+>>>>>>> forknote/master
   }
   ASSERT_EQ(5U, cache->GetCapacity());
   ASSERT_EQ(5U, cache->GetUsage());
@@ -422,7 +464,12 @@ TEST_F(CacheTest, SetCapacity) {
   // and usage should be 7
   for (size_t i = 5; i < 10; i++) {
     std::string key = ToString(i+1);
+<<<<<<< HEAD
     handles[i] = cache->Insert(key, new Value(i+1), 1, &deleter);
+=======
+    Status s = cache->Insert(key, new Value(i + 1), 1, &deleter, &handles[i]);
+    ASSERT_TRUE(s.ok());
+>>>>>>> forknote/master
   }
   ASSERT_EQ(10U, cache->GetCapacity());
   ASSERT_EQ(10U, cache->GetUsage());
@@ -441,6 +488,56 @@ TEST_F(CacheTest, SetCapacity) {
   }
 }
 
+<<<<<<< HEAD
+=======
+TEST_F(CacheTest, SetStrictCapacityLimit) {
+  // test1: set the flag to false. Insert more keys than capacity. See if they
+  // all go through.
+  std::shared_ptr<Cache> cache = NewLRUCache(5, 0, false);
+  std::vector<Cache::Handle*> handles(10);
+  Status s;
+  for (size_t i = 0; i < 10; i++) {
+    std::string key = ToString(i + 1);
+    s = cache->Insert(key, new Value(i + 1), 1, &deleter, &handles[i]);
+    ASSERT_TRUE(s.ok());
+    ASSERT_NE(nullptr, handles[i]);
+  }
+
+  // test2: set the flag to true. Insert and check if it fails.
+  std::string extra_key = "extra";
+  Value* extra_value = new Value(0);
+  cache->SetStrictCapacityLimit(true);
+  Cache::Handle* handle;
+  s = cache->Insert(extra_key, extra_value, 1, &deleter, &handle);
+  ASSERT_TRUE(s.IsIncomplete());
+  ASSERT_EQ(nullptr, handle);
+
+  for (size_t i = 0; i < 10; i++) {
+    cache->Release(handles[i]);
+  }
+
+  // test3: init with flag being true.
+  std::shared_ptr<Cache> cache2 = NewLRUCache(5, 0, true);
+  for (size_t i = 0; i < 5; i++) {
+    std::string key = ToString(i + 1);
+    s = cache2->Insert(key, new Value(i + 1), 1, &deleter, &handles[i]);
+    ASSERT_TRUE(s.ok());
+    ASSERT_NE(nullptr, handles[i]);
+  }
+  s = cache2->Insert(extra_key, extra_value, 1, &deleter, &handle);
+  ASSERT_TRUE(s.IsIncomplete());
+  ASSERT_EQ(nullptr, handle);
+  // test insert without handle
+  s = cache2->Insert(extra_key, extra_value, 1, &deleter);
+  ASSERT_TRUE(s.IsIncomplete());
+  ASSERT_EQ(5, cache->GetUsage());
+
+  for (size_t i = 0; i < 5; i++) {
+    cache2->Release(handles[i]);
+  }
+}
+
+>>>>>>> forknote/master
 TEST_F(CacheTest, OverCapacity) {
   size_t n = 10;
 
@@ -452,7 +549,12 @@ TEST_F(CacheTest, OverCapacity) {
   // Insert n+1 entries, but not releasing.
   for (size_t i = 0; i < n + 1; i++) {
     std::string key = ToString(i+1);
+<<<<<<< HEAD
     handles[i] = cache->Insert(key, new Value(i+1), 1, &deleter);
+=======
+    Status s = cache->Insert(key, new Value(i + 1), 1, &deleter, &handles[i]);
+    ASSERT_TRUE(s.ok());
+>>>>>>> forknote/master
   }
 
   // Guess what's in the cache now?
@@ -505,8 +607,13 @@ TEST_F(CacheTest, ApplyToAllCacheEntiresTest) {
   }
   cache_->ApplyToAllCacheEntries(callback, true);
 
+<<<<<<< HEAD
   sort(inserted.begin(), inserted.end());
   sort(callback_state.begin(), callback_state.end());
+=======
+  std::sort(inserted.begin(), inserted.end());
+  std::sort(callback_state.begin(), callback_state.end());
+>>>>>>> forknote/master
   ASSERT_TRUE(inserted == callback_state);
 }
 

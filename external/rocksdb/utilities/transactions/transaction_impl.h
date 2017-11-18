@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2015, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -38,14 +42,31 @@ class TransactionImpl : public TransactionBaseImpl {
 
   virtual ~TransactionImpl();
 
+<<<<<<< HEAD
+=======
+  void Reinitialize(TransactionDB* txn_db, const WriteOptions& write_options,
+                    const TransactionOptions& txn_options);
+
+  Status Prepare() override;
+
+>>>>>>> forknote/master
   Status Commit() override;
 
   Status CommitBatch(WriteBatch* batch);
 
+<<<<<<< HEAD
   void Rollback() override;
 
   Status RollbackToSavePoint() override;
 
+=======
+  Status Rollback() override;
+
+  Status RollbackToSavePoint() override;
+
+  Status SetName(const TransactionName& name) override;
+
+>>>>>>> forknote/master
   // Generate a new unique transaction identifier
   static TransactionID GenTxnID();
 
@@ -66,29 +87,57 @@ class TransactionImpl : public TransactionBaseImpl {
     lock_timeout_ = timeout * 1000;
   }
 
+<<<<<<< HEAD
  protected:
   Status TryLock(ColumnFamilyHandle* column_family, const Slice& key,
                  bool untracked = false) override;
 
  private:
   TransactionDBImpl* txn_db_impl_;
+=======
+  // Returns true if locks were stolen successfully, false otherwise.
+  bool TryStealingLocks();
+
+ protected:
+  Status TryLock(ColumnFamilyHandle* column_family, const Slice& key,
+                 bool read_only, bool untracked = false) override;
+
+ private:
+  TransactionDBImpl* txn_db_impl_;
+  DBImpl* db_impl_;
+>>>>>>> forknote/master
 
   // Used to create unique ids for transactions.
   static std::atomic<TransactionID> txn_id_counter_;
 
   // Unique ID for this transaction
+<<<<<<< HEAD
   const TransactionID txn_id_;
 
   // If non-zero, this transaction should not be committed after this time (in
   // microseconds according to Env->NowMicros())
   const uint64_t expiration_time_;
+=======
+  TransactionID txn_id_;
+
+  // If non-zero, this transaction should not be committed after this time (in
+  // microseconds according to Env->NowMicros())
+  uint64_t expiration_time_;
+>>>>>>> forknote/master
 
   // Timeout in microseconds when locking a key or -1 if there is no timeout.
   int64_t lock_timeout_;
 
   void Clear() override;
 
+<<<<<<< HEAD
   Status CheckKeySequence(ColumnFamilyHandle* column_family, const Slice& key);
+=======
+  void Initialize(const TransactionOptions& txn_options);
+
+  Status ValidateSnapshot(ColumnFamilyHandle* column_family, const Slice& key,
+                          SequenceNumber prev_seqno, SequenceNumber* new_seqno);
+>>>>>>> forknote/master
 
   Status LockBatch(WriteBatch* batch, TransactionKeyMap* keys_to_unlock);
 
@@ -96,6 +145,12 @@ class TransactionImpl : public TransactionBaseImpl {
 
   void RollbackLastN(size_t num);
 
+<<<<<<< HEAD
+=======
+  void UnlockGetForUpdate(ColumnFamilyHandle* column_family,
+                          const Slice& key) override;
+
+>>>>>>> forknote/master
   // No copying allowed
   TransactionImpl(const TransactionImpl&);
   void operator=(const TransactionImpl&);
@@ -115,6 +170,11 @@ class TransactionCallback : public WriteCallback {
     }
   }
 
+<<<<<<< HEAD
+=======
+  bool AllowWriteBatching() override { return true; }
+
+>>>>>>> forknote/master
  private:
   TransactionImpl* txn_;
 };

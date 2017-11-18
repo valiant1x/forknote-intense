@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -22,6 +26,7 @@ public class FlushTest {
 
   @Test
   public void flush() throws RocksDBException {
+<<<<<<< HEAD
     RocksDB db = null;
     Options options = null;
     WriteOptions wOpt = null;
@@ -60,6 +65,30 @@ public class FlushTest {
         wOpt.dispose();
       }
 
+=======
+    try(final Options options = new Options()
+        .setCreateIfMissing(true)
+        .setMaxWriteBufferNumber(10)
+        .setMinWriteBufferNumberToMerge(10);
+        final WriteOptions wOpt = new WriteOptions()
+            .setDisableWAL(true);
+        final FlushOptions flushOptions = new FlushOptions()
+            .setWaitForFlush(true)) {
+      assertThat(flushOptions.waitForFlush()).isTrue();
+
+      try(final RocksDB db = RocksDB.open(options,
+          dbFolder.getRoot().getAbsolutePath())) {
+        db.put(wOpt, "key1".getBytes(), "value1".getBytes());
+        db.put(wOpt, "key2".getBytes(), "value2".getBytes());
+        db.put(wOpt, "key3".getBytes(), "value3".getBytes());
+        db.put(wOpt, "key4".getBytes(), "value4".getBytes());
+        assertThat(db.getProperty("rocksdb.num-entries-active-mem-table"))
+            .isEqualTo("4");
+        db.flush(flushOptions);
+        assertThat(db.getProperty("rocksdb.num-entries-active-mem-table"))
+            .isEqualTo("0");
+      }
+>>>>>>> forknote/master
     }
   }
 }

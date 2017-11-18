@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -20,12 +24,22 @@ class WriteControllerToken;
 // to be called while holding DB mutex
 class WriteController {
  public:
+<<<<<<< HEAD
   explicit WriteController(uint64_t delayed_write_rate = 1024u * 1024u * 32u)
       : total_stopped_(0),
         total_delayed_(0),
         bytes_left_(0),
         last_refill_time_(0) {
     set_delayed_write_rate(delayed_write_rate);
+=======
+  explicit WriteController(uint64_t _delayed_write_rate = 1024u * 1024u * 32u)
+      : total_stopped_(0),
+        total_delayed_(0),
+        total_compaction_pressure_(0),
+        bytes_left_(0),
+        last_refill_time_(0) {
+    set_delayed_write_rate(_delayed_write_rate);
+>>>>>>> forknote/master
   }
   ~WriteController() = default;
 
@@ -36,15 +50,31 @@ class WriteController {
   // writes to the DB will be controlled under the delayed write rate. Every
   // write needs to call GetDelay() with number of bytes writing to the DB,
   // which returns number of microseconds to sleep.
+<<<<<<< HEAD
   std::unique_ptr<WriteControllerToken> GetDelayToken();
 
   // these two metods are querying the state of the WriteController
   bool IsStopped() const;
   bool NeedsDelay() const { return total_delayed_ > 0; }
+=======
+  std::unique_ptr<WriteControllerToken> GetDelayToken(
+      uint64_t delayed_write_rate);
+  // When an actor (column family) requests a moderate token, compaction
+  // threads will be increased
+  std::unique_ptr<WriteControllerToken> GetCompactionPressureToken();
+
+  // these three metods are querying the state of the WriteController
+  bool IsStopped() const;
+  bool NeedsDelay() const { return total_delayed_ > 0; }
+  bool NeedSpeedupCompaction() const {
+    return IsStopped() || NeedsDelay() || total_compaction_pressure_ > 0;
+  }
+>>>>>>> forknote/master
   // return how many microseconds the caller needs to sleep after the call
   // num_bytes: how many number of bytes to put into the DB.
   // Prerequisite: DB mutex held.
   uint64_t GetDelay(Env* env, uint64_t num_bytes);
+<<<<<<< HEAD
   void set_delayed_write_rate(uint64_t delayed_write_rate) {
     delayed_write_rate_ = delayed_write_rate;
     if (delayed_write_rate_ == 0) {
@@ -52,14 +82,32 @@ class WriteController {
       delayed_write_rate_ = 1U;
     }
   }
+=======
+  void set_delayed_write_rate(uint64_t write_rate) {
+    // avoid divide 0
+    if (write_rate == 0) {
+      write_rate = 1u;
+    }
+    delayed_write_rate_ = write_rate;
+  }
+  uint64_t delayed_write_rate() const { return delayed_write_rate_; }
+>>>>>>> forknote/master
 
  private:
   friend class WriteControllerToken;
   friend class StopWriteToken;
   friend class DelayWriteToken;
+<<<<<<< HEAD
 
   int total_stopped_;
   int total_delayed_;
+=======
+  friend class CompactionPressureToken;
+
+  int total_stopped_;
+  int total_delayed_;
+  int total_compaction_pressure_;
+>>>>>>> forknote/master
   uint64_t bytes_left_;
   uint64_t last_refill_time_;
   uint64_t delayed_write_rate_;
@@ -94,4 +142,14 @@ class DelayWriteToken : public WriteControllerToken {
   virtual ~DelayWriteToken();
 };
 
+<<<<<<< HEAD
+=======
+class CompactionPressureToken : public WriteControllerToken {
+ public:
+  explicit CompactionPressureToken(WriteController* controller)
+      : WriteControllerToken(controller) {}
+  virtual ~CompactionPressureToken();
+};
+
+>>>>>>> forknote/master
 }  // namespace rocksdb

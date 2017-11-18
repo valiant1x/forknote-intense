@@ -1,23 +1,42 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
 
 #include "db/compaction_iterator.h"
+<<<<<<< HEAD
+=======
+#include "table/internal_iterator.h"
+>>>>>>> forknote/master
 
 namespace rocksdb {
 
 CompactionIterator::CompactionIterator(
+<<<<<<< HEAD
     Iterator* input, const Comparator* cmp, MergeHelper* merge_helper,
     SequenceNumber last_sequence, std::vector<SequenceNumber>* snapshots,
     Env* env, bool expect_valid_internal_key, Compaction* compaction,
+=======
+    InternalIterator* input, const Comparator* cmp, MergeHelper* merge_helper,
+    SequenceNumber last_sequence, std::vector<SequenceNumber>* snapshots,
+    SequenceNumber earliest_write_conflict_snapshot, Env* env,
+    bool expect_valid_internal_key, const Compaction* compaction,
+>>>>>>> forknote/master
     const CompactionFilter* compaction_filter, LogBuffer* log_buffer)
     : input_(input),
       cmp_(cmp),
       merge_helper_(merge_helper),
       snapshots_(snapshots),
+<<<<<<< HEAD
+=======
+      earliest_write_conflict_snapshot_(earliest_write_conflict_snapshot),
+>>>>>>> forknote/master
       env_(env),
       expect_valid_internal_key_(expect_valid_internal_key),
       compaction_(compaction),
@@ -41,6 +60,20 @@ CompactionIterator::CompactionIterator(
     earliest_snapshot_ = snapshots_->at(0);
     latest_snapshot_ = snapshots_->back();
   }
+<<<<<<< HEAD
+=======
+  if (compaction_filter_ != nullptr && compaction_filter_->IgnoreSnapshots()) {
+    ignore_snapshots_ = true;
+  } else {
+    ignore_snapshots_ = false;
+  }
+  input_->SetPinnedItersMgr(&pinned_iters_mgr_);
+}
+
+CompactionIterator::~CompactionIterator() {
+  // input_ Iteartor lifetime is longer than pinned_iters_mgr_ lifetime
+  input_->SetPinnedItersMgr(nullptr);
+>>>>>>> forknote/master
 }
 
 void CompactionIterator::ResetRecordCounts() {
@@ -75,6 +108,11 @@ void CompactionIterator::Next() {
       ikey_.user_key = current_key_.GetUserKey();
       valid_ = true;
     } else {
+<<<<<<< HEAD
+=======
+      // We consumed all pinned merge operands, release pinned iterators
+      pinned_iters_mgr_.ReleasePinnedIterators();
+>>>>>>> forknote/master
       // MergeHelper moves the iterator to the first record after the merged
       // records, so even though we reached the end of the merge output, we do
       // not want to advance the iterator.
@@ -89,6 +127,14 @@ void CompactionIterator::Next() {
     NextFromInput();
   }
 
+<<<<<<< HEAD
+=======
+  if (valid_) {
+    // Record that we've ouputted a record for the current key.
+    has_outputted_key_ = true;
+  }
+
+>>>>>>> forknote/master
   PrepareOutput();
 }
 
@@ -135,11 +181,22 @@ void CompactionIterator::NextFromInput() {
       key_ = current_key_.SetKey(key_, &ikey_);
       current_user_key_ = ikey_.user_key;
       has_current_user_key_ = true;
+<<<<<<< HEAD
       current_user_key_sequence_ = kMaxSequenceNumber;
       current_user_key_snapshot_ = 0;
       // apply the compaction filter to the first occurrence of the user key
       if (compaction_filter_ != nullptr && ikey_.type == kTypeValue &&
           (visible_at_tip_ || ikey_.sequence > latest_snapshot_)) {
+=======
+      has_outputted_key_ = false;
+      current_user_key_sequence_ = kMaxSequenceNumber;
+      current_user_key_snapshot_ = 0;
+
+      // apply the compaction filter to the first occurrence of the user key
+      if (compaction_filter_ != nullptr && ikey_.type == kTypeValue &&
+          (visible_at_tip_ || ikey_.sequence > latest_snapshot_ ||
+           ignore_snapshots_)) {
+>>>>>>> forknote/master
         // If the user has specified a compaction filter and the sequence
         // number is greater than any external snapshot, then invoke the
         // filter. If the return value of the compaction filter is true,
@@ -169,6 +226,12 @@ void CompactionIterator::NextFromInput() {
     } else {
       // Update the current key to reflect the new sequence number/type without
       // copying the user key.
+<<<<<<< HEAD
+=======
+      // TODO(rven): Compaction filter does not process keys in this path
+      // Need to have the compaction filter process multiple versions
+      // if we have versions on both sides of a snapshot
+>>>>>>> forknote/master
       current_key_.UpdateInternalKey(ikey_.sequence, ikey_.type);
       key_ = current_key_.GetKey();
       ikey_.user_key = current_key_.GetUserKey();
@@ -186,6 +249,7 @@ void CompactionIterator::NextFromInput() {
         visible_at_tip_ ? visible_at_tip_ : findEarliestVisibleSnapshot(
                                                 ikey_.sequence, &prev_snapshot);
 
+<<<<<<< HEAD
     if (ikey_.type == kTypeSingleDeletion) {
       ParsedInternalKey next_ikey;
       input_->Next();
@@ -211,6 +275,101 @@ void CompactionIterator::NextFromInput() {
           ++iter_stats_.num_record_drop_hidden;
           ++iter_stats_.num_record_drop_obsolete;
           input_->Next();
+=======
+    if (clear_and_output_next_key_) {
+      // In the previous iteration we encountered a single delete that we could
+      // not compact out.  We will keep this Put, but can drop it's data.
+      // (See Optimization 3, below.)
+      assert(ikey_.type == kTypeValue);
+      assert(current_user_key_snapshot_ == last_snapshot);
+
+      value_.clear();
+      valid_ = true;
+      clear_and_output_next_key_ = false;
+    } else if (ikey_.type == kTypeSingleDeletion) {
+      // We can compact out a SingleDelete if:
+      // 1) We encounter the corresponding PUT -OR- we know that this key
+      //    doesn't appear past this output level
+      // =AND=
+      // 2) We've already returned a record in this snapshot -OR-
+      //    there are no earlier earliest_write_conflict_snapshot.
+      //
+      // Rule 1 is needed for SingleDelete correctness.  Rule 2 is needed to
+      // allow Transactions to do write-conflict checking (if we compacted away
+      // all keys, then we wouldn't know that a write happened in this
+      // snapshot).  If there is no earlier snapshot, then we know that there
+      // are no active transactions that need to know about any writes.
+      //
+      // Optimization 3:
+      // If we encounter a SingleDelete followed by a PUT and Rule 2 is NOT
+      // true, then we must output a SingleDelete.  In this case, we will decide
+      // to also output the PUT.  While we are compacting less by outputting the
+      // PUT now, hopefully this will lead to better compaction in the future
+      // when Rule 2 is later true (Ie, We are hoping we can later compact out
+      // both the SingleDelete and the Put, while we couldn't if we only
+      // outputted the SingleDelete now).
+      // In this case, we can save space by removing the PUT's value as it will
+      // never be read.
+      //
+      // Deletes and Merges are not supported on the same key that has a
+      // SingleDelete as it is not possible to correctly do any partial
+      // compaction of such a combination of operations.  The result of mixing
+      // those operations for a given key is documented as being undefined.  So
+      // we can choose how to handle such a combinations of operations.  We will
+      // try to compact out as much as we can in these cases.
+
+      // The easiest way to process a SingleDelete during iteration is to peek
+      // ahead at the next key.
+      ParsedInternalKey next_ikey;
+      input_->Next();
+
+      // Check whether the next key exists, is not corrupt, and is the same key
+      // as the single delete.
+      if (input_->Valid() && ParseInternalKey(input_->key(), &next_ikey) &&
+          cmp_->Equal(ikey_.user_key, next_ikey.user_key)) {
+        // Check whether the next key belongs to the same snapshot as the
+        // SingleDelete.
+        if (prev_snapshot == 0 || next_ikey.sequence > prev_snapshot) {
+          if (next_ikey.type == kTypeSingleDeletion) {
+            // We encountered two SingleDeletes in a row.  This could be due to
+            // unexpected user input.
+            // Skip the first SingleDelete and let the next iteration decide how
+            // to handle the second SingleDelete
+
+            // First SingleDelete has been skipped since we already called
+            // input_->Next().
+            ++iter_stats_.num_record_drop_obsolete;
+          } else if ((ikey_.sequence <= earliest_write_conflict_snapshot_) ||
+                     has_outputted_key_) {
+            // Found a matching value, we can drop the single delete and the
+            // value.  It is safe to drop both records since we've already
+            // outputted a key in this snapshot, or there is no earlier
+            // snapshot (Rule 2 above).
+
+            // Note: it doesn't matter whether the second key is a Put or if it
+            // is an unexpected Merge or Delete.  We will compact it out
+            // either way.
+            ++iter_stats_.num_record_drop_hidden;
+            ++iter_stats_.num_record_drop_obsolete;
+            // Already called input_->Next() once.  Call it a second time to
+            // skip past the second key.
+            input_->Next();
+          } else {
+            // Found a matching value, but we cannot drop both keys since
+            // there is an earlier snapshot and we need to leave behind a record
+            // to know that a write happened in this snapshot (Rule 2 above).
+            // Clear the value and output the SingleDelete. (The value will be
+            // outputted on the next iteration.)
+            ++iter_stats_.num_record_drop_hidden;
+
+            // Setting valid_ to true will output the current SingleDelete
+            valid_ = true;
+
+            // Set up the Put to be outputted in the next iteration.
+            // (Optimization 3).
+            clear_and_output_next_key_ = true;
+          }
+>>>>>>> forknote/master
         } else {
           // We hit the next snapshot without hitting a put, so the iterator
           // returns the single delete.
@@ -225,11 +384,22 @@ void CompactionIterator::NextFromInput() {
         // iteration. If the next key is corrupt, we return before the
         // comparison, so the value of has_current_user_key does not matter.
         has_current_user_key_ = false;
+<<<<<<< HEAD
         if (compaction_ != nullptr &&
             compaction_->KeyNotExistsBeyondOutputLevel(ikey_.user_key,
                                                        &level_ptrs_)) {
           ++iter_stats_.num_record_drop_obsolete;
         } else {
+=======
+        if (compaction_ != nullptr && ikey_.sequence <= earliest_snapshot_ &&
+            compaction_->KeyNotExistsBeyondOutputLevel(ikey_.user_key,
+                                                       &level_ptrs_)) {
+          // Key doesn't exist outside of this range.
+          // Can compact out this SingleDelete.
+          ++iter_stats_.num_record_drop_obsolete;
+        } else {
+          // Output SingleDelete
+>>>>>>> forknote/master
           valid_ = true;
         }
       }
@@ -243,6 +413,13 @@ void CompactionIterator::NextFromInput() {
       // same key, then this kv is not visible in any snapshot.
       // Hidden by an newer entry for same user key
       // TODO: why not > ?
+<<<<<<< HEAD
+=======
+      //
+      // Note: Dropping this key will not affect TransactionDB write-conflict
+      // checking since there has already been a record returned for this key
+      // in this snapshot.
+>>>>>>> forknote/master
       assert(last_sequence >= current_user_key_sequence_);
       ++iter_stats_.num_record_drop_hidden;  // (A)
       input_->Next();
@@ -261,6 +438,12 @@ void CompactionIterator::NextFromInput() {
       //     smaller sequence numbers will be dropped in the next
       //     few iterations of this loop (by rule (A) above).
       // Therefore this deletion marker is obsolete and can be dropped.
+<<<<<<< HEAD
+=======
+      //
+      // Note:  Dropping this Delete will not affect TransactionDB
+      // write-conflict checking since it is earlier than any snapshot.
+>>>>>>> forknote/master
       ++iter_stats_.num_record_drop_obsolete;
       input_->Next();
     } else if (ikey_.type == kTypeMerge) {
@@ -271,6 +454,10 @@ void CompactionIterator::NextFromInput() {
         return;
       }
 
+<<<<<<< HEAD
+=======
+      pinned_iters_mgr_.StartPinning();
+>>>>>>> forknote/master
       // We know the merge type entry is not hidden, otherwise we would
       // have hit (A)
       // We encapsulate the merge related state machine in a different
@@ -298,6 +485,10 @@ void CompactionIterator::NextFromInput() {
         // batch consumed by the merge operator should not shadow any keys
         // coming after the merges
         has_current_user_key_ = false;
+<<<<<<< HEAD
+=======
+        pinned_iters_mgr_.ReleasePinnedIterators();
+>>>>>>> forknote/master
       }
     } else {
       valid_ = true;
@@ -309,9 +500,20 @@ void CompactionIterator::PrepareOutput() {
   // Zeroing out the sequence number leads to better compression.
   // If this is the bottommost level (no files in lower levels)
   // and the earliest snapshot is larger than this seqno
+<<<<<<< HEAD
   // then we can squash the seqno to zero.
   if (bottommost_level_ && valid_ && ikey_.sequence < earliest_snapshot_ &&
       ikey_.type != kTypeMerge) {
+=======
+  // and the userkey differs from the last userkey in compaction
+  // then we can squash the seqno to zero.
+
+  // This is safe for TransactionDB write-conflict checking since transactions
+  // only care about sequence number larger than any active snapshots.
+  if (bottommost_level_ && valid_ && ikey_.sequence < earliest_snapshot_ &&
+      ikey_.type != kTypeMerge &&
+      !cmp_->Equal(compaction_->GetLargestUserKey(), ikey_.user_key)) {
+>>>>>>> forknote/master
     assert(ikey_.type != kTypeDeletion && ikey_.type != kTypeSingleDeletion);
     ikey_.sequence = 0;
     current_key_.UpdateInternalKey(0, ikey_.type);
@@ -321,6 +523,7 @@ void CompactionIterator::PrepareOutput() {
 inline SequenceNumber CompactionIterator::findEarliestVisibleSnapshot(
     SequenceNumber in, SequenceNumber* prev_snapshot) {
   assert(snapshots_->size());
+<<<<<<< HEAD
   SequenceNumber prev __attribute__((unused)) = 0;
   for (const auto cur : *snapshots_) {
     assert(prev <= cur);
@@ -330,6 +533,17 @@ inline SequenceNumber CompactionIterator::findEarliestVisibleSnapshot(
     }
     prev = cur;
     assert(prev);
+=======
+  SequenceNumber prev __attribute__((__unused__)) = kMaxSequenceNumber;
+  for (const auto cur : *snapshots_) {
+    assert(prev == kMaxSequenceNumber || prev <= cur);
+    if (cur >= in) {
+      *prev_snapshot = prev == kMaxSequenceNumber ? 0 : prev;
+      return cur;
+    }
+    prev = cur;
+    assert(prev < kMaxSequenceNumber);
+>>>>>>> forknote/master
   }
   *prev_snapshot = prev;
   return kMaxSequenceNumber;

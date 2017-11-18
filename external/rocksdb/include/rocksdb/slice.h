@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -73,9 +77,28 @@ class Slice {
     size_ -= n;
   }
 
+<<<<<<< HEAD
   // Return a string that contains the copy of the referenced data.
   std::string ToString(bool hex = false) const;
 
+=======
+  void remove_suffix(size_t n) {
+    assert(n <= size());
+    size_ -= n;
+  }
+
+  // Return a string that contains the copy of the referenced data.
+  // when hex is true, returns a string of twice the length hex encoded (0-9A-F)
+  std::string ToString(bool hex = false) const;
+
+  // Decodes the current slice interpreted as an hexadecimal string into result,
+  // if successful returns true, if this isn't a valid hex string
+  // (e.g not coming from Slice::ToString(true)) DecodeHex returns false.
+  // This slice is expected to have an even number of 0-9A-F characters
+  // also accepts lowercase (a-f)
+  bool DecodeHex(std::string* result) const;
+
+>>>>>>> forknote/master
   // Three-way comparison.  Returns value:
   //   <  0 iff "*this" <  "b",
   //   == 0 iff "*this" == "b",
@@ -88,6 +111,14 @@ class Slice {
             (memcmp(data_, x.data_, x.size_) == 0));
   }
 
+<<<<<<< HEAD
+=======
+  bool ends_with(const Slice& x) const {
+    return ((size_ >= x.size_) &&
+            (memcmp(data_ + size_ - x.size_, x.data_, x.size_) == 0));
+  }
+
+>>>>>>> forknote/master
   // Compare two slices and returns the first byte where they differ
   size_t difference_offset(const Slice& b) const;
 

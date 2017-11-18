@@ -57,12 +57,16 @@ public class TransactionLogIterator extends RocksObject {
    * @param nativeHandle address to native address.
    */
   TransactionLogIterator(final long nativeHandle) {
+<<<<<<< HEAD
     super();
     nativeHandle_ = nativeHandle;
   }
 
   @Override protected void disposeInternal() {
     disposeInternal(nativeHandle_);
+=======
+    super(nativeHandle);
+>>>>>>> forknote/master
   }
 
   /**
@@ -107,7 +111,11 @@ public class TransactionLogIterator extends RocksObject {
     private final WriteBatch writeBatch_;
   }
 
+<<<<<<< HEAD
   private native void disposeInternal(long handle);
+=======
+  @Override protected final native void disposeInternal(final long handle);
+>>>>>>> forknote/master
   private native boolean isValid(long handle);
   private native void next(long handle);
   private native void status(long handle)

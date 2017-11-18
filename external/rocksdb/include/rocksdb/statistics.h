@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -33,14 +37,33 @@ enum Tickers : uint32_t {
   BLOCK_CACHE_HIT,
   // # of blocks added to block cache.
   BLOCK_CACHE_ADD,
+<<<<<<< HEAD
+=======
+  // # of failures when adding blocks to block cache.
+  BLOCK_CACHE_ADD_FAILURES,
+>>>>>>> forknote/master
   // # of times cache miss when accessing index block from block cache.
   BLOCK_CACHE_INDEX_MISS,
   // # of times cache hit when accessing index block from block cache.
   BLOCK_CACHE_INDEX_HIT,
+<<<<<<< HEAD
+=======
+  // # of bytes of index blocks inserted into cache
+  BLOCK_CACHE_INDEX_BYTES_INSERT,
+  // # of bytes of index block erased from cache
+  BLOCK_CACHE_INDEX_BYTES_EVICT,
+>>>>>>> forknote/master
   // # of times cache miss when accessing filter block from block cache.
   BLOCK_CACHE_FILTER_MISS,
   // # of times cache hit when accessing filter block from block cache.
   BLOCK_CACHE_FILTER_HIT,
+<<<<<<< HEAD
+=======
+  // # of bytes of bloom filter blocks inserted into cache
+  BLOCK_CACHE_FILTER_BYTES_INSERT,
+  // # of bytes of bloom filter block erased from cache
+  BLOCK_CACHE_FILTER_BYTES_EVICT,
+>>>>>>> forknote/master
   // # of times cache miss when accessing data block from block cache.
   BLOCK_CACHE_DATA_MISS,
   // # of times cache hit when accessing data block from block cache.
@@ -49,9 +72,21 @@ enum Tickers : uint32_t {
   BLOCK_CACHE_BYTES_READ,
   // # of bytes written into cache.
   BLOCK_CACHE_BYTES_WRITE,
+<<<<<<< HEAD
   // # of times bloom filter has avoided file reads.
   BLOOM_FILTER_USEFUL,
 
+=======
+
+  // # of times bloom filter has avoided file reads.
+  BLOOM_FILTER_USEFUL,
+
+  // # persistent cache hit
+  PERSISTENT_CACHE_HIT,
+  // # persistent cache miss
+  PERSISTENT_CACHE_MISS,
+
+>>>>>>> forknote/master
   // # of memtable hits.
   MEMTABLE_HIT,
   // # of memtable misses.
@@ -109,6 +144,10 @@ enum Tickers : uint32_t {
   // Writer has to wait for compaction or flush to finish.
   STALL_MICROS,
   // The wait time for db mutex.
+<<<<<<< HEAD
+=======
+  // Disabled by default. To enable it set stats level to kAll
+>>>>>>> forknote/master
   DB_MUTEX_WAIT_MICROS,
   RATE_LIMIT_DELAY_MILLIS,
   NO_ITERATORS,  // number of iterators currently open
@@ -139,13 +178,26 @@ enum Tickers : uint32_t {
   GET_UPDATES_SINCE_CALLS,
   BLOCK_CACHE_COMPRESSED_MISS,  // miss in the compressed block cache
   BLOCK_CACHE_COMPRESSED_HIT,   // hit in the compressed block cache
+<<<<<<< HEAD
   WAL_FILE_SYNCED,              // Number of times WAL sync is done
   WAL_FILE_BYTES,               // Number of bytes written to WAL
+=======
+  // Number of blocks added to comopressed block cache
+  BLOCK_CACHE_COMPRESSED_ADD,
+  // Number of failures when adding blocks to compressed block cache
+  BLOCK_CACHE_COMPRESSED_ADD_FAILURES,
+  WAL_FILE_SYNCED,  // Number of times WAL sync is done
+  WAL_FILE_BYTES,   // Number of bytes written to WAL
+>>>>>>> forknote/master
 
   // Writes can be processed by requesting thread or by the thread at the
   // head of the writers queue.
   WRITE_DONE_BY_SELF,
+<<<<<<< HEAD
   WRITE_DONE_BY_OTHER,
+=======
+  WRITE_DONE_BY_OTHER,  // Equivalent to writes done for others
+>>>>>>> forknote/master
   WRITE_TIMEDOUT,       // Number of writes ending up with timed-out.
   WRITE_WITH_WAL,       // Number of Write calls that request WAL
   COMPACT_READ_BYTES,   // Bytes read during compaction
@@ -158,6 +210,14 @@ enum Tickers : uint32_t {
   NUMBER_SUPERVERSION_ACQUIRES,
   NUMBER_SUPERVERSION_RELEASES,
   NUMBER_SUPERVERSION_CLEANUPS,
+<<<<<<< HEAD
+=======
+
+  // # of compressions/decompressions executed
+  NUMBER_BLOCK_COMPRESSED,
+  NUMBER_BLOCK_DECOMPRESSED,
+
+>>>>>>> forknote/master
   NUMBER_BLOCK_NOT_COMPRESSED,
   MERGE_OPERATION_TOTAL_TIME,
   FILTER_OPERATION_TOTAL_TIME,
@@ -175,15 +235,33 @@ const std::vector<std::pair<Tickers, std::string>> TickersNameMap = {
     {BLOCK_CACHE_MISS, "rocksdb.block.cache.miss"},
     {BLOCK_CACHE_HIT, "rocksdb.block.cache.hit"},
     {BLOCK_CACHE_ADD, "rocksdb.block.cache.add"},
+<<<<<<< HEAD
     {BLOCK_CACHE_INDEX_MISS, "rocksdb.block.cache.index.miss"},
     {BLOCK_CACHE_INDEX_HIT, "rocksdb.block.cache.index.hit"},
     {BLOCK_CACHE_FILTER_MISS, "rocksdb.block.cache.filter.miss"},
     {BLOCK_CACHE_FILTER_HIT, "rocksdb.block.cache.filter.hit"},
+=======
+    {BLOCK_CACHE_ADD_FAILURES, "rocksdb.block.cache.add.failures"},
+    {BLOCK_CACHE_INDEX_MISS, "rocksdb.block.cache.index.miss"},
+    {BLOCK_CACHE_INDEX_HIT, "rocksdb.block.cache.index.hit"},
+    {BLOCK_CACHE_INDEX_BYTES_INSERT, "rocksdb.block.cache.index.bytes.insert"},
+    {BLOCK_CACHE_INDEX_BYTES_EVICT, "rocksdb.block.cache.index.bytes.evict"},
+    {BLOCK_CACHE_FILTER_MISS, "rocksdb.block.cache.filter.miss"},
+    {BLOCK_CACHE_FILTER_HIT, "rocksdb.block.cache.filter.hit"},
+    {BLOCK_CACHE_FILTER_BYTES_INSERT,
+     "rocksdb.block.cache.filter.bytes.insert"},
+    {BLOCK_CACHE_FILTER_BYTES_EVICT, "rocksdb.block.cache.filter.bytes.evict"},
+>>>>>>> forknote/master
     {BLOCK_CACHE_DATA_MISS, "rocksdb.block.cache.data.miss"},
     {BLOCK_CACHE_DATA_HIT, "rocksdb.block.cache.data.hit"},
     {BLOCK_CACHE_BYTES_READ, "rocksdb.block.cache.bytes.read"},
     {BLOCK_CACHE_BYTES_WRITE, "rocksdb.block.cache.bytes.write"},
     {BLOOM_FILTER_USEFUL, "rocksdb.bloom.filter.useful"},
+<<<<<<< HEAD
+=======
+    {PERSISTENT_CACHE_HIT, "rocksdb.persistent.cache.hit"},
+    {PERSISTENT_CACHE_MISS, "rocksdb.persistent.cache.miss"},
+>>>>>>> forknote/master
     {MEMTABLE_HIT, "rocksdb.memtable.hit"},
     {MEMTABLE_MISS, "rocksdb.memtable.miss"},
     {GET_HIT_L0, "rocksdb.l0.hit"},
@@ -226,19 +304,38 @@ const std::vector<std::pair<Tickers, std::string>> TickersNameMap = {
     {GET_UPDATES_SINCE_CALLS, "rocksdb.getupdatessince.calls"},
     {BLOCK_CACHE_COMPRESSED_MISS, "rocksdb.block.cachecompressed.miss"},
     {BLOCK_CACHE_COMPRESSED_HIT, "rocksdb.block.cachecompressed.hit"},
+<<<<<<< HEAD
+=======
+    {BLOCK_CACHE_COMPRESSED_ADD, "rocksdb.block.cachecompressed.add"},
+    {BLOCK_CACHE_COMPRESSED_ADD_FAILURES,
+     "rocksdb.block.cachecompressed.add.failures"},
+>>>>>>> forknote/master
     {WAL_FILE_SYNCED, "rocksdb.wal.synced"},
     {WAL_FILE_BYTES, "rocksdb.wal.bytes"},
     {WRITE_DONE_BY_SELF, "rocksdb.write.self"},
     {WRITE_DONE_BY_OTHER, "rocksdb.write.other"},
+<<<<<<< HEAD
     {WRITE_WITH_WAL, "rocksdb.write.wal"},
     {FLUSH_WRITE_BYTES, "rocksdb.flush.write.bytes"},
     {COMPACT_READ_BYTES, "rocksdb.compact.read.bytes"},
     {COMPACT_WRITE_BYTES, "rocksdb.compact.write.bytes"},
+=======
+    {WRITE_TIMEDOUT, "rocksdb.write.timeout"},
+    {WRITE_WITH_WAL, "rocksdb.write.wal"},
+    {COMPACT_READ_BYTES, "rocksdb.compact.read.bytes"},
+    {COMPACT_WRITE_BYTES, "rocksdb.compact.write.bytes"},
+    {FLUSH_WRITE_BYTES, "rocksdb.flush.write.bytes"},
+>>>>>>> forknote/master
     {NUMBER_DIRECT_LOAD_TABLE_PROPERTIES,
      "rocksdb.number.direct.load.table.properties"},
     {NUMBER_SUPERVERSION_ACQUIRES, "rocksdb.number.superversion_acquires"},
     {NUMBER_SUPERVERSION_RELEASES, "rocksdb.number.superversion_releases"},
     {NUMBER_SUPERVERSION_CLEANUPS, "rocksdb.number.superversion_cleanups"},
+<<<<<<< HEAD
+=======
+    {NUMBER_BLOCK_COMPRESSED, "rocksdb.number.block.compressed"},
+    {NUMBER_BLOCK_DECOMPRESSED, "rocksdb.number.block.decompressed"},
+>>>>>>> forknote/master
     {NUMBER_BLOCK_NOT_COMPRESSED, "rocksdb.number.block.not_compressed"},
     {MERGE_OPERATION_TOTAL_TIME, "rocksdb.merge.operation.time.nanos"},
     {FILTER_OPERATION_TOTAL_TIME, "rocksdb.filter.operation.time.nanos"},
@@ -279,6 +376,21 @@ enum Histograms : uint32_t {
   SST_READ_MICROS,
   // The number of subcompactions actually scheduled during a compaction
   NUM_SUBCOMPACTIONS_SCHEDULED,
+<<<<<<< HEAD
+=======
+  // Value size distribution in each operation
+  BYTES_PER_READ,
+  BYTES_PER_WRITE,
+  BYTES_PER_MULTIGET,
+
+  // number of bytes compressed/decompressed
+  // number of bytes is when uncompressed; i.e. before/after respectively
+  BYTES_COMPRESSED,
+  BYTES_DECOMPRESSED,
+  COMPRESSION_TIMES_NANOS,
+  DECOMPRESSION_TIMES_NANOS,
+
+>>>>>>> forknote/master
   HISTOGRAM_ENUM_MAX,  // TODO(ldemailly): enforce HistogramsNameMap match
 };
 
@@ -306,6 +418,16 @@ const std::vector<std::pair<Histograms, std::string>> HistogramsNameMap = {
     {WRITE_STALL, "rocksdb.db.write.stall"},
     {SST_READ_MICROS, "rocksdb.sst.read.micros"},
     {NUM_SUBCOMPACTIONS_SCHEDULED, "rocksdb.num.subcompactions.scheduled"},
+<<<<<<< HEAD
+=======
+    {BYTES_PER_READ, "rocksdb.bytes.per.read"},
+    {BYTES_PER_WRITE, "rocksdb.bytes.per.write"},
+    {BYTES_PER_MULTIGET, "rocksdb.bytes.per.multiget"},
+    {BYTES_COMPRESSED, "rocksdb.bytes.compressed"},
+    {BYTES_DECOMPRESSED, "rocksdb.bytes.decompressed"},
+    {COMPRESSION_TIMES_NANOS, "rocksdb.compression.times.nanos"},
+    {DECOMPRESSION_TIMES_NANOS, "rocksdb.decompression.times.nanos"},
+>>>>>>> forknote/master
 };
 
 struct HistogramData {
@@ -316,6 +438,22 @@ struct HistogramData {
   double standard_deviation;
 };
 
+<<<<<<< HEAD
+=======
+enum StatsLevel {
+  // Collect all stats except the counters requiring to get time inside the
+  // mutex lock.
+  kExceptTimeForMutex,
+  // Collect all stats expect time inside mutex lock AND time spent on
+  // compression
+  kExceptDetailedTimers,
+  // Collect all stats, including measuring duration of mutex operations.
+  // If getting time is expensive on the platform to run, it can
+  // reduce scalability to more threads, especially for writes.
+  kAll,
+};
+
+>>>>>>> forknote/master
 // Analyze the performance of a db
 class Statistics {
  public:
@@ -339,6 +477,11 @@ class Statistics {
   virtual bool HistEnabledForType(uint32_t type) const {
     return type < HISTOGRAM_ENUM_MAX;
   }
+<<<<<<< HEAD
+=======
+
+  StatsLevel stats_level_ = kExceptTimeForMutex;
+>>>>>>> forknote/master
 };
 
 // Create a concrete DBStatistics object

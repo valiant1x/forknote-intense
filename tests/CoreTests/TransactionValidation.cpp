@@ -689,6 +689,7 @@ bool GenerateTransactionWithZeroFee::generate(std::vector<test_event_entry>& eve
 
   return true;
 }
+<<<<<<< HEAD
 
 MultiSigTx_OutputSignatures::MultiSigTx_OutputSignatures(size_t givenKeys, uint32_t requiredSignatures, bool shouldSucceed) :
   m_givenKeys(givenKeys), m_requiredSignatures(requiredSignatures), m_shouldSucceed(shouldSucceed) {
@@ -888,3 +889,5 @@ bool MultiSigTx_BadInputSignature::generate(std::vector<test_event_entry>& event
 
   return true;
 }
+=======
+>>>>>>> forknote/master

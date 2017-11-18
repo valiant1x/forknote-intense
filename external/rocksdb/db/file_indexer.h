@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -26,9 +30,15 @@ struct FileLevel;
 // The file tree structure in Version is prebuilt and the range of each file
 // is known. On Version::Get(), it uses binary search to find a potential file
 // and then check if a target key can be found in the file by comparing the key
+<<<<<<< HEAD
 // to each file's smallest and largest key. The results of these comparisions
 // can be reused beyond checking if a key falls into a file's range.
 // With some pre-calculated knowledge, each key comparision that has been done
+=======
+// to each file's smallest and largest key. The results of these comparisons
+// can be reused beyond checking if a key falls into a file's range.
+// With some pre-calculated knowledge, each key comparison that has been done
+>>>>>>> forknote/master
 // can serve as a hint to narrow down further searches: if a key compared to
 // be smaller than a file's smallest or largest, that comparison can be used
 // to find out the right bound of next binary search. Similarly, if a key
@@ -48,7 +58,11 @@ class FileIndexer {
   size_t LevelIndexSize(size_t level) const;
 
   // Return a file index range in the next level to search for a key based on
+<<<<<<< HEAD
   // smallest and largest key comparision for the current file specified by
+=======
+  // smallest and largest key comparison for the current file specified by
+>>>>>>> forknote/master
   // level and file_index. When *left_index < *right_index, both index should
   // be valid and fit in the vector size.
   void GetNextLevelIndex(const size_t level, const size_t file_index,

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -23,8 +27,12 @@ public class RestoreBackupableDB extends RocksObject {
    * @param options {@link org.rocksdb.BackupableDBOptions} instance
    */
   public RestoreBackupableDB(final BackupableDBOptions options) {
+<<<<<<< HEAD
     super();
     nativeHandle_ = newRestoreBackupableDB(options.nativeHandle_);
+=======
+    super(newRestoreBackupableDB(options.nativeHandle_));
+>>>>>>> forknote/master
   }
 
   /**
@@ -52,7 +60,11 @@ public class RestoreBackupableDB extends RocksObject {
   public void restoreDBFromBackup(final long backupId, final String dbDir,
       final String walDir, final RestoreOptions restoreOptions)
       throws RocksDBException {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     restoreDBFromBackup0(nativeHandle_, backupId, dbDir, walDir,
         restoreOptions.nativeHandle_);
   }
@@ -70,7 +82,11 @@ public class RestoreBackupableDB extends RocksObject {
   public void restoreDBFromLatestBackup(final String dbDir,
       final String walDir, final RestoreOptions restoreOptions)
       throws RocksDBException {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     restoreDBFromLatestBackup0(nativeHandle_, dbDir, walDir,
         restoreOptions.nativeHandle_);
   }
@@ -85,7 +101,11 @@ public class RestoreBackupableDB extends RocksObject {
    */
   public void purgeOldBackups(final int numBackupsToKeep)
       throws RocksDBException {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     purgeOldBackups0(nativeHandle_, numBackupsToKeep);
   }
 
@@ -99,7 +119,11 @@ public class RestoreBackupableDB extends RocksObject {
    */
   public void deleteBackup(final int backupId)
       throws RocksDBException {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     deleteBackup0(nativeHandle_, backupId);
   }
 
@@ -110,7 +134,11 @@ public class RestoreBackupableDB extends RocksObject {
    * @return List of {@link BackupInfo} instances.
    */
   public List<BackupInfo> getBackupInfos() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return getBackupInfo(nativeHandle_);
   }
 
@@ -122,7 +150,11 @@ public class RestoreBackupableDB extends RocksObject {
    * @return array of backup ids as int ids.
    */
   public int[] getCorruptedBackups() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return getCorruptedBackups(nativeHandle_);
   }
 
@@ -135,6 +167,7 @@ public class RestoreBackupableDB extends RocksObject {
    *    native library.
    */
   public void garbageCollect() throws RocksDBException {
+<<<<<<< HEAD
     assert(isInitialized());
     garbageCollect(nativeHandle_);
   }
@@ -148,6 +181,13 @@ public class RestoreBackupableDB extends RocksObject {
   }
 
   private native long newRestoreBackupableDB(long options);
+=======
+    assert(isOwningHandle());
+    garbageCollect(nativeHandle_);
+  }
+
+  private native static long newRestoreBackupableDB(final long options);
+>>>>>>> forknote/master
   private native void restoreDBFromBackup0(long nativeHandle, long backupId,
       String dbDir, String walDir, long restoreOptions)
       throws RocksDBException;
@@ -162,5 +202,10 @@ public class RestoreBackupableDB extends RocksObject {
   private native int[] getCorruptedBackups(long handle);
   private native void garbageCollect(long handle)
       throws RocksDBException;
+<<<<<<< HEAD
   private native void dispose(long nativeHandle);
+=======
+  @Override protected final native void disposeInternal(
+      final long nativeHandle);
+>>>>>>> forknote/master
 }

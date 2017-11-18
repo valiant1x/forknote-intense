@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2015, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -25,6 +29,10 @@
 #include "util/autovector.h"
 #include "util/murmurhash.h"
 #include "util/thread_local.h"
+<<<<<<< HEAD
+=======
+#include "utilities/transactions/transaction_db_impl.h"
+>>>>>>> forknote/master
 
 namespace rocksdb {
 
@@ -99,12 +107,25 @@ void UnrefLockMapsCache(void* ptr) {
 }  // anonymous namespace
 
 TransactionLockMgr::TransactionLockMgr(
+<<<<<<< HEAD
     size_t default_num_stripes, int64_t max_num_locks,
     std::shared_ptr<TransactionDBMutexFactory> mutex_factory)
     : default_num_stripes_(default_num_stripes),
       max_num_locks_(max_num_locks),
       mutex_factory_(mutex_factory),
       lock_maps_cache_(new ThreadLocalPtr(&UnrefLockMapsCache)) {}
+=======
+    TransactionDB* txn_db, size_t default_num_stripes, int64_t max_num_locks,
+    std::shared_ptr<TransactionDBMutexFactory> mutex_factory)
+    : txn_db_impl_(nullptr),
+      default_num_stripes_(default_num_stripes),
+      max_num_locks_(max_num_locks),
+      mutex_factory_(mutex_factory),
+      lock_maps_cache_(new ThreadLocalPtr(&UnrefLockMapsCache)) {
+  txn_db_impl_ = dynamic_cast<TransactionDBImpl*>(txn_db);
+  assert(txn_db_impl_);
+}
+>>>>>>> forknote/master
 
 TransactionLockMgr::~TransactionLockMgr() {}
 
@@ -130,8 +151,13 @@ void TransactionLockMgr::AddColumnFamily(uint32_t column_family_id) {
 
 void TransactionLockMgr::RemoveColumnFamily(uint32_t column_family_id) {
   // Remove lock_map for this column family.  Since the lock map is stored
+<<<<<<< HEAD
   // as a shared ptr, concurrent transactions can still keep keep using it
   // until they release their reference to it.
+=======
+  // as a shared ptr, concurrent transactions can still keep using it
+  // until they release their references to it.
+>>>>>>> forknote/master
   {
     InstrumentedMutexLock l(&lock_map_mutex_);
 
@@ -197,6 +223,14 @@ bool TransactionLockMgr::IsLockExpired(const LockInfo& lock_info, Env* env,
     // return how many microseconds until lock will be expired
     *expire_time = lock_info.expiration_time;
   } else {
+<<<<<<< HEAD
+=======
+    bool success =
+        txn_db_impl_->TryStealingExpiredTransactionLocks(lock_info.txn_id);
+    if (!success) {
+      expired = false;
+    }
+>>>>>>> forknote/master
     *expire_time = 0;
   }
 

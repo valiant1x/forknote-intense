@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -35,9 +39,15 @@
 #include "rocksdb/env.h"
 #include "rocksdb/memtablerep.h"
 #include "rocksdb/transaction_log.h"
+<<<<<<< HEAD
 #include "util/autovector.h"
 #include "util/event_logger.h"
 #include "util/scoped_arena_iterator.h"
+=======
+#include "table/scoped_arena_iterator.h"
+#include "util/autovector.h"
+#include "util/event_logger.h"
+>>>>>>> forknote/master
 #include "util/stop_watch.h"
 #include "util/thread_local.h"
 
@@ -56,8 +66,15 @@ class CompactionJob {
                 const EnvOptions& env_options, VersionSet* versions,
                 std::atomic<bool>* shutting_down, LogBuffer* log_buffer,
                 Directory* db_directory, Directory* output_directory,
+<<<<<<< HEAD
                 Statistics* stats,
                 std::vector<SequenceNumber> existing_snapshots,
+=======
+                Statistics* stats, InstrumentedMutex* db_mutex,
+                Status* db_bg_error,
+                std::vector<SequenceNumber> existing_snapshots,
+                SequenceNumber earliest_write_conflict_snapshot,
+>>>>>>> forknote/master
                 std::shared_ptr<Cache> table_cache, EventLogger* event_logger,
                 bool paranoid_file_checks, bool measure_io_stats,
                 const std::string& dbname,
@@ -76,8 +93,12 @@ class CompactionJob {
   Status Run();
 
   // REQUIRED: mutex held
+<<<<<<< HEAD
   Status Install(const MutableCFOptions& mutable_cf_options,
                  InstrumentedMutex* db_mutex);
+=======
+  Status Install(const MutableCFOptions& mutable_cf_options);
+>>>>>>> forknote/master
 
  private:
   struct SubcompactionState;
@@ -94,8 +115,12 @@ class CompactionJob {
 
   Status FinishCompactionOutputFile(const Status& input_status,
                                     SubcompactionState* sub_compact);
+<<<<<<< HEAD
   Status InstallCompactionResults(const MutableCFOptions& mutable_cf_options,
                                   InstrumentedMutex* db_mutex);
+=======
+  Status InstallCompactionResults(const MutableCFOptions& mutable_cf_options);
+>>>>>>> forknote/master
   void RecordCompactionIOStats();
   Status OpenCompactionOutputFile(SubcompactionState* sub_compact);
   void CleanupCompaction();
@@ -122,6 +147,10 @@ class CompactionJob {
   const std::string& dbname_;
   const DBOptions& db_options_;
   const EnvOptions& env_options_;
+<<<<<<< HEAD
+=======
+
+>>>>>>> forknote/master
   Env* env_;
   VersionSet* versions_;
   std::atomic<bool>* shutting_down_;
@@ -129,11 +158,25 @@ class CompactionJob {
   Directory* db_directory_;
   Directory* output_directory_;
   Statistics* stats_;
+<<<<<<< HEAD
+=======
+  InstrumentedMutex* db_mutex_;
+  Status* db_bg_error_;
+>>>>>>> forknote/master
   // If there were two snapshots with seq numbers s1 and
   // s2 and s1 < s2, and if we find two instances of a key k1 then lies
   // entirely within s1 and s2, then the earlier version of k1 can be safely
   // deleted because that version is not visible in any snapshot.
   std::vector<SequenceNumber> existing_snapshots_;
+<<<<<<< HEAD
+=======
+
+  // This is the earliest snapshot that could be used for write-conflict
+  // checking by a transaction.  For any user-key newer than this snapshot, we
+  // should make sure not to remove evidence that a write occurred.
+  SequenceNumber earliest_write_conflict_snapshot_;
+
+>>>>>>> forknote/master
   std::shared_ptr<Cache> table_cache_;
 
   EventLogger* event_logger_;

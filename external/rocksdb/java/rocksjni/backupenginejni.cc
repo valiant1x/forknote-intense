@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2015, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -16,10 +20,17 @@
 /*
  * Class:     org_rocksdb_BackupEngine
  * Method:    open
+<<<<<<< HEAD
  * Signature: (JJ)V
  */
 void Java_org_rocksdb_BackupEngine_open(
     JNIEnv* env, jobject jbe, jlong env_handle,
+=======
+ * Signature: (JJ)J
+ */
+jlong Java_org_rocksdb_BackupEngine_open(
+    JNIEnv* env, jclass jcls, jlong env_handle,
+>>>>>>> forknote/master
     jlong backupable_db_options_handle) {
   auto* rocks_env = reinterpret_cast<rocksdb::Env*>(env_handle);
   auto* backupable_db_options =
@@ -30,11 +41,19 @@ void Java_org_rocksdb_BackupEngine_open(
       *backupable_db_options, &backup_engine);
 
   if (status.ok()) {
+<<<<<<< HEAD
     rocksdb::BackupEngineJni::setHandle(env, jbe, backup_engine);
     return;
   }
 
   rocksdb::RocksDBExceptionJni::ThrowNew(env, status);
+=======
+    return reinterpret_cast<jlong>(backup_engine);
+  } else {
+    rocksdb::RocksDBExceptionJni::ThrowNew(env, status);
+    return 0;
+  }
+>>>>>>> forknote/master
 }
 
 /*
@@ -81,6 +100,7 @@ jintArray Java_org_rocksdb_BackupEngine_getCorruptedBackups(
   std::vector<rocksdb::BackupID> backup_ids;
   backup_engine->GetCorruptedBackups(&backup_ids);
   // store backupids in int array
+<<<<<<< HEAD
   const std::vector<rocksdb::BackupID>::size_type
       kIdSize = backup_ids.size();
   int int_backup_ids[kIdSize];
@@ -95,6 +115,16 @@ jintArray Java_org_rocksdb_BackupEngine_getCorruptedBackups(
   ret_backup_ids = env->NewIntArray(ret_backup_ids_size);
   env->SetIntArrayRegion(ret_backup_ids, 0, ret_backup_ids_size,
       int_backup_ids);
+=======
+  std::vector<jint> int_backup_ids(backup_ids.begin(), backup_ids.end());
+  // Store ints in java array
+  jintArray ret_backup_ids;
+  // Its ok to loose precision here (64->32)
+  jsize ret_backup_ids_size = static_cast<jsize>(backup_ids.size());
+  ret_backup_ids = env->NewIntArray(ret_backup_ids_size);
+  env->SetIntArrayRegion(ret_backup_ids, 0, ret_backup_ids_size,
+      int_backup_ids.data());
+>>>>>>> forknote/master
   return ret_backup_ids;
 }
 

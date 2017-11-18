@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -16,6 +20,7 @@ public class RestoreOptions extends RocksObject {
   /**
    * Constructor
    *
+<<<<<<< HEAD
    * @param keepLogFiles If true, restore won't overwrite the existing log files in wal_dir. It
    *     will also move all log files from archive directory to wal_dir. Use this
    *     option in combination with BackupableDBOptions::backup_log_files = false
@@ -38,4 +43,19 @@ public class RestoreOptions extends RocksObject {
 
   private native long newRestoreOptions(boolean keepLogFiles);
   private native void dispose(long handle);
+=======
+   * @param keepLogFiles If true, restore won't overwrite the existing log files
+   *   in wal_dir. It will also move all log files from archive directory to
+   *   wal_dir. Use this option in combination with
+   *   BackupableDBOptions::backup_log_files = false for persisting in-memory
+   *   databases.
+   *   Default: false
+   */
+  public RestoreOptions(final boolean keepLogFiles) {
+    super(newRestoreOptions(keepLogFiles));
+  }
+
+  private native static long newRestoreOptions(boolean keepLogFiles);
+  @Override protected final native void disposeInternal(final long handle);
+>>>>>>> forknote/master
 }

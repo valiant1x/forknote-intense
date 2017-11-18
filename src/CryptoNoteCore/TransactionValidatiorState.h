@@ -26,7 +26,10 @@ namespace CryptoNote {
 
 struct TransactionValidatorState {
   std::unordered_set<Crypto::KeyImage> spentKeyImages;
+<<<<<<< HEAD
   std::set<std::pair<uint64_t, uint32_t>> spentMultisignatureGlobalIndexes;
+=======
+>>>>>>> forknote/master
 };
 
 void mergeStates(TransactionValidatorState& destionation, const TransactionValidatorState& source);

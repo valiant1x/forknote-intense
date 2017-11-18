@@ -7,6 +7,7 @@
 class FacebookFbcodeUnitTestEngine extends ArcanistBaseUnitTestEngine {
 
   public function run() {
+<<<<<<< HEAD
     // Here we create a new unit test "jenkins_async_test" and promise we'll
     // update the results later.
     // Jenkins updates the results using `arc call-conduit
@@ -17,5 +18,13 @@ class FacebookFbcodeUnitTestEngine extends ArcanistBaseUnitTestEngine {
     $result->setName("jenkins_async_test");
     $result->setResult(ArcanistUnitTestResult::RESULT_POSTPONED);
     return array($result);
+=======
+      // For a call to `arc call-conduit differential.updateunitresults` to
+      // succeed we need at least one entry here.
+      $result = new ArcanistUnitTestResult();
+      $result->setName("dummy_placeholder_entry");
+      $result->setResult(ArcanistUnitTestResult::RESULT_PASS);
+      return array($result);
+>>>>>>> forknote/master
   }
 }

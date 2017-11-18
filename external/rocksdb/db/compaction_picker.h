@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -60,6 +64,7 @@ class CompactionPicker {
       const std::string& cf_name, const MutableCFOptions& mutable_cf_options,
       VersionStorageInfo* vstorage, int input_level, int output_level,
       uint32_t output_path_id, const InternalKey* begin, const InternalKey* end,
+<<<<<<< HEAD
       InternalKey** compaction_end);
 
   // The maximum allowed output level.  Default value is NumberLevels() - 1.
@@ -83,6 +88,30 @@ class CompactionPicker {
 #endif  // ROCKSDB_LITE
 
   // Free up the files that participated in a compaction
+=======
+      InternalKey** compaction_end, bool* manual_conflict);
+
+  // The maximum allowed output level.  Default value is NumberLevels() - 1.
+  virtual int MaxOutputLevel() const { return NumberLevels() - 1; }
+
+  virtual bool NeedsCompaction(const VersionStorageInfo* vstorage) const = 0;
+
+// Sanitize the input set of compaction input files.
+// When the input parameters do not describe a valid compaction, the
+// function will try to fix the input_files by adding necessary
+// files.  If it's not possible to conver an invalid input_files
+// into a valid one by adding more files, the function will return a
+// non-ok status with specific reason.
+#ifndef ROCKSDB_LITE
+  Status SanitizeCompactionInputFiles(std::unordered_set<uint64_t>* input_files,
+                                      const ColumnFamilyMetaData& cf_meta,
+                                      const int output_level) const;
+#endif  // ROCKSDB_LITE
+
+  // Free up the files that participated in a compaction
+  //
+  // Requirement: DB mutex held
+>>>>>>> forknote/master
   void ReleaseCompactionFiles(Compaction* c, Status status);
 
   // Returns true if any one of the specified files are being compacted
@@ -94,7 +123,11 @@ class CompactionPicker {
       const CompactionOptions& compact_options,
       const std::vector<CompactionInputFiles>& input_files, int output_level,
       VersionStorageInfo* vstorage, const MutableCFOptions& mutable_cf_options,
+<<<<<<< HEAD
       uint32_t output_path_id) const;
+=======
+      uint32_t output_path_id);
+>>>>>>> forknote/master
 
   // Converts a set of compaction input file numbers into
   // a list of CompactionInputFiles.
@@ -121,15 +154,25 @@ class CompactionPicker {
   // Stores the minimal range that covers all entries in inputs in
   // *smallest, *largest.
   // REQUIRES: inputs is not empty
+<<<<<<< HEAD
   void GetRange(const CompactionInputFiles& inputs,
                 InternalKey* smallest, InternalKey* largest);
+=======
+  void GetRange(const CompactionInputFiles& inputs, InternalKey* smallest,
+                InternalKey* largest);
+>>>>>>> forknote/master
 
   // Stores the minimal range that covers all entries in inputs1 and inputs2
   // in *smallest, *largest.
   // REQUIRES: inputs is not empty
   void GetRange(const CompactionInputFiles& inputs1,
+<<<<<<< HEAD
                 const CompactionInputFiles& inputs2,
                 InternalKey* smallest, InternalKey* largest);
+=======
+                const CompactionInputFiles& inputs2, InternalKey* smallest,
+                InternalKey* largest);
+>>>>>>> forknote/master
 
   // Add more files to the inputs on "level" to make sure that
   // no newer version of a key is compacted to "level+1" while leaving an older
@@ -164,6 +207,7 @@ class CompactionPicker {
 
   const ImmutableCFOptions& ioptions_;
 
+<<<<<<< HEAD
   // A helper function to SanitizeCompactionInputFiles() that
   // sanitizes "input_files" by adding necessary files.
 #ifndef ROCKSDB_LITE
@@ -171,6 +215,14 @@ class CompactionPicker {
       std::unordered_set<uint64_t>* input_files,
       const ColumnFamilyMetaData& cf_meta,
       const int output_level) const;
+=======
+// A helper function to SanitizeCompactionInputFiles() that
+// sanitizes "input_files" by adding necessary files.
+#ifndef ROCKSDB_LITE
+  virtual Status SanitizeCompactionInputFilesForAllLevels(
+      std::unordered_set<uint64_t>* input_files,
+      const ColumnFamilyMetaData& cf_meta, const int output_level) const;
+>>>>>>> forknote/master
 #endif  // ROCKSDB_LITE
 
   // Keeps track of all compactions that are running on Level0.
@@ -190,8 +242,13 @@ class LevelCompactionPicker : public CompactionPicker {
                                      VersionStorageInfo* vstorage,
                                      LogBuffer* log_buffer) override;
 
+<<<<<<< HEAD
   virtual bool NeedsCompaction(const VersionStorageInfo* vstorage) const
       override;
+=======
+  virtual bool NeedsCompaction(
+      const VersionStorageInfo* vstorage) const override;
+>>>>>>> forknote/master
 
   // Pick a path ID to place a newly generated file, with its level
   static uint32_t GetPathId(const ImmutableCFOptions& ioptions,
@@ -230,8 +287,13 @@ class UniversalCompactionPicker : public CompactionPicker {
 
   virtual int MaxOutputLevel() const override { return NumberLevels() - 1; }
 
+<<<<<<< HEAD
   virtual bool NeedsCompaction(const VersionStorageInfo* vstorage) const
       override;
+=======
+  virtual bool NeedsCompaction(
+      const VersionStorageInfo* vstorage) const override;
+>>>>>>> forknote/master
 
  private:
   struct SortedRun {
@@ -251,7 +313,11 @@ class UniversalCompactionPicker : public CompactionPicker {
 
     // sorted_run_count is added into the string to print
     void DumpSizeInfo(char* out_buf, size_t out_buf_size,
+<<<<<<< HEAD
                       int sorted_run_count) const;
+=======
+                      size_t sorted_run_count) const;
+>>>>>>> forknote/master
 
     int level;
     // `file` Will be null for level > 0. For level = 0, the sorted run is
@@ -302,6 +368,7 @@ class FIFOCompactionPicker : public CompactionPicker {
       const std::string& cf_name, const MutableCFOptions& mutable_cf_options,
       VersionStorageInfo* vstorage, int input_level, int output_level,
       uint32_t output_path_id, const InternalKey* begin, const InternalKey* end,
+<<<<<<< HEAD
       InternalKey** compaction_end) override;
 
   // The maximum allowed output level.  Always returns 0.
@@ -311,13 +378,27 @@ class FIFOCompactionPicker : public CompactionPicker {
 
   virtual bool NeedsCompaction(const VersionStorageInfo* vstorage) const
       override;
+=======
+      InternalKey** compaction_end, bool* manual_conflict) override;
+
+  // The maximum allowed output level.  Always returns 0.
+  virtual int MaxOutputLevel() const override { return 0; }
+
+  virtual bool NeedsCompaction(
+      const VersionStorageInfo* vstorage) const override;
+>>>>>>> forknote/master
 };
 
 class NullCompactionPicker : public CompactionPicker {
  public:
   NullCompactionPicker(const ImmutableCFOptions& ioptions,
+<<<<<<< HEAD
                        const InternalKeyComparator* icmp) :
       CompactionPicker(ioptions, icmp) {}
+=======
+                       const InternalKeyComparator* icmp)
+      : CompactionPicker(ioptions, icmp) {}
+>>>>>>> forknote/master
   virtual ~NullCompactionPicker() {}
 
   // Always return "nullptr"
@@ -329,23 +410,43 @@ class NullCompactionPicker : public CompactionPicker {
   }
 
   // Always return "nullptr"
+<<<<<<< HEAD
   Compaction* CompactRange(
       const std::string& cf_name, const MutableCFOptions& mutable_cf_options,
       VersionStorageInfo* vstorage, int input_level, int output_level,
       uint32_t output_path_id, const InternalKey* begin, const InternalKey* end,
       InternalKey** compaction_end) override {
+=======
+  Compaction* CompactRange(const std::string& cf_name,
+                           const MutableCFOptions& mutable_cf_options,
+                           VersionStorageInfo* vstorage, int input_level,
+                           int output_level, uint32_t output_path_id,
+                           const InternalKey* begin, const InternalKey* end,
+                           InternalKey** compaction_end,
+                           bool* manual_conflict) override {
+>>>>>>> forknote/master
     return nullptr;
   }
 
   // Always returns false.
+<<<<<<< HEAD
   virtual bool NeedsCompaction(const VersionStorageInfo* vstorage) const
       override {
+=======
+  virtual bool NeedsCompaction(
+      const VersionStorageInfo* vstorage) const override {
+>>>>>>> forknote/master
     return false;
   }
 };
 #endif  // !ROCKSDB_LITE
 
 CompressionType GetCompressionType(const ImmutableCFOptions& ioptions,
+<<<<<<< HEAD
+=======
+                                   const VersionStorageInfo* vstorage,
+                                   const MutableCFOptions& mutable_cf_options,
+>>>>>>> forknote/master
                                    int level, int base_level,
                                    const bool enable_compression = true);
 

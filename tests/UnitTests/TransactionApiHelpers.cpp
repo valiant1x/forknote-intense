@@ -21,6 +21,7 @@
 using namespace CryptoNote;
 using namespace Crypto;
 
+<<<<<<< HEAD
 namespace {
 
   const std::vector<AccountBase>& getMsigAccounts() {
@@ -30,6 +31,8 @@ namespace {
 
 }
 
+=======
+>>>>>>> forknote/master
 TestTransactionBuilder::TestTransactionBuilder() {
   tx = createTransaction();
 }
@@ -123,6 +126,7 @@ void TestTransactionBuilder::addInput(const AccountKeys& senderKeys, const Trans
   keys[idx] = std::make_pair(info, ephKeys);
 }
 
+<<<<<<< HEAD
 void TestTransactionBuilder::addTestMultisignatureInput(uint64_t amount, const TransactionOutputInformation& t) {
   MultisignatureInput input;
   input.amount = amount;
@@ -149,6 +153,8 @@ size_t TestTransactionBuilder::addFakeMultisignatureInput(uint64_t amount, uint3
   return idx;
 }
 
+=======
+>>>>>>> forknote/master
 TransactionOutputInformationIn TestTransactionBuilder::addTestKeyOutput(uint64_t amount, uint32_t globalOutputIndex, const AccountKeys& senderKeys) {
   uint32_t index = static_cast<uint32_t>(tx->addOutput(amount, senderKeys.address));
 
@@ -168,6 +174,7 @@ TransactionOutputInformationIn TestTransactionBuilder::addTestKeyOutput(uint64_t
   return outputInfo;
 }
 
+<<<<<<< HEAD
 TransactionOutputInformationIn TestTransactionBuilder::addTestMultisignatureOutput(uint64_t amount, std::vector<AccountPublicAddress>& addresses, uint32_t globalOutputIndex) {
   uint32_t index = static_cast<uint32_t>(tx->addOutput(amount, addresses, static_cast<uint32_t>(addresses.size())));
 
@@ -196,6 +203,8 @@ TransactionOutputInformationIn TestTransactionBuilder::addTestMultisignatureOutp
   return addTestMultisignatureOutput(amount, multisigAddresses, globalOutputIndex);
 }
 
+=======
+>>>>>>> forknote/master
 size_t TestTransactionBuilder::addOutput(uint64_t amount, const AccountPublicAddress& to) {
   return tx->addOutput(amount, to);
 }
@@ -204,21 +213,27 @@ size_t TestTransactionBuilder::addOutput(uint64_t amount, const KeyOutput& out) 
   return tx->addOutput(amount, out);
 }
 
+<<<<<<< HEAD
 size_t TestTransactionBuilder::addOutput(uint64_t amount, const MultisignatureOutput& out) {
   return tx->addOutput(amount, out);
 }
 
+=======
+>>>>>>> forknote/master
 std::unique_ptr<ITransactionReader> TestTransactionBuilder::build() {
   for (const auto& kv : keys) {
     tx->signInputKey(kv.first, kv.second.first, kv.second.second);
   }
 
+<<<<<<< HEAD
   for (const auto& kv : msigInputs) {
     for (const auto& acc : kv.second.accounts) {
       tx->signInputMultisignature(kv.first, kv.second.transactionKey, kv.second.outputIndex, acc.getAccountKeys());
     }
   }
 
+=======
+>>>>>>> forknote/master
   transactionHash = tx->getTransactionHash();
 
   keys.clear();

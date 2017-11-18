@@ -85,8 +85,11 @@ public:
                                 std::vector<Crypto::PublicKey>& publicKeys) const = 0;
 
   virtual bool addTransactionToPool(const BinaryArray& transactionBinaryArray) = 0;
+<<<<<<< HEAD
   virtual boost::optional<std::pair<MultisignatureOutput, uint64_t>>
   getMultisignatureOutput(uint64_t amount, uint32_t globalIndex) const = 0;
+=======
+>>>>>>> forknote/master
 
   virtual std::vector<Crypto::Hash> getPoolTransactionHashes() const = 0;
   virtual bool getPoolChanges(const Crypto::Hash& lastBlockHash, const std::vector<Crypto::Hash>& knownHashes,

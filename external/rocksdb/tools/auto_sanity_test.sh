@@ -64,11 +64,19 @@ echo "Creating db based on the old commit --- $commit_old"
 ./old_db_sanity_test $dir_old create
 
 echo "============================================================="
+<<<<<<< HEAD
 echo "[Backward Compability Check]"
 echo "Verifying old db $dir_old using the new commit --- $commit_new"
 ./new_db_sanity_test $dir_old verify
 if [ $? -ne 0 ]; then
   echo "[ERROR] Backward Compability Check fails:"
+=======
+echo "[Backward Compatibility Check]"
+echo "Verifying old db $dir_old using the new commit --- $commit_new"
+./new_db_sanity_test $dir_old verify
+if [ $? -ne 0 ]; then
+  echo "[ERROR] Backward Compatibility Check fails:"
+>>>>>>> forknote/master
   echo "    Verification of $dir_old using commit $commit_new failed."
   exit 2
 fi
@@ -78,7 +86,11 @@ echo "[Forward Compatibility Check]"
 echo "Verifying new db $dir_new using the old commit --- $commit_old"
 ./old_db_sanity_test $dir_new verify
 if [ $? -ne 0 ]; then
+<<<<<<< HEAD
   echo "[ERROR] Forward Compability Check fails:"
+=======
+  echo "[ERROR] Forward Compatibility Check fails:"
+>>>>>>> forknote/master
   echo "    $dir_new using commit $commit_old failed."
   exit 2
 fi

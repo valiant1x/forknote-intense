@@ -33,6 +33,7 @@ class AdaptiveTableFactory : public TableFactory {
 
   const char* Name() const override { return "AdaptiveTableFactory"; }
 
+<<<<<<< HEAD
   Status NewTableReader(const TableReaderOptions& table_reader_options,
                         unique_ptr<RandomAccessFileReader>&& file,
                         uint64_t file_size,
@@ -41,6 +42,17 @@ class AdaptiveTableFactory : public TableFactory {
   TableBuilder* NewTableBuilder(
       const TableBuilderOptions& table_builder_options,
       WritableFileWriter* file) const override;
+=======
+  Status NewTableReader(
+      const TableReaderOptions& table_reader_options,
+      unique_ptr<RandomAccessFileReader>&& file, uint64_t file_size,
+      unique_ptr<TableReader>* table,
+      bool prefetch_index_and_filter_in_cache = true) const override;
+
+  TableBuilder* NewTableBuilder(
+      const TableBuilderOptions& table_builder_options,
+      uint32_t column_family_id, WritableFileWriter* file) const override;
+>>>>>>> forknote/master
 
   // Sanitizes the specified DB Options.
   Status SanitizeOptions(const DBOptions& db_opts,

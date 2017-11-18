@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -27,7 +31,11 @@ public class Checkpoint extends RocksObject {
     if (db == null) {
       throw new IllegalArgumentException(
           "RocksDB instance shall not be null.");
+<<<<<<< HEAD
     } else if (!db.isInitialized()) {
+=======
+    } else if (!db.isOwningHandle()) {
+>>>>>>> forknote/master
       throw new IllegalStateException(
           "RocksDB instance must be initialized.");
     }
@@ -51,6 +59,7 @@ public class Checkpoint extends RocksObject {
     createCheckpoint(nativeHandle_, checkpointPath);
   }
 
+<<<<<<< HEAD
   @Override
   protected void disposeInternal() {
     disposeInternal(nativeHandle_);
@@ -66,6 +75,17 @@ public class Checkpoint extends RocksObject {
 
   private static native long newCheckpoint(long dbHandle);
   private native void disposeInternal(long handle);
+=======
+  private Checkpoint(final RocksDB db) {
+    super(newCheckpoint(db.nativeHandle_));
+    this.db_ = db;
+  }
+
+  private final RocksDB db_;
+
+  private static native long newCheckpoint(long dbHandle);
+  @Override protected final native void disposeInternal(final long handle);
+>>>>>>> forknote/master
 
   private native void createCheckpoint(long handle, String checkpointPath)
       throws RocksDBException;

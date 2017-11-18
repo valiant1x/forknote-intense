@@ -72,6 +72,7 @@ BlockchainWriteBatch& BlockchainWriteBatch::insertKeyOutputGlobalIndexes(IBlockc
   return *this;
 }
 
+<<<<<<< HEAD
 BlockchainWriteBatch& BlockchainWriteBatch::insertMultisignatureOutputGlobalIndexes(IBlockchainCache::Amount amount, const std::vector<PackedOutIndex>& outputs, uint32_t totalOutputsCountForAmount) {
   assert(totalOutputsCountForAmount >= outputs.size());
   rawDataToInsert.reserve(rawDataToInsert.size() + outputs.size() + 1);
@@ -96,6 +97,8 @@ BlockchainWriteBatch& BlockchainWriteBatch::insertSpentMultisignatureOutputGloba
   return *this;
 }
 
+=======
+>>>>>>> forknote/master
 BlockchainWriteBatch& BlockchainWriteBatch::insertRawBlock(uint32_t blockIndex, const RawBlock& block) {
   rawDataToInsert.emplace_back(DB::serialize(DB::BLOCK_INDEX_TO_RAW_BLOCK_PREFIX, blockIndex, block));
   return *this;
@@ -119,6 +122,7 @@ BlockchainWriteBatch& BlockchainWriteBatch::insertKeyOutputAmounts(const std::se
   return *this;
 }
 
+<<<<<<< HEAD
 BlockchainWriteBatch& BlockchainWriteBatch::insertMultisignatureOutputAmounts(const std::set<IBlockchainCache::Amount>& amounts, uint32_t totalMultisignatureOutputAmountsCount) {
   assert(totalMultisignatureOutputAmountsCount >= amounts.size());
   rawDataToInsert.reserve(rawDataToInsert.size() + amounts.size() + 1);
@@ -132,6 +136,8 @@ BlockchainWriteBatch& BlockchainWriteBatch::insertMultisignatureOutputAmounts(co
   return *this;
 }
 
+=======
+>>>>>>> forknote/master
 BlockchainWriteBatch& BlockchainWriteBatch::insertTimestamp(uint64_t timestamp, const std::vector<Crypto::Hash>& blockHashes) {
   rawDataToInsert.emplace_back(DB::serialize(DB::TIMESTAMP_TO_BLOCKHASHES_PREFIX, timestamp, blockHashes));
   return *this;
@@ -183,6 +189,7 @@ BlockchainWriteBatch& BlockchainWriteBatch::removeKeyOutputGlobalIndexes(IBlockc
   return *this;
 }
 
+<<<<<<< HEAD
 BlockchainWriteBatch& BlockchainWriteBatch::removeMultisignatureOutputGlobalIndexes(IBlockchainCache::Amount amount, uint32_t outputsToRemoveCount, uint32_t totalOutputsCountForAmount) {
   rawKeysToRemove.reserve(rawDataToInsert.size() + outputsToRemoveCount);
   rawDataToInsert.emplace_back(DB::serialize(DB::MULTISIGNATURE_OUTPUT_AMOUNT_PREFIX, amount, totalOutputsCountForAmount));
@@ -201,6 +208,8 @@ BlockchainWriteBatch& BlockchainWriteBatch::removeSpentMultisignatureOutputGloba
   return *this;
 }
 
+=======
+>>>>>>> forknote/master
 BlockchainWriteBatch& BlockchainWriteBatch::removeRawBlock(uint32_t blockIndex) {
   rawKeysToRemove.emplace_back(DB::serializeKey(DB::BLOCK_INDEX_TO_RAW_BLOCK_PREFIX, blockIndex));
   return *this;
@@ -226,6 +235,7 @@ BlockchainWriteBatch& BlockchainWriteBatch::removeKeyOutputAmounts(uint32_t keyO
   return *this;
 }
 
+<<<<<<< HEAD
 BlockchainWriteBatch& BlockchainWriteBatch::removeMultisignatureOutputAmounts(uint32_t multisignatureOutputAmountsToRemoveCount, uint32_t totalMultisignatureOutputAmountsCount) {
   rawKeysToRemove.reserve(rawKeysToRemove.size() + multisignatureOutputAmountsToRemoveCount);
   rawDataToInsert.emplace_back(DB::serialize(DB::MULTISIGNATURE_OUTPUT_AMOUNTS_COUNT_PREFIX, DB::MULTISIGNATURE_OUTPUT_AMOUNTS_COUNT_KEY, totalMultisignatureOutputAmountsCount));
@@ -236,6 +246,8 @@ BlockchainWriteBatch& BlockchainWriteBatch::removeMultisignatureOutputAmounts(ui
   return *this;
 }
 
+=======
+>>>>>>> forknote/master
 BlockchainWriteBatch&BlockchainWriteBatch::removeKeyOutputInfo(IBlockchainCache::Amount amount, IBlockchainCache::GlobalOutputIndex globalIndex) {
   rawKeysToRemove.emplace_back(DB::serializeKey(DB::KEY_OUTPUT_KEY_PREFIX, std::make_pair(amount, globalIndex)));
   return *this;

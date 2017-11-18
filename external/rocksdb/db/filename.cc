@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -21,6 +25,11 @@
 #include "util/file_reader_writer.h"
 #include "util/logging.h"
 #include "util/stop_watch.h"
+<<<<<<< HEAD
+=======
+#include "util/string_util.h"
+#include "util/sync_point.h"
+>>>>>>> forknote/master
 
 namespace rocksdb {
 
@@ -46,8 +55,14 @@ static size_t GetInfoLogPrefix(const std::string& path, char* dest, int len) {
         path[i] == '_'){
       dest[write_idx++] = path[i];
     } else {
+<<<<<<< HEAD
       if (i > 0)
         dest[write_idx++] = '_';
+=======
+      if (i > 0) {
+        dest[write_idx++] = '_';
+      }
+>>>>>>> forknote/master
     }
     i++;
   }
@@ -145,7 +160,11 @@ std::string LockFileName(const std::string& dbname) {
 }
 
 std::string TempFileName(const std::string& dbname, uint64_t number) {
+<<<<<<< HEAD
   return MakeFileName(dbname, number, "dbtmp");
+=======
+  return MakeFileName(dbname, number, kTempFileNameSuffix.c_str());
+>>>>>>> forknote/master
 }
 
 InfoLogPrefix::InfoLogPrefix(bool has_log_dir,
@@ -185,6 +204,24 @@ std::string OldInfoLogFileName(const std::string& dbname, uint64_t ts,
   return log_dir + "/" + info_log_prefix.buf + ".old." + buf;
 }
 
+<<<<<<< HEAD
+=======
+std::string OptionsFileName(const std::string& dbname, uint64_t file_num) {
+  char buffer[256];
+  snprintf(buffer, sizeof(buffer), "%s%06" PRIu64,
+           kOptionsFileNamePrefix.c_str(), file_num);
+  return dbname + "/" + buffer;
+}
+
+std::string TempOptionsFileName(const std::string& dbname, uint64_t file_num) {
+  char buffer[256];
+  snprintf(buffer, sizeof(buffer), "%s%06" PRIu64 ".%s",
+           kOptionsFileNamePrefix.c_str(), file_num,
+           kTempFileNameSuffix.c_str());
+  return dbname + "/" + buffer;
+}
+
+>>>>>>> forknote/master
 std::string MetaDatabaseName(const std::string& dbname, uint64_t number) {
   char buf[100];
   snprintf(buf, sizeof(buf), "/METADB-%llu",
@@ -205,6 +242,11 @@ std::string IdentityFileName(const std::string& dbname) {
 //    dbname/MANIFEST-[0-9]+
 //    dbname/[0-9]+.(log|sst)
 //    dbname/METADB-[0-9]+
+<<<<<<< HEAD
+=======
+//    dbname/OPTIONS-[0-9]+
+//    dbname/OPTIONS-[0-9]+.dbtmp
+>>>>>>> forknote/master
 //    Disregards / at the beginning
 bool ParseFileName(const std::string& fname,
                    uint64_t* number,
@@ -267,6 +309,24 @@ bool ParseFileName(const std::string& fname, uint64_t* number,
     }
     *type = kMetaDatabase;
     *number = num;
+<<<<<<< HEAD
+=======
+  } else if (rest.starts_with(kOptionsFileNamePrefix)) {
+    uint64_t ts_suffix;
+    bool is_temp_file = false;
+    rest.remove_prefix(kOptionsFileNamePrefix.size());
+    const std::string kTempFileNameSuffixWithDot =
+        std::string(".") + kTempFileNameSuffix;
+    if (rest.ends_with(kTempFileNameSuffixWithDot)) {
+      rest.remove_suffix(kTempFileNameSuffixWithDot.size());
+      is_temp_file = true;
+    }
+    if (!ConsumeDecimalNumber(&rest, &ts_suffix)) {
+      return false;
+    }
+    *number = ts_suffix;
+    *type = is_temp_file ? kTempFile : kOptionsFile;
+>>>>>>> forknote/master
   } else {
     // Avoid strtoull() to keep filename format independent of the
     // current locale
@@ -301,7 +361,11 @@ bool ParseFileName(const std::string& fname, uint64_t* number,
     } else if (suffix == Slice(kRocksDbTFileExt) ||
                suffix == Slice(kLevelDbTFileExt)) {
       *type = kTableFile;
+<<<<<<< HEAD
     } else if (suffix == Slice("dbtmp")) {
+=======
+    } else if (suffix == Slice(kTempFileNameSuffix)) {
+>>>>>>> forknote/master
       *type = kTempFile;
     } else {
       return false;
@@ -322,7 +386,13 @@ Status SetCurrentFile(Env* env, const std::string& dbname,
   std::string tmp = TempFileName(dbname, descriptor_number);
   Status s = WriteStringToFile(env, contents.ToString() + "\n", tmp, true);
   if (s.ok()) {
+<<<<<<< HEAD
     s = env->RenameFile(tmp, CurrentFileName(dbname));
+=======
+    TEST_KILL_RANDOM("SetCurrentFile:0", rocksdb_kill_odds * REDUCE_ODDS2);
+    s = env->RenameFile(tmp, CurrentFileName(dbname));
+    TEST_KILL_RANDOM("SetCurrentFile:1", rocksdb_kill_odds * REDUCE_ODDS2);
+>>>>>>> forknote/master
   }
   if (s.ok()) {
     if (directory_to_fsync != nullptr) {
@@ -351,6 +421,10 @@ Status SetIdentityFile(Env* env, const std::string& dbname) {
 
 Status SyncManifest(Env* env, const DBOptions* db_options,
                     WritableFileWriter* file) {
+<<<<<<< HEAD
+=======
+  TEST_KILL_RANDOM("SyncManifest:0", rocksdb_kill_odds * REDUCE_ODDS2);
+>>>>>>> forknote/master
   if (db_options->disableDataSync) {
     return Status::OK();
   } else {

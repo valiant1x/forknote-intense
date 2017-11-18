@@ -28,6 +28,7 @@ public:
   typedef std::vector<Crypto::Signature> SignatureVector;
   typedef std::vector<SignatureVector> SignatureMultivector;
 
+<<<<<<< HEAD
   struct MultisignatureSource {
     CryptoNote::MultisignatureInput input;
     KeysVector keys;
@@ -35,6 +36,8 @@ public:
     size_t srcOutputIndex;
   };
 
+=======
+>>>>>>> forknote/master
   TransactionBuilder(const CryptoNote::Currency& currency, uint64_t unlockTime = 0);
 
   // regenerate transaction keys
@@ -43,12 +46,18 @@ public:
 
   // inputs
   TransactionBuilder& setInput(const std::vector<CryptoNote::TransactionSourceEntry>& sources, const CryptoNote::AccountKeys& senderKeys);
+<<<<<<< HEAD
   TransactionBuilder& addMultisignatureInput(const MultisignatureSource& source);
+=======
+>>>>>>> forknote/master
 
   // outputs
   TransactionBuilder& setOutput(const std::vector<CryptoNote::TransactionDestinationEntry>& destinations);
   TransactionBuilder& addOutput(const CryptoNote::TransactionDestinationEntry& dest);
+<<<<<<< HEAD
   TransactionBuilder& addMultisignatureOut(uint64_t amount, const KeysVector& keys, uint32_t required);
+=======
+>>>>>>> forknote/master
 
   CryptoNote::Transaction build() const;
 
@@ -61,6 +70,7 @@ private:
   void fillOutputs(CryptoNote::Transaction& tx) const;
   void signSources(const Crypto::Hash& prefixHash, const std::vector<CryptoNote::KeyPair>& contexts, CryptoNote::Transaction& tx) const;
 
+<<<<<<< HEAD
   struct MultisignatureDestination {
     uint64_t amount;
     uint32_t requiredSignatures;
@@ -72,6 +82,10 @@ private:
   std::vector<MultisignatureSource> m_msigSources;
   std::vector<MultisignatureDestination> m_msigDestinations;
 
+=======
+  CryptoNote::AccountKeys m_senderKeys;
+
+>>>>>>> forknote/master
   size_t m_version;
   uint64_t m_unlockTime;
   CryptoNote::KeyPair m_txKey;

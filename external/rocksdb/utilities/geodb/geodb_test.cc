@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -103,6 +107,7 @@ TEST_F(GeoDBTest, Search) {
   // search all objects centered at 46 degree latitude with
   // a radius of 200 kilometers. We should find the one object that
   // we inserted earlier.
+<<<<<<< HEAD
   std::vector<GeoObject> values;
   status = getdb()->SearchRadial(GeoPosition(46, 46), 200000, &values);
   ASSERT_TRUE(status.ok());
@@ -114,6 +119,25 @@ TEST_F(GeoDBTest, Search) {
   status = getdb()->SearchRadial(GeoPosition(46, 46), 2, &values);
   ASSERT_TRUE(status.ok());
   ASSERT_EQ(values.size(), 0U);
+=======
+  GeoIterator* iter1 = getdb()->SearchRadial(GeoPosition(46, 46), 200000);
+  ASSERT_TRUE(status.ok());
+  ASSERT_EQ(iter1->geo_object().value, "midvalue1");
+  uint32_t size = 0;
+  while (iter1->Valid()) {
+    size++;
+    iter1->Next();
+  }
+  ASSERT_EQ(size, 1U);
+  delete iter1;
+
+  // search all objects centered at 46 degree latitude with
+  // a radius of 2 kilometers. There should be none.
+  GeoIterator* iter2 = getdb()->SearchRadial(GeoPosition(46, 46), 2);
+  ASSERT_TRUE(status.ok());
+  ASSERT_FALSE(iter2->Valid());
+  delete iter2;
+>>>>>>> forknote/master
 }
 
 }  // namespace rocksdb

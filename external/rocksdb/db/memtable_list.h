@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -74,7 +78,12 @@ class MemTableListVersion {
   }
 
   void AddIterators(const ReadOptions& options,
+<<<<<<< HEAD
                     std::vector<Iterator*>* iterator_list, Arena* arena);
+=======
+                    std::vector<InternalIterator*>* iterator_list,
+                    Arena* arena);
+>>>>>>> forknote/master
 
   void AddIterators(const ReadOptions& options,
                     MergeIteratorBuilder* merge_iter_builder);
@@ -214,6 +223,11 @@ class MemTableList {
 
   size_t* current_memory_usage() { return &current_memory_usage_; }
 
+<<<<<<< HEAD
+=======
+  uint64_t GetMinLogContainingPrepSection();
+
+>>>>>>> forknote/master
  private:
   // DB mutex held
   void InstallNewVersion();

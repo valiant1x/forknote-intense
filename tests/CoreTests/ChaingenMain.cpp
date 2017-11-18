@@ -164,6 +164,7 @@ int main(int argc, char* argv[]) {
       GENERATE_AND_PLAY(gen_tx_signatures_are_invalid);
       GENERATE_AND_PLAY(GenerateTransactionWithZeroFee);
 
+<<<<<<< HEAD
       // multisignature output
       GENERATE_AND_PLAY_EX(MultiSigTx_OutputSignatures(1, 1, true));
       GENERATE_AND_PLAY_EX(MultiSigTx_OutputSignatures(2, 2, true));
@@ -195,6 +196,8 @@ int main(int argc, char* argv[]) {
       GENERATE_AND_PLAY_EX(MultiSigTx_DoubleSpendAltChainDifferentBlocks(false));
       //GENERATE_AND_PLAY_EX(MultiSigTx_DoubleSpendAltChainDifferentBlocks(true));
 
+=======
+>>>>>>> forknote/master
       GENERATE_AND_PLAY(gen_uint_overflow_1);
       GENERATE_AND_PLAY(gen_uint_overflow_2);
 

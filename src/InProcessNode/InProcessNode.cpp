@@ -753,6 +753,7 @@ std::error_code InProcessNode::doGetPoolSymmetricDifference(std::vector<Crypto::
   return ec;
 }
 
+<<<<<<< HEAD
 void InProcessNode::getMultisignatureOutputByGlobalIndex(uint64_t amount, uint32_t gindex, MultisignatureOutput& out,
                                                          const Callback& callback) {
   std::unique_lock<std::mutex> lock(mutex);
@@ -780,6 +781,8 @@ std::error_code InProcessNode::doGetOutputByMultisigGlobalIndex(uint64_t amount,
   return ec;
 }
 
+=======
+>>>>>>> forknote/master
 void InProcessNode::getBlocks(const std::vector<uint32_t>& blockHeights, std::vector<std::vector<BlockDetails>>& blocks,
                               const Callback& callback) {
   std::unique_lock<std::mutex> lock(mutex);

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -16,9 +20,17 @@ namespace rocksdb {
 class MergeOperators {
  public:
   static std::shared_ptr<MergeOperator> CreatePutOperator();
+<<<<<<< HEAD
   static std::shared_ptr<MergeOperator> CreateUInt64AddOperator();
   static std::shared_ptr<MergeOperator> CreateStringAppendOperator();
   static std::shared_ptr<MergeOperator> CreateStringAppendTESTOperator();
+=======
+  static std::shared_ptr<MergeOperator> CreateDeprecatedPutOperator();
+  static std::shared_ptr<MergeOperator> CreateUInt64AddOperator();
+  static std::shared_ptr<MergeOperator> CreateStringAppendOperator();
+  static std::shared_ptr<MergeOperator> CreateStringAppendTESTOperator();
+  static std::shared_ptr<MergeOperator> CreateMaxOperator();
+>>>>>>> forknote/master
 
   // Will return a different merge operator depending on the string.
   // TODO: Hook the "name" up to the actual Name() of the MergeOperators?
@@ -26,12 +38,22 @@ class MergeOperators {
       const std::string& name) {
     if (name == "put") {
       return CreatePutOperator();
+<<<<<<< HEAD
+=======
+    } else if (name == "put_v1") {
+      return CreateDeprecatedPutOperator();
+>>>>>>> forknote/master
     } else if ( name == "uint64add") {
       return CreateUInt64AddOperator();
     } else if (name == "stringappend") {
       return CreateStringAppendOperator();
     } else if (name == "stringappendtest") {
       return CreateStringAppendTESTOperator();
+<<<<<<< HEAD
+=======
+    } else if (name == "max") {
+      return CreateMaxOperator();
+>>>>>>> forknote/master
     } else {
       // Empty or unknown, just return nullptr
       return nullptr;

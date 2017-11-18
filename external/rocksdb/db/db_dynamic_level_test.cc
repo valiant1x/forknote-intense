@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -10,10 +14,17 @@
 // Introduction of SyncPoint effectively disabled building and running this test
 // in Release build.
 // which is a pity, it is a good test
+<<<<<<< HEAD
 #if !(defined NDEBUG) || !defined(OS_WIN)
 
 #include "port/stack_trace.h"
 #include "util/db_test_util.h"
+=======
+#if !defined(ROCKSDB_LITE)
+
+#include "db/db_test_util.h"
+#include "port/stack_trace.h"
+>>>>>>> forknote/master
 
 namespace rocksdb {
 class DBTestDynamicLevel : public DBTestBase {
@@ -125,15 +136,26 @@ TEST_F(DBTestDynamicLevel, DynamicLevelMaxBytesBase2) {
 
   Options options = CurrentOptions();
   options.create_if_missing = true;
+<<<<<<< HEAD
   options.db_write_buffer_size = 2048;
   options.write_buffer_size = 2048;
+=======
+  options.db_write_buffer_size = 204800;
+  options.write_buffer_size = 20480;
+>>>>>>> forknote/master
   options.max_write_buffer_number = 2;
   options.level0_file_num_compaction_trigger = 2;
   options.level0_slowdown_writes_trigger = 9999;
   options.level0_stop_writes_trigger = 9999;
+<<<<<<< HEAD
   options.target_file_size_base = 2048;
   options.level_compaction_dynamic_level_bytes = true;
   options.max_bytes_for_level_base = 10240;
+=======
+  options.target_file_size_base = 9102;
+  options.level_compaction_dynamic_level_bytes = true;
+  options.max_bytes_for_level_base = 40960;
+>>>>>>> forknote/master
   options.max_bytes_for_level_multiplier = 4;
   options.max_background_compactions = 2;
   options.num_levels = 5;
@@ -154,10 +176,17 @@ TEST_F(DBTestDynamicLevel, DynamicLevelMaxBytesBase2) {
   ASSERT_TRUE(db_->GetIntProperty("rocksdb.base-level", &int_prop));
   ASSERT_EQ(4U, int_prop);
 
+<<<<<<< HEAD
   // Put about 7K to L0
   for (int i = 0; i < 70; i++) {
     ASSERT_OK(Put(Key(static_cast<int>(rnd.Uniform(kMaxKey))),
                   RandomString(&rnd, 80)));
+=======
+  // Put about 28K to L0
+  for (int i = 0; i < 70; i++) {
+    ASSERT_OK(Put(Key(static_cast<int>(rnd.Uniform(kMaxKey))),
+                  RandomString(&rnd, 380)));
+>>>>>>> forknote/master
   }
   ASSERT_OK(dbfull()->SetOptions({
       {"disable_auto_compactions", "false"},
@@ -167,14 +196,22 @@ TEST_F(DBTestDynamicLevel, DynamicLevelMaxBytesBase2) {
   ASSERT_TRUE(db_->GetIntProperty("rocksdb.base-level", &int_prop));
   ASSERT_EQ(4U, int_prop);
 
+<<<<<<< HEAD
   // Insert extra about 3.5K to L0. After they are compacted to L4, base level
+=======
+  // Insert extra about 28K to L0. After they are compacted to L4, base level
+>>>>>>> forknote/master
   // should be changed to L3.
   ASSERT_OK(dbfull()->SetOptions({
       {"disable_auto_compactions", "true"},
   }));
   for (int i = 0; i < 70; i++) {
     ASSERT_OK(Put(Key(static_cast<int>(rnd.Uniform(kMaxKey))),
+<<<<<<< HEAD
                   RandomString(&rnd, 80)));
+=======
+                  RandomString(&rnd, 380)));
+>>>>>>> forknote/master
   }
 
   ASSERT_OK(dbfull()->SetOptions({
@@ -199,10 +236,17 @@ TEST_F(DBTestDynamicLevel, DynamicLevelMaxBytesBase2) {
   ASSERT_OK(dbfull()->SetOptions({
       {"disable_auto_compactions", "true"},
   }));
+<<<<<<< HEAD
   // Write about 10K more
   for (int i = 0; i < 100; i++) {
     ASSERT_OK(Put(Key(static_cast<int>(rnd.Uniform(kMaxKey))),
                   RandomString(&rnd, 80)));
+=======
+  // Write about 40K more
+  for (int i = 0; i < 100; i++) {
+    ASSERT_OK(Put(Key(static_cast<int>(rnd.Uniform(kMaxKey))),
+                  RandomString(&rnd, 380)));
+>>>>>>> forknote/master
   }
   ASSERT_OK(dbfull()->SetOptions({
       {"disable_auto_compactions", "false"},
@@ -218,15 +262,26 @@ TEST_F(DBTestDynamicLevel, DynamicLevelMaxBytesBase2) {
 
   // Trigger a condition that the compaction changes base level and L0->Lbase
   // happens at the same time.
+<<<<<<< HEAD
   // We try to make last levels' targets to be 10K, 40K, 160K, add triggers
+=======
+  // We try to make last levels' targets to be 40K, 160K, 640K, add triggers
+>>>>>>> forknote/master
   // another compaction from 40K->160K.
   ASSERT_OK(dbfull()->SetOptions({
       {"disable_auto_compactions", "true"},
   }));
+<<<<<<< HEAD
   // Write about 150K more
   for (int i = 0; i < 1350; i++) {
     ASSERT_OK(Put(Key(static_cast<int>(rnd.Uniform(kMaxKey))),
                   RandomString(&rnd, 80)));
+=======
+  // Write about 600K more
+  for (int i = 0; i < 1500; i++) {
+    ASSERT_OK(Put(Key(static_cast<int>(rnd.Uniform(kMaxKey))),
+                  RandomString(&rnd, 380)));
+>>>>>>> forknote/master
   }
   ASSERT_OK(dbfull()->SetOptions({
       {"disable_auto_compactions", "false"},
@@ -236,6 +291,7 @@ TEST_F(DBTestDynamicLevel, DynamicLevelMaxBytesBase2) {
   ASSERT_TRUE(db_->GetIntProperty("rocksdb.base-level", &int_prop));
   ASSERT_EQ(2U, int_prop);
 
+<<<<<<< HEAD
   // Keep Writing data until base level changed 2->1. There will be L0->L2
   // compaction going on at the same time.
   rocksdb::SyncPoint::GetInstance()->EnableProcessing();
@@ -260,6 +316,42 @@ TEST_F(DBTestDynamicLevel, DynamicLevelMaxBytesBase2) {
 
   env_->SleepForMicroseconds(200000);
 
+=======
+  // A manual compaction will trigger the base level to become L2
+  // Keep Writing data until base level changed 2->1. There will be L0->L2
+  // compaction going on at the same time.
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
+
+  rocksdb::SyncPoint::GetInstance()->LoadDependency({
+      {"CompactionJob::Run():Start", "DynamicLevelMaxBytesBase2:0"},
+      {"DynamicLevelMaxBytesBase2:1", "CompactionJob::Run():End"},
+      {"DynamicLevelMaxBytesBase2:compact_range_finish",
+       "FlushJob::WriteLevel0Table"},
+  });
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
+
+  std::thread thread([this] {
+    TEST_SYNC_POINT("DynamicLevelMaxBytesBase2:compact_range_start");
+    ASSERT_OK(db_->CompactRange(CompactRangeOptions(), nullptr, nullptr));
+    TEST_SYNC_POINT("DynamicLevelMaxBytesBase2:compact_range_finish");
+  });
+
+  TEST_SYNC_POINT("DynamicLevelMaxBytesBase2:0");
+  for (int i = 0; i < 2; i++) {
+    ASSERT_OK(Put(Key(static_cast<int>(rnd.Uniform(kMaxKey))),
+                  RandomString(&rnd, 380)));
+  }
+  TEST_SYNC_POINT("DynamicLevelMaxBytesBase2:1");
+
+  Flush();
+
+  thread.join();
+
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
+
+>>>>>>> forknote/master
   ASSERT_TRUE(db_->GetIntProperty("rocksdb.base-level", &int_prop));
   ASSERT_EQ(1U, int_prop);
 }
@@ -484,10 +576,17 @@ TEST_F(DBTestDynamicLevel, MigrateToDynamicLevelMaxBytesBase) {
 }
 }  // namespace rocksdb
 
+<<<<<<< HEAD
 #endif  // !(defined NDEBUG) || !defined(OS_WIN)
 
 int main(int argc, char** argv) {
 #if !(defined NDEBUG) || !defined(OS_WIN)
+=======
+#endif  // !defined(ROCKSDB_LITE)
+
+int main(int argc, char** argv) {
+#if !defined(ROCKSDB_LITE)
+>>>>>>> forknote/master
   rocksdb::port::InstallStackTraceHandler();
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

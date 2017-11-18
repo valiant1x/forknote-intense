@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -55,7 +59,12 @@ struct FileDescriptor {
     return packed_number_and_path_id & kFileNumberMask;
   }
   uint32_t GetPathId() const {
+<<<<<<< HEAD
     return packed_number_and_path_id / (kFileNumberMask + 1);
+=======
+    return static_cast<uint32_t>(
+        packed_number_and_path_id / (kFileNumberMask + 1));
+>>>>>>> forknote/master
   }
   uint64_t GetFileSize() const { return file_size; }
 };
@@ -192,7 +201,11 @@ class VersionEdit {
     f.smallest_seqno = smallest_seqno;
     f.largest_seqno = largest_seqno;
     f.marked_for_compaction = marked_for_compaction;
+<<<<<<< HEAD
     new_files_.emplace_back(level, f);
+=======
+    new_files_.emplace_back(level, std::move(f));
+>>>>>>> forknote/master
   }
 
   void AddFile(int level, const FileMetaData& f) {
@@ -237,6 +250,11 @@ class VersionEdit {
   bool EncodeTo(std::string* dst) const;
   Status DecodeFrom(const Slice& src);
 
+<<<<<<< HEAD
+=======
+  const char* DecodeNewFile4From(Slice* input);
+
+>>>>>>> forknote/master
   typedef std::set<std::pair<int, uint64_t>> DeletedFileSet;
 
   const DeletedFileSet& GetDeletedFiles() { return deleted_files_; }

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2015, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -34,6 +38,7 @@ class OptimisticTransactionImpl : public TransactionBaseImpl {
 
   virtual ~OptimisticTransactionImpl();
 
+<<<<<<< HEAD
   Status Commit() override;
 
   void Rollback() override;
@@ -41,12 +46,34 @@ class OptimisticTransactionImpl : public TransactionBaseImpl {
  protected:
   Status TryLock(ColumnFamilyHandle* column_family, const Slice& key,
                  bool untracked = false) override;
+=======
+  void Reinitialize(OptimisticTransactionDB* txn_db,
+                    const WriteOptions& write_options,
+                    const OptimisticTransactionOptions& txn_options);
+
+  Status Prepare() override;
+
+  Status Commit() override;
+
+  Status Rollback() override;
+
+  Status SetName(const TransactionName& name) override;
+
+ protected:
+  Status TryLock(ColumnFamilyHandle* column_family, const Slice& key,
+                 bool read_only, bool untracked = false) override;
+>>>>>>> forknote/master
 
  private:
   OptimisticTransactionDB* const txn_db_;
 
   friend class OptimisticTransactionCallback;
 
+<<<<<<< HEAD
+=======
+  void Initialize(const OptimisticTransactionOptions& txn_options);
+
+>>>>>>> forknote/master
   // Returns OK if it is safe to commit this transaction.  Returns Status::Busy
   // if there are read or write conflicts that would prevent us from committing
   // OR if we can not determine whether there would be any such conflicts.
@@ -56,6 +83,14 @@ class OptimisticTransactionImpl : public TransactionBaseImpl {
 
   void Clear() override;
 
+<<<<<<< HEAD
+=======
+  void UnlockGetForUpdate(ColumnFamilyHandle* column_family,
+                          const Slice& key) override {
+    // Nothing to unlock.
+  }
+
+>>>>>>> forknote/master
   // No copying allowed
   OptimisticTransactionImpl(const OptimisticTransactionImpl&);
   void operator=(const OptimisticTransactionImpl&);
@@ -71,6 +106,11 @@ class OptimisticTransactionCallback : public WriteCallback {
     return txn_->CheckTransactionForConflicts(db);
   }
 
+<<<<<<< HEAD
+=======
+  bool AllowWriteBatching() override { return false; }
+
+>>>>>>> forknote/master
  private:
   OptimisticTransactionImpl* txn_;
 };

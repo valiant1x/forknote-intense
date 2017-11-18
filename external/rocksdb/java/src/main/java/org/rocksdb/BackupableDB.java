@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -21,8 +25,13 @@ public class BackupableDB extends RocksDB {
    *
    * @param opt {@link org.rocksdb.Options} to set for the database.
    * @param bopt {@link org.rocksdb.BackupableDBOptions} to use.
+<<<<<<< HEAD
    * @param db_path Path to store data to. The path for storing the backup should be
    *     specified in the {@link org.rocksdb.BackupableDBOptions}.
+=======
+   * @param db_path Path to store data to. The path for storing the backup
+   *   should be specified in the {@link org.rocksdb.BackupableDBOptions}.
+>>>>>>> forknote/master
    *
    * @return {@link BackupableDB} reference to the opened database.
    *
@@ -33,9 +42,15 @@ public class BackupableDB extends RocksDB {
       final Options opt, final BackupableDBOptions bopt, final String db_path)
       throws RocksDBException {
 
+<<<<<<< HEAD
     RocksDB db = RocksDB.open(opt, db_path);
     BackupableDB bdb = new BackupableDB();
     bdb.open(db.nativeHandle_, bopt.nativeHandle_);
+=======
+    final RocksDB db = RocksDB.open(opt, db_path);
+    final BackupableDB bdb = new BackupableDB(open(db.nativeHandle_,
+        bopt.nativeHandle_));
+>>>>>>> forknote/master
 
     // Prevent the RocksDB object from attempting to delete
     // the underly C++ DB object.
@@ -56,7 +71,11 @@ public class BackupableDB extends RocksDB {
    */
   public void createNewBackup(final boolean flushBeforeBackup)
       throws RocksDBException {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     createNewBackup(nativeHandle_, flushBeforeBackup);
   }
 
@@ -70,7 +89,11 @@ public class BackupableDB extends RocksDB {
    */
   public void purgeOldBackups(final int numBackupsToKeep)
       throws RocksDBException {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     purgeOldBackups(nativeHandle_, numBackupsToKeep);
   }
 
@@ -83,7 +106,11 @@ public class BackupableDB extends RocksDB {
    *    native library.
    */
   public void deleteBackup(final int backupId) throws RocksDBException {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     deleteBackup0(nativeHandle_, backupId);
   }
 
@@ -94,7 +121,11 @@ public class BackupableDB extends RocksDB {
    * @return List of {@link BackupInfo} instances.
    */
   public List<BackupInfo> getBackupInfos() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return getBackupInfo(nativeHandle_);
   }
 
@@ -106,7 +137,11 @@ public class BackupableDB extends RocksDB {
    * @return array of backup ids as int ids.
    */
   public int[] getCorruptedBackups() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return getCorruptedBackups(nativeHandle_);
   }
 
@@ -119,7 +154,11 @@ public class BackupableDB extends RocksDB {
    *    native library.
    */
   public void garbageCollect() throws RocksDBException {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     garbageCollect(nativeHandle_);
   }
 
@@ -132,19 +171,32 @@ public class BackupableDB extends RocksDB {
    * of the c++ {@code rocksdb::BackupableDB} and should be transparent
    * to Java developers.</p>
    */
+<<<<<<< HEAD
   @Override public synchronized void close() {
     if (isInitialized()) {
       super.close();
     }
+=======
+  @Override public void close() {
+      super.close();
+>>>>>>> forknote/master
   }
 
   /**
    * <p>A protected construction that will be used in the static
    * factory method {@link #open(Options, BackupableDBOptions, String)}.
    * </p>
+<<<<<<< HEAD
    */
   protected BackupableDB() {
     super();
+=======
+   *
+   * @param nativeHandle The native handle of the C++ BackupableDB object
+   */
+  protected BackupableDB(final long nativeHandle) {
+    super(nativeHandle);
+>>>>>>> forknote/master
   }
 
   @Override protected void finalize() throws Throwable {
@@ -152,7 +204,12 @@ public class BackupableDB extends RocksDB {
     super.finalize();
   }
 
+<<<<<<< HEAD
   protected native void open(long rocksDBHandle, long backupDBOptionsHandle);
+=======
+  protected native static long open(final long rocksDBHandle,
+      final long backupDBOptionsHandle);
+>>>>>>> forknote/master
   protected native void createNewBackup(long handle, boolean flag)
       throws RocksDBException;
   protected native void purgeOldBackups(long handle, int numBackupsToKeep)

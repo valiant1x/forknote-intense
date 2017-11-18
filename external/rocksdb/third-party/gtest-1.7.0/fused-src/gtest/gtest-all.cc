@@ -34,6 +34,12 @@
 // Sometimes it's desirable to build Google Test by compiling a single file.
 // This file serves this purpose.
 
+<<<<<<< HEAD
+=======
+// Suppress clang analyzer warnings.
+#ifndef __clang_analyzer__
+
+>>>>>>> forknote/master
 // This line ensures that gtest.h can be compiled on its own, even
 // when it's fused.
 #include "gtest/gtest.h"
@@ -109,7 +115,10 @@
 #ifndef GTEST_INCLUDE_GTEST_GTEST_SPI_H_
 #define GTEST_INCLUDE_GTEST_GTEST_SPI_H_
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> forknote/master
 namespace testing {
 
 // This helper class can be used to mock out Google Test failure reporting
@@ -2592,7 +2601,11 @@ class Hunk {
   // Print a unified diff header for one hunk.
   // The format is
   //   "@@ -<left_start>,<left_length> +<right_start>,<right_length> @@"
+<<<<<<< HEAD
   // where the left/right parts are ommitted if unnecessary.
+=======
+  // where the left/right parts are omitted if unnecessary.
+>>>>>>> forknote/master
   void PrintHeader(std::ostream* ss) const {
     *ss << "@@ ";
     if (removes_) {
@@ -10255,3 +10268,8 @@ const char* TypedTestCasePState::VerifyRegisteredTestNames(
 
 }  // namespace internal
 }  // namespace testing
+<<<<<<< HEAD
+=======
+
+#endif  // __clang_analyzer__
+>>>>>>> forknote/master

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -19,6 +23,10 @@ class Arena;
 struct ReadOptions;
 struct TableProperties;
 class GetContext;
+<<<<<<< HEAD
+=======
+class InternalIterator;
+>>>>>>> forknote/master
 
 // A Table is a sorted map from strings to strings.  Tables are
 // immutable and persistent.  A Table may be safely accessed from
@@ -34,7 +42,15 @@ class TableReader {
   //        When destroying the iterator, the caller will not call "delete"
   //        but Iterator::~Iterator() directly. The destructor needs to destroy
   //        all the states but those allocated in arena.
+<<<<<<< HEAD
   virtual Iterator* NewIterator(const ReadOptions&, Arena* arena = nullptr) = 0;
+=======
+  // skip_filters: disables checking the bloom filters even if they exist. This
+  //               option is effective only for block-based table format.
+  virtual InternalIterator* NewIterator(const ReadOptions&,
+                                        Arena* arena = nullptr,
+                                        bool skip_filters = false) = 0;
+>>>>>>> forknote/master
 
   // Given a key, return an approximate byte offset in the file where
   // the data for that key begins (or would begin if the key were
@@ -65,8 +81,15 @@ class TableReader {
   //
   // readOptions is the options for the read
   // key is the key to search for
+<<<<<<< HEAD
   virtual Status Get(const ReadOptions& readOptions, const Slice& key,
                      GetContext* get_context) = 0;
+=======
+  // skip_filters: disables checking the bloom filters even if they exist. This
+  //               option is effective only for block-based table format.
+  virtual Status Get(const ReadOptions& readOptions, const Slice& key,
+                     GetContext* get_context, bool skip_filters = false) = 0;
+>>>>>>> forknote/master
 
   // Prefetch data corresponding to a give range of keys
   // Typically this functionality is required for table implementations that
@@ -84,6 +107,11 @@ class TableReader {
   virtual Status DumpTable(WritableFile* out_file) {
     return Status::NotSupported("DumpTable() not supported");
   }
+<<<<<<< HEAD
+=======
+
+  virtual void Close() {}
+>>>>>>> forknote/master
 };
 
 }  // namespace rocksdb

@@ -153,6 +153,7 @@ TEST_F(TransfersContainer_addTransaction, addingTransactionTwiceCausesException)
   ASSERT_ANY_THROW(container.addTransaction(blockInfo(TEST_BLOCK_HEIGHT + 1), *tx, { outInfo }));
 }
 
+<<<<<<< HEAD
 TEST_F(TransfersContainer_addTransaction, addingTwoIdenticalUnconfirmedMultisignatureOutputsDoesNotCauseException) {
 
   CryptoNote::TransactionBlockInfo blockInfo{ WALLET_LEGACY_UNCONFIRMED_TRANSACTION_HEIGHT, 1000000 };
@@ -239,6 +240,8 @@ TEST_F(TransfersContainer_addTransaction, addingConfirmedMultisignatureOutputIde
   ASSERT_EQ(0, container.balance(ITransfersContainer::IncludeAllUnlocked));
 }
 
+=======
+>>>>>>> forknote/master
 TEST_F(TransfersContainer_addTransaction, addingConfirmedBlockAndUnconfirmedOutputCausesException) {
   CryptoNote::TransactionBlockInfo blockInfo{ TEST_BLOCK_HEIGHT, 1000000 };
 
@@ -390,6 +393,7 @@ TEST_F(TransfersContainer_addTransaction, addingEmptyTransactionOuptutsDoesNotCh
   ASSERT_TRUE(unconfirmedTransactions.empty());
 }
 
+<<<<<<< HEAD
 
 TEST_F(TransfersContainer_addTransaction, handlesAddingUnconfirmedOutputMultisignature) {
   TestTransactionBuilder tx;
@@ -437,18 +441,23 @@ TEST_F(TransfersContainer_addTransaction, addingConfirmedOutputMultisignatureTwi
 }
 
 
+=======
+>>>>>>> forknote/master
 TEST_F(TransfersContainer_addTransaction, ignoresUnrelatedTransactionsWithKeyInput) {
   TestTransactionBuilder tx;
   tx.addTestInput(TEST_OUTPUT_AMOUNT, account);
   ASSERT_FALSE(container.addTransaction(blockInfo(TEST_BLOCK_HEIGHT), *tx.build(), {}));
 }
 
+<<<<<<< HEAD
 TEST_F(TransfersContainer_addTransaction, ignoresUnrelatedTransactionsWithMultisignatureInput) {
   TestTransactionBuilder tx;
   tx.addFakeMultisignatureInput(TEST_OUTPUT_AMOUNT, TEST_TRANSACTION_OUTPUT_GLOBAL_INDEX, 1);
   ASSERT_FALSE(container.addTransaction(blockInfo(TEST_BLOCK_HEIGHT), *tx.build(), {}));
 }
 
+=======
+>>>>>>> forknote/master
 TEST_F(TransfersContainer_addTransaction, spendingUnconfirmedOutputFails) {
   auto tx = addTransaction(WALLET_LEGACY_UNCONFIRMED_TRANSACTION_HEIGHT);
 
@@ -490,6 +499,7 @@ TEST_F(TransfersContainer_addTransaction, spendingConfirmedOutputWithConfirmedTx
   ASSERT_EQ(0, container.balance(ITransfersContainer::IncludeAllUnlocked));
 }
 
+<<<<<<< HEAD
 TEST_F(TransfersContainer_addTransaction, spendingConfirmedMultisignatureOutputWithUnconfirmedTxSucceed) {
   TestTransactionBuilder tx;
   tx.addTestInput(TEST_OUTPUT_AMOUNT + 1, account);
@@ -524,6 +534,8 @@ TEST_F(TransfersContainer_addTransaction, spendingConfirmedMultisignatureOutputW
   ASSERT_EQ(0, container.balance(ITransfersContainer::IncludeAllUnlocked));
 }
 
+=======
+>>>>>>> forknote/master
 //--------------------------------------------------------------------------- 
 // TransfersContainer_deleteUnconfirmedTransaction
 //--------------------------------------------------------------------------- 
@@ -670,6 +682,7 @@ TEST_F(TransfersContainer_markTransactionConfirmed, confirmationTxWithNoOutputs)
   ASSERT_EQ(0, container.balance(ITransfersContainer::IncludeAll));
 }
 
+<<<<<<< HEAD
 TEST_F(TransfersContainer_markTransactionConfirmed, confirmingMultisignatureOutputIdenticalAnotherUnspentOuputCausesException) {
   // Add tx1
   CryptoNote::TransactionBlockInfo blockInfo1{ TEST_BLOCK_HEIGHT, 1000000 };
@@ -732,6 +745,8 @@ TEST_F(TransfersContainer_markTransactionConfirmed, confirmingMultisignatureOutp
 }
 
 
+=======
+>>>>>>> forknote/master
 //--------------------------------------------------------------------------- 
 // TransfersContainer_detach
 //--------------------------------------------------------------------------- 
@@ -966,6 +981,7 @@ TEST_F(TransfersContainer_balance, handlesTransferStateUnLocked) {
   ASSERT_EQ(AMOUNT_2, container.balance(ITransfersContainer::IncludeStateUnlocked | ITransfersContainer::IncludeTypeAll));
 }
 
+<<<<<<< HEAD
 TEST_F(TransfersContainer_balance, handlesTransferTypeKey) {
   TestTransactionBuilder tx;
   tx.addTestInput(AMOUNT_1 + AMOUNT_2 + 1);
@@ -1002,6 +1018,8 @@ TEST_F(TransfersContainer_balance, filtersByStateAndKeySimultaneously) {
 }
 
 
+=======
+>>>>>>> forknote/master
 //--------------------------------------------------------------------------- 
 // TransfersContainer_getOutputs
 //--------------------------------------------------------------------------- 
@@ -1082,14 +1100,19 @@ TEST_F(TransfersContainer_getOutputs, handlesTransferTypeKey) {
   TestTransactionBuilder tx;
   tx.addTestInput(AMOUNT_1 + AMOUNT_2 + 1);
   auto outInfo1 = tx.addTestKeyOutput(AMOUNT_1, TEST_TRANSACTION_OUTPUT_GLOBAL_INDEX, account);
+<<<<<<< HEAD
   auto outInfo2 = tx.addTestMultisignatureOutput(AMOUNT_2, TEST_TRANSACTION_OUTPUT_GLOBAL_INDEX);
   ASSERT_TRUE(container.addTransaction(blockInfo(TEST_BLOCK_HEIGHT), *tx.build(), { outInfo1, outInfo2 }));
+=======
+  ASSERT_TRUE(container.addTransaction(blockInfo(TEST_BLOCK_HEIGHT), *tx.build(), { outInfo1 }));
+>>>>>>> forknote/master
 
   std::vector<TransactionOutputInformation> transfers;
   container.getOutputs(transfers, ITransfersContainer::IncludeStateAll | ITransfersContainer::IncludeTypeKey);
   ASSERT_EQ(1, transfers.size());
   ASSERT_EQ(AMOUNT_1, transfers.front().amount);
 }
+<<<<<<< HEAD
 
 TEST_F(TransfersContainer_getOutputs, handlesTransferTypeMultisignature) {
   TestTransactionBuilder tx;
@@ -1131,3 +1154,5 @@ TEST_F(TransfersContainer_getOutputs, filtersByStateAndKeySimultaneously) {
   ASSERT_EQ(AMOUNT_1 + AMOUNT_2, transfers.front().amount);
 }
 
+=======
+>>>>>>> forknote/master

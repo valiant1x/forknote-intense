@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -230,6 +234,12 @@ class SanityTestBloomFilter : public SanityTest {
 
 namespace {
 bool RunSanityTests(const std::string& command, const std::string& path) {
+<<<<<<< HEAD
+=======
+  bool result = true;
+// Suppress false positive clang static anaylzer warnings.
+#ifndef __clang_analyzer__
+>>>>>>> forknote/master
   std::vector<SanityTest*> sanity_tests = {
       new SanityTestBasic(path),
       new SanityTestSpecialComparator(path),
@@ -248,7 +258,10 @@ bool RunSanityTests(const std::string& command, const std::string& path) {
   } else {
     fprintf(stderr, "Verifying...\n");
   }
+<<<<<<< HEAD
   bool result = true;
+=======
+>>>>>>> forknote/master
   for (auto sanity_test : sanity_tests) {
     Status s;
     fprintf(stderr, "%s -- ", sanity_test->Name().c_str());
@@ -266,6 +279,10 @@ bool RunSanityTests(const std::string& command, const std::string& path) {
 
     delete sanity_test;
   }
+<<<<<<< HEAD
+=======
+#endif  // __clang_analyzer__
+>>>>>>> forknote/master
   return result;
 }
 }  // namespace

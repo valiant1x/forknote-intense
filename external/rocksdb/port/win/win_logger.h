@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -16,11 +20,21 @@
 
 #include "rocksdb/env.h"
 
+<<<<<<< HEAD
+=======
+#include <stdint.h>
+#include <Windows.h>
+
+>>>>>>> forknote/master
 namespace rocksdb {
 
 class Env;
 
+<<<<<<< HEAD
 const int kDebugLogChunkSize = 128 * 1024;
+=======
+namespace port {
+>>>>>>> forknote/master
 
 class WinLogger : public rocksdb::Logger {
  public:
@@ -54,4 +68,9 @@ class WinLogger : public rocksdb::Logger {
   const static uint64_t flush_every_seconds_ = 5;
 };
 
+<<<<<<< HEAD
+=======
+}
+
+>>>>>>> forknote/master
 }  // namespace rocksdb

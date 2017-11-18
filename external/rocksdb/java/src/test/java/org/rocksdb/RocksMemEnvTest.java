@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2015, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -33,6 +37,7 @@ public class RocksMemEnvTest {
         "baz".getBytes()
     };
 
+<<<<<<< HEAD
     Env env = null;
     Options options = null;
     RocksDB db = null;
@@ -78,10 +83,53 @@ public class RocksMemEnvTest {
       }
 
       db.close();
+=======
+    try (final Env env = new RocksMemEnv();
+         final Options options = new Options()
+             .setCreateIfMissing(true)
+             .setEnv(env);
+         final FlushOptions flushOptions = new FlushOptions()
+             .setWaitForFlush(true);
+    ) {
+      try (final RocksDB db = RocksDB.open(options, "dir/db")) {
+        // write key/value pairs using MemEnv
+        for (int i = 0; i < keys.length; i++) {
+          db.put(keys[i], values[i]);
+        }
+
+        // read key/value pairs using MemEnv
+        for (int i = 0; i < keys.length; i++) {
+          assertThat(db.get(keys[i])).isEqualTo(values[i]);
+        }
+
+        // Check iterator access
+        try (final RocksIterator iterator = db.newIterator()) {
+          iterator.seekToFirst();
+          for (int i = 0; i < keys.length; i++) {
+            assertThat(iterator.isValid()).isTrue();
+            assertThat(iterator.key()).isEqualTo(keys[i]);
+            assertThat(iterator.value()).isEqualTo(values[i]);
+            iterator.next();
+          }
+          // reached end of database
+          assertThat(iterator.isValid()).isFalse();
+        }
+
+        // flush
+        db.flush(flushOptions);
+
+        // read key/value pairs after flush using MemEnv
+        for (int i = 0; i < keys.length; i++) {
+          assertThat(db.get(keys[i])).isEqualTo(values[i]);
+        }
+      }
+
+>>>>>>> forknote/master
       options.setCreateIfMissing(false);
 
       // After reopen the values shall still be in the mem env.
       // as long as the env is not freed.
+<<<<<<< HEAD
       db = RocksDB.open(options, "dir/db");
       // read key/value pairs using MemEnv
       for (int i=0; i < keys.length; i++) {
@@ -100,6 +148,13 @@ public class RocksMemEnvTest {
       }
       if (env != null) {
         env.dispose();
+=======
+      try (final RocksDB db = RocksDB.open(options, "dir/db")) {
+        // read key/value pairs using MemEnv
+        for (int i = 0; i < keys.length; i++) {
+          assertThat(db.get(keys[i])).isEqualTo(values[i]);
+        }
+>>>>>>> forknote/master
       }
     }
   }
@@ -125,6 +180,7 @@ public class RocksMemEnvTest {
         "baz".getBytes()
     };
 
+<<<<<<< HEAD
     Env env = null;
     Options options = null;
     RocksDB db = null, otherDb = null;
@@ -140,12 +196,28 @@ public class RocksMemEnvTest {
       // write key/value pairs using MemEnv
       // to db and to otherDb.
       for (int i=0; i < keys.length; i++) {
+=======
+    try (final Env env = new RocksMemEnv();
+         final Options options = new Options()
+             .setCreateIfMissing(true)
+             .setEnv(env);
+         final RocksDB db = RocksDB.open(options, "dir/db");
+         final RocksDB otherDb = RocksDB.open(options, "dir/otherDb")
+    ) {
+      // write key/value pairs using MemEnv
+      // to db and to otherDb.
+      for (int i = 0; i < keys.length; i++) {
+>>>>>>> forknote/master
         db.put(keys[i], values[i]);
         otherDb.put(otherKeys[i], values[i]);
       }
 
       // verify key/value pairs after flush using MemEnv
+<<<<<<< HEAD
       for (int i=0; i < keys.length; i++) {
+=======
+      for (int i = 0; i < keys.length; i++) {
+>>>>>>> forknote/master
         // verify db
         assertThat(db.get(otherKeys[i])).isNull();
         assertThat(db.get(keys[i])).isEqualTo(values[i]);
@@ -154,6 +226,7 @@ public class RocksMemEnvTest {
         assertThat(otherDb.get(keys[i])).isNull();
         assertThat(otherDb.get(otherKeys[i])).isEqualTo(values[i]);
       }
+<<<<<<< HEAD
     } finally {
       if (db != null) {
         db.close();
@@ -167,11 +240,14 @@ public class RocksMemEnvTest {
       if (env != null) {
         env.dispose();
       }
+=======
+>>>>>>> forknote/master
     }
   }
 
   @Test(expected = RocksDBException.class)
   public void createIfMissingFalse() throws RocksDBException {
+<<<<<<< HEAD
     Env env = null;
     Options options = null;
     RocksDB db = null;
@@ -191,6 +267,15 @@ public class RocksMemEnvTest {
       if (env != null) {
         env.dispose();
       }
+=======
+    try (final Env env = new RocksMemEnv();
+         final Options options = new Options()
+             .setCreateIfMissing(false)
+             .setEnv(env);
+         final RocksDB db = RocksDB.open(options, "db/dir")) {
+      // shall throw an exception because db dir does not
+      // exist.
+>>>>>>> forknote/master
     }
   }
 }

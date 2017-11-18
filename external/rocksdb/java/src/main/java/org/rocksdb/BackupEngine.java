@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2015, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -19,8 +23,13 @@ import java.util.List;
  */
 public class BackupEngine extends RocksObject implements AutoCloseable {
 
+<<<<<<< HEAD
   protected BackupEngine() {
     super();
+=======
+  protected BackupEngine(final long nativeHandle) {
+    super(nativeHandle);
+>>>>>>> forknote/master
   }
 
   /**
@@ -30,12 +39,20 @@ public class BackupEngine extends RocksObject implements AutoCloseable {
    * @param options Any options for the backup engine
    *
    * @return A new BackupEngine instance
+<<<<<<< HEAD
    */
   public static BackupEngine open(final Env env,
       final BackupableDBOptions options) throws RocksDBException {
     final BackupEngine be = new BackupEngine();
     be.open(env.nativeHandle_, options.nativeHandle_);
     return be;
+=======
+   * @throws RocksDBException thrown if the backup engine could not be opened
+   */
+  public static BackupEngine open(final Env env,
+      final BackupableDBOptions options) throws RocksDBException {
+    return new BackupEngine(open(env.nativeHandle_, options.nativeHandle_));
+>>>>>>> forknote/master
   }
 
   /**
@@ -47,6 +64,11 @@ public class BackupEngine extends RocksObject implements AutoCloseable {
    * @param db The database to backup
    *
    * Note - This method is not thread safe
+<<<<<<< HEAD
+=======
+   *
+   * @throws RocksDBException thrown if a new backup could not be created
+>>>>>>> forknote/master
    */
   public void createNewBackup(final RocksDB db) throws RocksDBException {
     createNewBackup(db, false);
@@ -70,11 +92,20 @@ public class BackupEngine extends RocksObject implements AutoCloseable {
    *                          parameter.
    *
    * Note - This method is not thread safe
+<<<<<<< HEAD
+=======
+   *
+   * @throws RocksDBException thrown if a new backup could not be created
+>>>>>>> forknote/master
    */
   public void createNewBackup(
       final RocksDB db, final boolean flushBeforeBackup)
       throws RocksDBException {
+<<<<<<< HEAD
     assert (isInitialized());
+=======
+    assert (isOwningHandle());
+>>>>>>> forknote/master
     createNewBackup(nativeHandle_, db.nativeHandle_, flushBeforeBackup);
   }
 
@@ -85,7 +116,11 @@ public class BackupEngine extends RocksObject implements AutoCloseable {
    * @return A list of information about each available backup
    */
   public List<BackupInfo> getBackupInfo() {
+<<<<<<< HEAD
     assert (isInitialized());
+=======
+    assert (isOwningHandle());
+>>>>>>> forknote/master
     return getBackupInfo(nativeHandle_);
   }
 
@@ -97,7 +132,11 @@ public class BackupEngine extends RocksObject implements AutoCloseable {
    * @return array of backup ids as int ids.
    */
   public int[] getCorruptedBackups() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return getCorruptedBackups(nativeHandle_);
   }
 
@@ -110,7 +149,11 @@ public class BackupEngine extends RocksObject implements AutoCloseable {
    *    native library.
    */
   public void garbageCollect() throws RocksDBException {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     garbageCollect(nativeHandle_);
   }
 
@@ -118,10 +161,19 @@ public class BackupEngine extends RocksObject implements AutoCloseable {
    * Deletes old backups, keeping just the latest numBackupsToKeep
    *
    * @param numBackupsToKeep The latest n backups to keep
+<<<<<<< HEAD
    */
   public void purgeOldBackups(
       final int numBackupsToKeep) throws RocksDBException {
     assert (isInitialized());
+=======
+   *
+   * @throws RocksDBException thrown if the old backups could not be deleted
+   */
+  public void purgeOldBackups(
+      final int numBackupsToKeep) throws RocksDBException {
+    assert (isOwningHandle());
+>>>>>>> forknote/master
     purgeOldBackups(nativeHandle_, numBackupsToKeep);
   }
 
@@ -129,9 +181,17 @@ public class BackupEngine extends RocksObject implements AutoCloseable {
    * Deletes a backup
    *
    * @param backupId The id of the backup to delete
+<<<<<<< HEAD
    */
   public void deleteBackup(final int backupId) throws RocksDBException {
     assert (isInitialized());
+=======
+   *
+   * @throws RocksDBException thrown if the backup could not be deleted
+   */
+  public void deleteBackup(final int backupId) throws RocksDBException {
+    assert (isOwningHandle());
+>>>>>>> forknote/master
     deleteBackup(nativeHandle_, backupId);
   }
 
@@ -154,11 +214,20 @@ public class BackupEngine extends RocksObject implements AutoCloseable {
    * @param walDir The location of the log files for your database,
    *               often the same as dbDir
    * @param restoreOptions Options for controlling the restore
+<<<<<<< HEAD
+=======
+   *
+   * @throws RocksDBException thrown if the database could not be restored
+>>>>>>> forknote/master
    */
   public void restoreDbFromBackup(
       final int backupId, final String dbDir, final String walDir,
       final RestoreOptions restoreOptions) throws RocksDBException {
+<<<<<<< HEAD
     assert (isInitialized());
+=======
+    assert (isOwningHandle());
+>>>>>>> forknote/master
     restoreDbFromBackup(nativeHandle_, backupId, dbDir, walDir,
         restoreOptions.nativeHandle_);
   }
@@ -166,18 +235,33 @@ public class BackupEngine extends RocksObject implements AutoCloseable {
   /**
    * Restore the database from the latest backup
    *
+<<<<<<< HEAD
    * @param dbDir The directory to restore the backup to, i.e. where your database is
    * @param walDir The location of the log files for your database, often the same as dbDir
    * @param restoreOptions Options for controlling the restore
+=======
+   * @param dbDir The directory to restore the backup to, i.e. where your
+   *              database is
+   * @param walDir The location of the log files for your database, often the
+   *               same as dbDir
+   * @param restoreOptions Options for controlling the restore
+   *
+   * @throws RocksDBException thrown if the database could not be restored
+>>>>>>> forknote/master
    */
   public void restoreDbFromLatestBackup(
       final String dbDir, final String walDir,
       final RestoreOptions restoreOptions) throws RocksDBException {
+<<<<<<< HEAD
     assert (isInitialized());
+=======
+    assert (isOwningHandle());
+>>>>>>> forknote/master
     restoreDbFromLatestBackup(nativeHandle_, dbDir, walDir,
         restoreOptions.nativeHandle_);
   }
 
+<<<<<<< HEAD
   /**
    * Close the Backup Engine
    */
@@ -194,6 +278,10 @@ public class BackupEngine extends RocksObject implements AutoCloseable {
 
   private native void open(final long env, final long backupableDbOptions)
       throws RocksDBException;
+=======
+  private native static long open(final long env,
+      final long backupableDbOptions) throws RocksDBException;
+>>>>>>> forknote/master
 
   private native void createNewBackup(final long handle, final long dbHandle,
       final boolean flushBeforeBackup) throws RocksDBException;
@@ -218,5 +306,9 @@ public class BackupEngine extends RocksObject implements AutoCloseable {
       final String dbDir, final String walDir, final long restoreOptionsHandle)
       throws RocksDBException;
 
+<<<<<<< HEAD
   private native void disposeInternal(final long handle);
+=======
+  @Override protected final native void disposeInternal(final long handle);
+>>>>>>> forknote/master
 }

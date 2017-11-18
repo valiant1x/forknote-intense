@@ -248,6 +248,7 @@ public:
   std::unique_ptr<TransfersObserver[]> m_observers;
 };
 
+<<<<<<< HEAD
 class MultisignatureTest : public TransfersTest {
 public:
 
@@ -256,6 +257,8 @@ public:
   }
 };
 
+=======
+>>>>>>> forknote/master
 template <typename R>
 class FutureGuard {
 public:
@@ -357,6 +360,7 @@ TEST_F(TransfersTest, base) {
   blockSync.stop();
 }
 
+<<<<<<< HEAD
 
 std::unique_ptr<ITransaction> createTransferToMultisignature(
   ITransfersContainer& tc, // money source
@@ -417,6 +421,8 @@ std::unique_ptr<ITransaction> createTransferToMultisignature(
   return tx;
 }
 
+=======
+>>>>>>> forknote/master
 std::error_code submitTransaction(INode& node, ITransactionReader& tx) {
   auto data = tx.getTransactionData();
 
@@ -438,6 +444,7 @@ std::error_code submitTransaction(INode& node, ITransactionReader& tx) {
 
   return err;
 }
+<<<<<<< HEAD
 
 
 std::unique_ptr<ITransaction> createTransferFromMultisignature(
@@ -595,3 +602,5 @@ TEST_F(MultisignatureTest, createMulitisignatureTransaction) {
   blockSync.stop();
   LOG_DEBUG("Success!!!");
 }
+=======
+>>>>>>> forknote/master

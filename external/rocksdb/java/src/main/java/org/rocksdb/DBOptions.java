@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -11,8 +15,13 @@ import java.util.Properties;
  * DBOptions to control the behavior of a database.  It will be used
  * during the creation of a {@link org.rocksdb.RocksDB} (i.e., RocksDB.open()).
  *
+<<<<<<< HEAD
  * If {@link #dispose()} function is not called, then it will be GC'd automatically
  * and native resources will be released as part of the process.
+=======
+ * If {@link #dispose()} function is not called, then it will be GC'd
+ * automatically and native resources will be released as part of the process.
+>>>>>>> forknote/master
  */
 public class DBOptions extends RocksObject implements DBOptionsInterface {
   static {
@@ -26,9 +35,14 @@ public class DBOptions extends RocksObject implements DBOptionsInterface {
    * an {@code rocksdb::DBOptions} in the c++ side.
    */
   public DBOptions() {
+<<<<<<< HEAD
     super();
     numShardBits_ = DEFAULT_NUM_SHARD_BITS;
     newDBOptions();
+=======
+    super(newDBOptions());
+    numShardBits_ = DEFAULT_NUM_SHARD_BITS;
+>>>>>>> forknote/master
   }
 
   /**
@@ -75,70 +89,110 @@ public class DBOptions extends RocksObject implements DBOptionsInterface {
   @Override
   public DBOptions setIncreaseParallelism(
       final int totalThreads) {
+<<<<<<< HEAD
     assert (isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setIncreaseParallelism(nativeHandle_, totalThreads);
     return this;
   }
 
   @Override
   public DBOptions setCreateIfMissing(final boolean flag) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setCreateIfMissing(nativeHandle_, flag);
     return this;
   }
 
   @Override
   public boolean createIfMissing() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return createIfMissing(nativeHandle_);
   }
 
   @Override
   public DBOptions setCreateMissingColumnFamilies(
       final boolean flag) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setCreateMissingColumnFamilies(nativeHandle_, flag);
     return this;
   }
 
   @Override
   public boolean createMissingColumnFamilies() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return createMissingColumnFamilies(nativeHandle_);
   }
 
   @Override
   public DBOptions setErrorIfExists(
       final boolean errorIfExists) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setErrorIfExists(nativeHandle_, errorIfExists);
     return this;
   }
 
   @Override
   public boolean errorIfExists() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return errorIfExists(nativeHandle_);
   }
 
   @Override
   public DBOptions setParanoidChecks(
       final boolean paranoidChecks) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setParanoidChecks(nativeHandle_, paranoidChecks);
     return this;
   }
 
   @Override
   public boolean paranoidChecks() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return paranoidChecks(nativeHandle_);
   }
 
   @Override
   public DBOptions setRateLimiterConfig(
       final RateLimiterConfig config) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     rateLimiterConfig_ = config;
     setRateLimiter(nativeHandle_, config.newRateLimiterHandle());
     return this;
@@ -146,7 +200,11 @@ public class DBOptions extends RocksObject implements DBOptionsInterface {
 
   @Override
   public DBOptions setLogger(final Logger logger) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setLogger(nativeHandle_, logger.nativeHandle_);
     return this;
   }
@@ -154,14 +212,22 @@ public class DBOptions extends RocksObject implements DBOptionsInterface {
   @Override
   public DBOptions setInfoLogLevel(
       final InfoLogLevel infoLogLevel) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setInfoLogLevel(nativeHandle_, infoLogLevel.getValue());
     return this;
   }
 
   @Override
   public InfoLogLevel infoLogLevel() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return InfoLogLevel.getInfoLogLevel(
         infoLogLevel(nativeHandle_));
   }
@@ -169,41 +235,65 @@ public class DBOptions extends RocksObject implements DBOptionsInterface {
   @Override
   public DBOptions setMaxOpenFiles(
       final int maxOpenFiles) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setMaxOpenFiles(nativeHandle_, maxOpenFiles);
     return this;
   }
 
   @Override
   public int maxOpenFiles() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return maxOpenFiles(nativeHandle_);
   }
 
   @Override
   public DBOptions setMaxTotalWalSize(
       final long maxTotalWalSize) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setMaxTotalWalSize(nativeHandle_, maxTotalWalSize);
     return this;
   }
 
   @Override
   public long maxTotalWalSize() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return maxTotalWalSize(nativeHandle_);
   }
 
   @Override
   public DBOptions createStatistics() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     createStatistics(nativeHandle_);
     return this;
   }
 
   @Override
   public Statistics statisticsPtr() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
 
     long statsPtr = statisticsPtr(nativeHandle_);
     if(statsPtr == 0) {
@@ -217,287 +307,451 @@ public class DBOptions extends RocksObject implements DBOptionsInterface {
   @Override
   public DBOptions setDisableDataSync(
       final boolean disableDataSync) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setDisableDataSync(nativeHandle_, disableDataSync);
     return this;
   }
 
   @Override
   public boolean disableDataSync() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return disableDataSync(nativeHandle_);
   }
 
   @Override
   public DBOptions setUseFsync(
       final boolean useFsync) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setUseFsync(nativeHandle_, useFsync);
     return this;
   }
 
   @Override
   public boolean useFsync() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return useFsync(nativeHandle_);
   }
 
   @Override
   public DBOptions setDbLogDir(
       final String dbLogDir) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setDbLogDir(nativeHandle_, dbLogDir);
     return this;
   }
 
   @Override
   public String dbLogDir() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return dbLogDir(nativeHandle_);
   }
 
   @Override
   public DBOptions setWalDir(
       final String walDir) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setWalDir(nativeHandle_, walDir);
     return this;
   }
 
   @Override
   public String walDir() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return walDir(nativeHandle_);
   }
 
   @Override
   public DBOptions setDeleteObsoleteFilesPeriodMicros(
       final long micros) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setDeleteObsoleteFilesPeriodMicros(nativeHandle_, micros);
     return this;
   }
 
   @Override
   public long deleteObsoleteFilesPeriodMicros() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return deleteObsoleteFilesPeriodMicros(nativeHandle_);
   }
 
   @Override
   public DBOptions setMaxBackgroundCompactions(
       final int maxBackgroundCompactions) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setMaxBackgroundCompactions(nativeHandle_, maxBackgroundCompactions);
     return this;
   }
 
   @Override
   public int maxBackgroundCompactions() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return maxBackgroundCompactions(nativeHandle_);
   }
 
   @Override
   public DBOptions setMaxBackgroundFlushes(
       final int maxBackgroundFlushes) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setMaxBackgroundFlushes(nativeHandle_, maxBackgroundFlushes);
     return this;
   }
 
   @Override
   public int maxBackgroundFlushes() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return maxBackgroundFlushes(nativeHandle_);
   }
 
   @Override
   public DBOptions setMaxLogFileSize(
       final long maxLogFileSize) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setMaxLogFileSize(nativeHandle_, maxLogFileSize);
     return this;
   }
 
   @Override
   public long maxLogFileSize() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return maxLogFileSize(nativeHandle_);
   }
 
   @Override
   public DBOptions setLogFileTimeToRoll(
       final long logFileTimeToRoll) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setLogFileTimeToRoll(nativeHandle_, logFileTimeToRoll);
     return this;
   }
 
   @Override
   public long logFileTimeToRoll() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return logFileTimeToRoll(nativeHandle_);
   }
 
   @Override
   public DBOptions setKeepLogFileNum(
       final long keepLogFileNum) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setKeepLogFileNum(nativeHandle_, keepLogFileNum);
     return this;
   }
 
   @Override
   public long keepLogFileNum() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return keepLogFileNum(nativeHandle_);
   }
 
   @Override
   public DBOptions setMaxManifestFileSize(
       final long maxManifestFileSize) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setMaxManifestFileSize(nativeHandle_, maxManifestFileSize);
     return this;
   }
 
   @Override
   public long maxManifestFileSize() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return maxManifestFileSize(nativeHandle_);
   }
 
   @Override
   public DBOptions setTableCacheNumshardbits(
       final int tableCacheNumshardbits) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setTableCacheNumshardbits(nativeHandle_, tableCacheNumshardbits);
     return this;
   }
 
   @Override
   public int tableCacheNumshardbits() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return tableCacheNumshardbits(nativeHandle_);
   }
 
   @Override
   public DBOptions setWalTtlSeconds(
       final long walTtlSeconds) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setWalTtlSeconds(nativeHandle_, walTtlSeconds);
     return this;
   }
 
   @Override
   public long walTtlSeconds() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return walTtlSeconds(nativeHandle_);
   }
 
   @Override
   public DBOptions setWalSizeLimitMB(
       final long sizeLimitMB) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setWalSizeLimitMB(nativeHandle_, sizeLimitMB);
     return this;
   }
 
   @Override
   public long walSizeLimitMB() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return walSizeLimitMB(nativeHandle_);
   }
 
   @Override
   public DBOptions setManifestPreallocationSize(
       final long size) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setManifestPreallocationSize(nativeHandle_, size);
     return this;
   }
 
   @Override
   public long manifestPreallocationSize() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return manifestPreallocationSize(nativeHandle_);
   }
 
   @Override
   public DBOptions setAllowOsBuffer(
       final boolean allowOsBuffer) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setAllowOsBuffer(nativeHandle_, allowOsBuffer);
     return this;
   }
 
   @Override
   public boolean allowOsBuffer() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return allowOsBuffer(nativeHandle_);
   }
 
   @Override
   public DBOptions setAllowMmapReads(
       final boolean allowMmapReads) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setAllowMmapReads(nativeHandle_, allowMmapReads);
     return this;
   }
 
   @Override
   public boolean allowMmapReads() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return allowMmapReads(nativeHandle_);
   }
 
   @Override
   public DBOptions setAllowMmapWrites(
       final boolean allowMmapWrites) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setAllowMmapWrites(nativeHandle_, allowMmapWrites);
     return this;
   }
 
   @Override
   public boolean allowMmapWrites() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return allowMmapWrites(nativeHandle_);
   }
 
   @Override
   public DBOptions setIsFdCloseOnExec(
       final boolean isFdCloseOnExec) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setIsFdCloseOnExec(nativeHandle_, isFdCloseOnExec);
     return this;
   }
 
   @Override
   public boolean isFdCloseOnExec() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return isFdCloseOnExec(nativeHandle_);
   }
 
   @Override
   public DBOptions setStatsDumpPeriodSec(
       final int statsDumpPeriodSec) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setStatsDumpPeriodSec(nativeHandle_, statsDumpPeriodSec);
     return this;
   }
 
   @Override
   public int statsDumpPeriodSec() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return statsDumpPeriodSec(nativeHandle_);
   }
 
   @Override
   public DBOptions setAdviseRandomOnOpen(
       final boolean adviseRandomOnOpen) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setAdviseRandomOnOpen(nativeHandle_, adviseRandomOnOpen);
     return this;
   }
@@ -510,21 +764,33 @@ public class DBOptions extends RocksObject implements DBOptionsInterface {
   @Override
   public DBOptions setUseAdaptiveMutex(
       final boolean useAdaptiveMutex) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setUseAdaptiveMutex(nativeHandle_, useAdaptiveMutex);
     return this;
   }
 
   @Override
   public boolean useAdaptiveMutex() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return useAdaptiveMutex(nativeHandle_);
   }
 
   @Override
   public DBOptions setBytesPerSync(
       final long bytesPerSync) {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     setBytesPerSync(nativeHandle_, bytesPerSync);
     return this;
   }
@@ -534,6 +800,7 @@ public class DBOptions extends RocksObject implements DBOptionsInterface {
     return bytesPerSync(nativeHandle_);
   }
 
+<<<<<<< HEAD
   /**
    * Release the memory allocated for the current instance
    * in the c++ side.
@@ -543,24 +810,38 @@ public class DBOptions extends RocksObject implements DBOptionsInterface {
     disposeInternal(nativeHandle_);
   }
 
+=======
+>>>>>>> forknote/master
   static final int DEFAULT_NUM_SHARD_BITS = -1;
 
   /**
    * <p>Private constructor to be used by
    * {@link #getDBOptionsFromProps(java.util.Properties)}</p>
    *
+<<<<<<< HEAD
    * @param handle native handle to DBOptions instance.
    */
   private DBOptions(final long handle) {
     super();
     nativeHandle_ = handle;
+=======
+   * @param nativeHandle native handle to DBOptions instance.
+   */
+  private DBOptions(final long nativeHandle) {
+    super(nativeHandle);
+>>>>>>> forknote/master
   }
 
   private static native long getDBOptionsFromProps(
       String optString);
 
+<<<<<<< HEAD
   private native void newDBOptions();
   private native void disposeInternal(long handle);
+=======
+  private native static long newDBOptions();
+  @Override protected final native void disposeInternal(final long handle);
+>>>>>>> forknote/master
 
   private native void setIncreaseParallelism(long handle, int totalThreads);
   private native void setCreateIfMissing(long handle, boolean flag);

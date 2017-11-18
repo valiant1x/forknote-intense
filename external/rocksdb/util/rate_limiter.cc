@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -8,7 +12,13 @@
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
 #include "util/rate_limiter.h"
+<<<<<<< HEAD
 #include "rocksdb/env.h"
+=======
+#include "port/port.h"
+#include "rocksdb/env.h"
+#include "util/sync_point.h"
+>>>>>>> forknote/master
 
 namespace rocksdb {
 
@@ -16,7 +26,12 @@ namespace rocksdb {
 // Pending request
 struct GenericRateLimiter::Req {
   explicit Req(int64_t _bytes, port::Mutex* _mu)
+<<<<<<< HEAD
       : bytes(_bytes), cv(_mu), granted(false) {}
+=======
+      : request_bytes(_bytes), bytes(_bytes), cv(_mu), granted(false) {}
+  int64_t request_bytes;
+>>>>>>> forknote/master
   int64_t bytes;
   port::CondVar cv;
   bool granted;
@@ -69,7 +84,11 @@ void GenericRateLimiter::SetBytesPerSecond(int64_t bytes_per_second) {
 
 void GenericRateLimiter::Request(int64_t bytes, const Env::IOPriority pri) {
   assert(bytes <= refill_bytes_per_period_.load(std::memory_order_relaxed));
+<<<<<<< HEAD
 
+=======
+  TEST_SYNC_POINT("GenericRateLimiter::Request");
+>>>>>>> forknote/master
   MutexLock g(&request_mutex_);
   if (stop_) {
     return;
@@ -174,6 +193,10 @@ void GenericRateLimiter::Request(int64_t bytes, const Env::IOPriority pri) {
 }
 
 void GenericRateLimiter::Refill() {
+<<<<<<< HEAD
+=======
+  TEST_SYNC_POINT("GenericRateLimiter::Refill");
+>>>>>>> forknote/master
   next_refill_us_ = env_->NowMicros() + refill_period_us_;
   // Carry over the left over quota from the last period
   auto refill_bytes_per_period =
@@ -188,10 +211,21 @@ void GenericRateLimiter::Refill() {
     auto* queue = &queue_[use_pri];
     while (!queue->empty()) {
       auto* next_req = queue->front();
+<<<<<<< HEAD
       if (available_bytes_ < next_req->bytes) {
         break;
       }
       available_bytes_ -= next_req->bytes;
+=======
+      if (available_bytes_ < next_req->request_bytes) {
+        // avoid starvation
+        next_req->request_bytes -= available_bytes_;
+        available_bytes_ = 0;
+        break;
+      }
+      available_bytes_ -= next_req->request_bytes;
+      next_req->request_bytes = 0;
+>>>>>>> forknote/master
       total_bytes_through_[use_pri] += next_req->bytes;
       queue->pop_front();
 
@@ -204,6 +238,21 @@ void GenericRateLimiter::Refill() {
   }
 }
 
+<<<<<<< HEAD
+=======
+int64_t GenericRateLimiter::CalculateRefillBytesPerPeriod(
+    int64_t rate_bytes_per_sec) {
+  if (port::kMaxInt64 / rate_bytes_per_sec < refill_period_us_) {
+    // Avoid unexpected result in the overflow case. The result now is still
+    // inaccurate but is a number that is large enough.
+    return port::kMaxInt64 / 1000000;
+  } else {
+    return std::max(kMinRefillBytesPerPeriod,
+                    rate_bytes_per_sec * refill_period_us_ / 1000000);
+  }
+}
+
+>>>>>>> forknote/master
 RateLimiter* NewGenericRateLimiter(
     int64_t rate_bytes_per_sec, int64_t refill_period_us, int32_t fairness) {
   assert(rate_bytes_per_sec > 0);

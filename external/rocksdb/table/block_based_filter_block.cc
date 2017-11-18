@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -19,6 +23,7 @@
 namespace rocksdb {
 
 namespace {
+<<<<<<< HEAD
 bool SamePrefix(const SliceTransform* prefix_extractor,
                 const Slice& key1, const Slice& key2) {
   if (!prefix_extractor->InDomain(key1) &&
@@ -32,6 +37,8 @@ bool SamePrefix(const SliceTransform* prefix_extractor,
             prefix_extractor->Transform(key2));
   }
 }
+=======
+>>>>>>> forknote/master
 
 void AppendItem(std::string* props, const std::string& key,
                 const std::string& value) {
@@ -78,7 +85,13 @@ BlockBasedFilterBlockBuilder::BlockBasedFilterBlockBuilder(
     const BlockBasedTableOptions& table_opt)
     : policy_(table_opt.filter_policy.get()),
       prefix_extractor_(prefix_extractor),
+<<<<<<< HEAD
       whole_key_filtering_(table_opt.whole_key_filtering) {
+=======
+      whole_key_filtering_(table_opt.whole_key_filtering),
+      prev_prefix_start_(0),
+      prev_prefix_size_(0) {
+>>>>>>> forknote/master
   assert(policy_);
 }
 
@@ -91,6 +104,7 @@ void BlockBasedFilterBlockBuilder::StartBlock(uint64_t block_offset) {
 }
 
 void BlockBasedFilterBlockBuilder::Add(const Slice& key) {
+<<<<<<< HEAD
   added_to_start_ = 0;
   if (whole_key_filtering_) {
     AddKey(key);
@@ -99,6 +113,15 @@ void BlockBasedFilterBlockBuilder::Add(const Slice& key) {
   if (prefix_extractor_ && prefix_extractor_->InDomain(key)) {
     AddPrefix(key);
   }
+=======
+  if (prefix_extractor_ && prefix_extractor_->InDomain(key)) {
+    AddPrefix(key);
+  }
+
+  if (whole_key_filtering_) {
+    AddKey(key);
+  }
+>>>>>>> forknote/master
 }
 
 // Add key to filter if needed
@@ -111,6 +134,7 @@ inline void BlockBasedFilterBlockBuilder::AddKey(const Slice& key) {
 inline void BlockBasedFilterBlockBuilder::AddPrefix(const Slice& key) {
   // get slice for most recently added entry
   Slice prev;
+<<<<<<< HEAD
   if (start_.size() > added_to_start_) {
     size_t prev_start = start_[start_.size() - 1 - added_to_start_];
     const char* base = entries_.data() + prev_start;
@@ -124,6 +148,18 @@ inline void BlockBasedFilterBlockBuilder::AddPrefix(const Slice& key) {
   if (prev.size() == 0 || !SamePrefix(prefix_extractor_, key, prev)) {
     Slice prefix = prefix_extractor_->Transform(key);
     start_.push_back(entries_.size());
+=======
+  if (prev_prefix_size_ > 0) {
+    prev = Slice(entries_.data() + prev_prefix_start_, prev_prefix_size_);
+  }
+
+  Slice prefix = prefix_extractor_->Transform(key);
+  // insert prefix only when it's different from the previous prefix.
+  if (prev.size() == 0 || prefix != prev) {
+    start_.push_back(entries_.size());
+    prev_prefix_start_ = entries_.size();
+    prev_prefix_size_ = prefix.size();
+>>>>>>> forknote/master
     entries_.append(prefix.data(), prefix.size());
   }
 }
@@ -169,15 +205,28 @@ void BlockBasedFilterBlockBuilder::GenerateFilter() {
   tmp_entries_.clear();
   entries_.clear();
   start_.clear();
+<<<<<<< HEAD
+=======
+  prev_prefix_start_ = 0;
+  prev_prefix_size_ = 0;
+>>>>>>> forknote/master
 }
 
 BlockBasedFilterBlockReader::BlockBasedFilterBlockReader(
     const SliceTransform* prefix_extractor,
+<<<<<<< HEAD
     const BlockBasedTableOptions& table_opt, bool whole_key_filtering,
     BlockContents&& contents)
     : policy_(table_opt.filter_policy.get()),
       prefix_extractor_(prefix_extractor),
       whole_key_filtering_(whole_key_filtering),
+=======
+    const BlockBasedTableOptions& table_opt, bool _whole_key_filtering,
+    BlockContents&& contents, Statistics* stats)
+    : FilterBlockReader(contents.data.size(), stats, _whole_key_filtering),
+      policy_(table_opt.filter_policy.get()),
+      prefix_extractor_(prefix_extractor),
+>>>>>>> forknote/master
       data_(nullptr),
       offset_(nullptr),
       num_(0),

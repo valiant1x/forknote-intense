@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2015, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -35,7 +39,13 @@ package org.rocksdb;
  * {@link org.rocksdb.InfoLogLevel#FATAL_LEVEL}.
  * </p>
  */
+<<<<<<< HEAD
 public abstract class Logger extends RocksObject {
+=======
+public abstract class Logger extends AbstractImmutableNativeReference {
+
+  final long nativeHandle_;
+>>>>>>> forknote/master
 
   /**
    * <p>AbstractLogger constructor.</p>
@@ -47,7 +57,12 @@ public abstract class Logger extends RocksObject {
    * @param options {@link org.rocksdb.Options} instance.
    */
   public Logger(final Options options) {
+<<<<<<< HEAD
     createNewLoggerOptions(options.nativeHandle_);
+=======
+    super(true);
+    this.nativeHandle_ = createNewLoggerOptions(options.nativeHandle_);
+>>>>>>> forknote/master
   }
 
   /**
@@ -60,7 +75,12 @@ public abstract class Logger extends RocksObject {
    * @param dboptions {@link org.rocksdb.DBOptions} instance.
    */
   public Logger(final DBOptions dboptions) {
+<<<<<<< HEAD
     createNewLoggerDbOptions(dboptions.nativeHandle_);
+=======
+    super(true);
+    this.nativeHandle_ = createNewLoggerDbOptions(dboptions.nativeHandle_);
+>>>>>>> forknote/master
   }
 
   /**
@@ -93,6 +113,7 @@ public abstract class Logger extends RocksObject {
    */
   @Override
   protected void disposeInternal() {
+<<<<<<< HEAD
     assert(isInitialized());
     disposeInternal(nativeHandle_);
   }
@@ -100,9 +121,21 @@ public abstract class Logger extends RocksObject {
   protected native void createNewLoggerOptions(
       long options);
   protected native void createNewLoggerDbOptions(
+=======
+    disposeInternal(nativeHandle_);
+  }
+
+  protected native long createNewLoggerOptions(
+      long options);
+  protected native long createNewLoggerDbOptions(
+>>>>>>> forknote/master
       long dbOptions);
   protected native void setInfoLogLevel(long handle,
       byte infoLogLevel);
   protected native byte infoLogLevel(long handle);
+<<<<<<< HEAD
   private native void disposeInternal(long handle);
+=======
+  private native void disposeInternal(final long handle);
+>>>>>>> forknote/master
 }

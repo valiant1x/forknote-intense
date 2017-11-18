@@ -49,7 +49,10 @@ size_t getSignaturesCount(const TransactionInput& input) {
   struct txin_signature_size_visitor : public boost::static_visitor < size_t > {
     size_t operator()(const BaseInput& txin) const { return 0; }
     size_t operator()(const KeyInput& txin) const { return txin.outputIndexes.size(); }
+<<<<<<< HEAD
     size_t operator()(const MultisignatureInput& txin) const { return txin.signatureCount; }
+=======
+>>>>>>> forknote/master
   };
 
   return boost::apply_visitor(txin_signature_size_visitor(), input);
@@ -58,9 +61,13 @@ size_t getSignaturesCount(const TransactionInput& input) {
 struct BinaryVariantTagGetter: boost::static_visitor<uint8_t> {
   uint8_t operator()(const CryptoNote::BaseInput) { return  0xff; }
   uint8_t operator()(const CryptoNote::KeyInput) { return  0x2; }
+<<<<<<< HEAD
   uint8_t operator()(const CryptoNote::MultisignatureInput) { return  0x3; }
   uint8_t operator()(const CryptoNote::KeyOutput) { return  0x2; }
   uint8_t operator()(const CryptoNote::MultisignatureOutput) { return  0x3; }
+=======
+  uint8_t operator()(const CryptoNote::KeyOutput) { return  0x2; }
+>>>>>>> forknote/master
   uint8_t operator()(const CryptoNote::Transaction) { return  0xcc; }
   uint8_t operator()(const CryptoNote::BlockTemplate) { return  0xbb; }
 };
@@ -89,12 +96,15 @@ void getVariantValue(CryptoNote::ISerializer& serializer, uint8_t tag, CryptoNot
     in = v;
     break;
   }
+<<<<<<< HEAD
   case 0x3: {
     CryptoNote::MultisignatureInput v;
     serializer(v, "value");
     in = v;
     break;
   }
+=======
+>>>>>>> forknote/master
   default:
     throw std::runtime_error("Unknown variant tag");
   }
@@ -108,12 +118,15 @@ void getVariantValue(CryptoNote::ISerializer& serializer, uint8_t tag, CryptoNot
     out = v;
     break;
   }
+<<<<<<< HEAD
   case 0x3: {
     CryptoNote::MultisignatureOutput v;
     serializer(v, "data");
     out = v;
     break;
   }
+=======
+>>>>>>> forknote/master
   default:
     throw std::runtime_error("Unknown variant tag");
   }
@@ -282,12 +295,15 @@ void serialize(KeyInput& key, ISerializer& serializer) {
   serializer(key.keyImage, "k_image");
 }
 
+<<<<<<< HEAD
 void serialize(MultisignatureInput& multisignature, ISerializer& serializer) {
   serializer(multisignature.amount, "amount");
   serializer(multisignature.signatureCount, "signatures");
   serializer(multisignature.outputIndex, "outputIndex");
 }
 
+=======
+>>>>>>> forknote/master
 void serialize(TransactionOutput& output, ISerializer& serializer) {
   serializer(output.amount, "amount");
   serializer(output.target, "target");
@@ -313,11 +329,14 @@ void serialize(KeyOutput& key, ISerializer& serializer) {
   serializer(key.key, "key");
 }
 
+<<<<<<< HEAD
 void serialize(MultisignatureOutput& multisignature, ISerializer& serializer) {
   serializer(multisignature.keys, "keys");
   serializer(multisignature.requiredSignatureCount, "required_signatures");
 }
 
+=======
+>>>>>>> forknote/master
 void serialize(ParentBlockSerializer& pbs, ISerializer& serializer) {
   serializer(pbs.m_parentBlock.majorVersion, "majorVersion");
 

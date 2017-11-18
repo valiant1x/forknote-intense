@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -48,7 +52,12 @@ public class RocksDB extends RocksObject {
     }
     catch (IOException e)
     {
+<<<<<<< HEAD
       throw new RuntimeException("Unable to load the RocksDB shared library" + e);
+=======
+      throw new RuntimeException("Unable to load the RocksDB shared library"
+          + e);
+>>>>>>> forknote/master
     }
   }
 
@@ -78,7 +87,12 @@ public class RocksDB extends RocksObject {
     UnsatisfiedLinkError err = null;
     for (String path : paths) {
       try {
+<<<<<<< HEAD
         System.load(path + "/" + Environment.getJniLibraryFileName("rocksdbjni"));
+=======
+        System.load(path + "/" +
+            Environment.getJniLibraryFileName("rocksdbjni"));
+>>>>>>> forknote/master
         success = true;
         break;
       } catch (UnsatisfiedLinkError e) {
@@ -116,8 +130,13 @@ public class RocksDB extends RocksObject {
    * the path to the database using the specified options and db path and a list
    * of column family names.
    * <p>
+<<<<<<< HEAD
    * If opened in read write mode every existing column family name must be passed
    * within the list to this method.</p>
+=======
+   * If opened in read write mode every existing column family name must be
+   * passed within the list to this method.</p>
+>>>>>>> forknote/master
    * <p>
    * If opened in read-only mode only a subset of existing column families must
    * be passed to this method.</p>
@@ -179,9 +198,13 @@ public class RocksDB extends RocksObject {
     // when non-default Options is used, keeping an Options reference
     // in RocksDB can prevent Java to GC during the life-time of
     // the currently-created RocksDB.
+<<<<<<< HEAD
     RocksDB db = new RocksDB();
     db.open(options.nativeHandle_, path);
 
+=======
+    final RocksDB db = new RocksDB(open(options.nativeHandle_, path));
+>>>>>>> forknote/master
     db.storeOptionsInstance(options);
     return db;
   }
@@ -191,8 +214,13 @@ public class RocksDB extends RocksObject {
    * the path to the database using the specified options and db path and a list
    * of column family names.
    * <p>
+<<<<<<< HEAD
    * If opened in read write mode every existing column family name must be passed
    * within the list to this method.</p>
+=======
+   * If opened in read write mode every existing column family name must be
+   * passed within the list to this method.</p>
+>>>>>>> forknote/master
    * <p>
    * If opened in read-only mode only a subset of existing column families must
    * be passed to this method.</p>
@@ -206,7 +234,12 @@ public class RocksDB extends RocksObject {
    * with new Options instance as underlying native statistics instance does not
    * use any locks to prevent concurrent updates.</p>
    * <p>
+<<<<<<< HEAD
    * ColumnFamily handles are disposed when the RocksDB instance is disposed.</p>
+=======
+   * ColumnFamily handles are disposed when the RocksDB instance is disposed.
+   * </p>
+>>>>>>> forknote/master
    *
    * @param options {@link org.rocksdb.DBOptions} instance.
    * @param path the path to the rocksdb.
@@ -225,6 +258,7 @@ public class RocksDB extends RocksObject {
       final List<ColumnFamilyDescriptor> columnFamilyDescriptors,
       final List<ColumnFamilyHandle> columnFamilyHandles)
       throws RocksDBException {
+<<<<<<< HEAD
     RocksDB db = new RocksDB();
     List<Long> cfReferences = db.open(options.nativeHandle_, path,
         columnFamilyDescriptors, columnFamilyDescriptors.size());
@@ -232,6 +266,27 @@ public class RocksDB extends RocksObject {
       columnFamilyHandles.add(new ColumnFamilyHandle(db, cfReferences.get(i)));
     }
     db.storeOptionsInstance(options);
+=======
+
+    final byte[][] cfNames = new byte[columnFamilyDescriptors.size()][];
+    final long[] cfOptionHandles = new long[columnFamilyDescriptors.size()];
+    for (int i = 0; i < columnFamilyDescriptors.size(); i++) {
+      final ColumnFamilyDescriptor cfDescriptor = columnFamilyDescriptors
+          .get(i);
+      cfNames[i] = cfDescriptor.columnFamilyName();
+      cfOptionHandles[i] = cfDescriptor.columnFamilyOptions().nativeHandle_;
+    }
+
+    final long[] handles = open(options.nativeHandle_, path, cfNames,
+        cfOptionHandles);
+    final RocksDB db = new RocksDB(handles[0]);
+    db.storeOptionsInstance(options);
+
+    for (int i = 1; i < handles.length; i++) {
+      columnFamilyHandles.add(new ColumnFamilyHandle(db, handles[i]));
+    }
+
+>>>>>>> forknote/master
     return db;
   }
 
@@ -276,7 +331,11 @@ public class RocksDB extends RocksObject {
       throws RocksDBException {
     // This allows to use the rocksjni default Options instead of
     // the c++ one.
+<<<<<<< HEAD
     DBOptions options = new DBOptions();
+=======
+    final DBOptions options = new DBOptions();
+>>>>>>> forknote/master
     return openReadOnly(options, path, columnFamilyDescriptors,
         columnFamilyHandles);
   }
@@ -303,9 +362,13 @@ public class RocksDB extends RocksObject {
     // when non-default Options is used, keeping an Options reference
     // in RocksDB can prevent Java to GC during the life-time of
     // the currently-created RocksDB.
+<<<<<<< HEAD
     RocksDB db = new RocksDB();
     db.openROnly(options.nativeHandle_, path);
 
+=======
+    final RocksDB db = new RocksDB(openROnly(options.nativeHandle_, path));
+>>>>>>> forknote/master
     db.storeOptionsInstance(options);
     return db;
   }
@@ -339,6 +402,7 @@ public class RocksDB extends RocksObject {
     // when non-default Options is used, keeping an Options reference
     // in RocksDB can prevent Java to GC during the life-time of
     // the currently-created RocksDB.
+<<<<<<< HEAD
     RocksDB db = new RocksDB();
     List<Long> cfReferences = db.openROnly(options.nativeHandle_, path,
         columnFamilyDescriptors, columnFamilyDescriptors.size());
@@ -347,6 +411,27 @@ public class RocksDB extends RocksObject {
     }
 
     db.storeOptionsInstance(options);
+=======
+
+    final byte[][] cfNames = new byte[columnFamilyDescriptors.size()][];
+    final long[] cfOptionHandles = new long[columnFamilyDescriptors.size()];
+    for (int i = 0; i < columnFamilyDescriptors.size(); i++) {
+      final ColumnFamilyDescriptor cfDescriptor = columnFamilyDescriptors
+          .get(i);
+      cfNames[i] = cfDescriptor.columnFamilyName();
+      cfOptionHandles[i] = cfDescriptor.columnFamilyOptions().nativeHandle_;
+    }
+
+    final long[] handles = openROnly(options.nativeHandle_, path, cfNames,
+        cfOptionHandles);
+    final RocksDB db = new RocksDB(handles[0]);
+    db.storeOptionsInstance(options);
+
+    for (int i = 1; i < handles.length; i++) {
+      columnFamilyHandles.add(new ColumnFamilyHandle(db, handles[i]));
+    }
+
+>>>>>>> forknote/master
     return db;
   }
   /**
@@ -362,13 +447,19 @@ public class RocksDB extends RocksObject {
    */
   public static List<byte[]> listColumnFamilies(final Options options,
       final String path) throws RocksDBException {
+<<<<<<< HEAD
     return RocksDB.listColumnFamilies(options.nativeHandle_, path);
+=======
+    return Arrays.asList(RocksDB.listColumnFamilies(options.nativeHandle_,
+        path));
+>>>>>>> forknote/master
   }
 
   private void storeOptionsInstance(DBOptionsInterface options) {
     options_ = options;
   }
 
+<<<<<<< HEAD
   @Override protected void disposeInternal() {
     synchronized (this) {
       assert (isInitialized());
@@ -384,6 +475,8 @@ public class RocksDB extends RocksObject {
     dispose();
   }
 
+=======
+>>>>>>> forknote/master
   /**
    * Set the database entry for "key" to "value".
    *
@@ -393,7 +486,12 @@ public class RocksDB extends RocksObject {
    * @throws RocksDBException thrown if error happens in underlying
    *    native library.
    */
+<<<<<<< HEAD
   public void put(final byte[] key, final byte[] value) throws RocksDBException {
+=======
+  public void put(final byte[] key, final byte[] value)
+      throws RocksDBException {
+>>>>>>> forknote/master
     put(nativeHandle_, key, key.length, value, value.length);
   }
 
@@ -452,8 +550,13 @@ public class RocksDB extends RocksObject {
   public void put(final ColumnFamilyHandle columnFamilyHandle,
       final WriteOptions writeOpts, final byte[] key,
       final byte[] value) throws RocksDBException {
+<<<<<<< HEAD
     put(nativeHandle_, writeOpts.nativeHandle_, key, key.length, value, value.length,
         columnFamilyHandle.nativeHandle_);
+=======
+    put(nativeHandle_, writeOpts.nativeHandle_, key, key.length, value,
+        value.length, columnFamilyHandle.nativeHandle_);
+>>>>>>> forknote/master
   }
 
   /**
@@ -469,7 +572,11 @@ public class RocksDB extends RocksObject {
    * @return boolean value indicating if key does not exist or might exist.
    */
   public boolean keyMayExist(final byte[] key, final StringBuffer value){
+<<<<<<< HEAD
     return keyMayExist(key, key.length, value);
+=======
+    return keyMayExist(nativeHandle_, key, key.length, value);
+>>>>>>> forknote/master
   }
 
   /**
@@ -487,8 +594,13 @@ public class RocksDB extends RocksObject {
    */
   public boolean keyMayExist(final ColumnFamilyHandle columnFamilyHandle,
       final byte[] key, final StringBuffer value){
+<<<<<<< HEAD
     return keyMayExist(key, key.length, columnFamilyHandle.nativeHandle_,
         value);
+=======
+    return keyMayExist(nativeHandle_, key, key.length,
+        columnFamilyHandle.nativeHandle_, value);
+>>>>>>> forknote/master
   }
 
   /**
@@ -506,7 +618,11 @@ public class RocksDB extends RocksObject {
    */
   public boolean keyMayExist(final ReadOptions readOptions,
       final byte[] key, final StringBuffer value){
+<<<<<<< HEAD
     return keyMayExist(readOptions.nativeHandle_,
+=======
+    return keyMayExist(nativeHandle_, readOptions.nativeHandle_,
+>>>>>>> forknote/master
         key, key.length, value);
   }
 
@@ -527,7 +643,11 @@ public class RocksDB extends RocksObject {
   public boolean keyMayExist(final ReadOptions readOptions,
       final ColumnFamilyHandle columnFamilyHandle, final byte[] key,
       final StringBuffer value){
+<<<<<<< HEAD
     return keyMayExist(readOptions.nativeHandle_,
+=======
+    return keyMayExist(nativeHandle_, readOptions.nativeHandle_,
+>>>>>>> forknote/master
         key, key.length, columnFamilyHandle.nativeHandle_,
         value);
   }
@@ -543,7 +663,11 @@ public class RocksDB extends RocksObject {
    */
   public void write(final WriteOptions writeOpts, final WriteBatch updates)
       throws RocksDBException {
+<<<<<<< HEAD
     write0(writeOpts.nativeHandle_, updates.nativeHandle_);
+=======
+    write0(nativeHandle_, writeOpts.nativeHandle_, updates.nativeHandle_);
+>>>>>>> forknote/master
   }
 
   /**
@@ -557,7 +681,11 @@ public class RocksDB extends RocksObject {
    */
   public void write(final WriteOptions writeOpts,
       final WriteBatchWithIndex updates) throws RocksDBException {
+<<<<<<< HEAD
     write1(writeOpts.nativeHandle_, updates.nativeHandle_);
+=======
+    write1(nativeHandle_, writeOpts.nativeHandle_, updates.nativeHandle_);
+>>>>>>> forknote/master
   }
 
   /**
@@ -570,7 +698,12 @@ public class RocksDB extends RocksObject {
    * @throws RocksDBException thrown if error happens in underlying
    *    native library.
    */
+<<<<<<< HEAD
   public void merge(final byte[] key, final byte[] value) throws RocksDBException {
+=======
+  public void merge(final byte[] key, final byte[] value)
+      throws RocksDBException {
+>>>>>>> forknote/master
     merge(nativeHandle_, key, key.length, value, value.length);
   }
 
@@ -745,9 +878,16 @@ public class RocksDB extends RocksObject {
    * @throws RocksDBException thrown if error happens in underlying
    *    native library.
    */
+<<<<<<< HEAD
   public byte[] get(final ColumnFamilyHandle columnFamilyHandle, final byte[] key)
       throws RocksDBException {
     return get(nativeHandle_, key, key.length, columnFamilyHandle.nativeHandle_);
+=======
+  public byte[] get(final ColumnFamilyHandle columnFamilyHandle,
+      final byte[] key) throws RocksDBException {
+    return get(nativeHandle_, key, key.length,
+        columnFamilyHandle.nativeHandle_);
+>>>>>>> forknote/master
   }
 
   /**
@@ -803,6 +943,7 @@ public class RocksDB extends RocksObject {
       throws RocksDBException {
     assert(keys.size() != 0);
 
+<<<<<<< HEAD
     List<byte[]> values = multiGet(
         nativeHandle_, keys, keys.size());
 
@@ -813,6 +954,18 @@ public class RocksDB extends RocksObject {
       }
 
       keyValueMap.put(keys.get(i), values.get(i));
+=======
+    final byte[][] values = multiGet(nativeHandle_,
+        keys.toArray(new byte[keys.size()][]));
+
+    Map<byte[], byte[]> keyValueMap = new HashMap<>();
+    for(int i = 0; i < values.length; i++) {
+      if(values[i] == null) {
+        continue;
+      }
+
+      keyValueMap.put(keys.get(i), values[i]);
+>>>>>>> forknote/master
     }
 
     return keyValueMap;
@@ -836,6 +989,7 @@ public class RocksDB extends RocksObject {
    * @throws IllegalArgumentException thrown if the size of passed keys is not
    *    equal to the amount of passed column family handles.
    */
+<<<<<<< HEAD
   public Map<byte[], byte[]> multiGet(final List<ColumnFamilyHandle> columnFamilyHandleList,
       final List<byte[]> keys) throws RocksDBException, IllegalArgumentException {
     assert(keys.size() != 0);
@@ -854,6 +1008,32 @@ public class RocksDB extends RocksObject {
         continue;
       }
       keyValueMap.put(keys.get(i), values.get(i));
+=======
+  public Map<byte[], byte[]> multiGet(
+      final List<ColumnFamilyHandle> columnFamilyHandleList,
+      final List<byte[]> keys) throws RocksDBException,
+      IllegalArgumentException {
+    assert(keys.size() != 0);
+    // Check if key size equals cfList size. If not a exception must be
+    // thrown. If not a Segmentation fault happens.
+    if (keys.size() != columnFamilyHandleList.size()) {
+        throw new IllegalArgumentException(
+            "For each key there must be a ColumnFamilyHandle.");
+    }
+    final long[] cfHandles = new long[columnFamilyHandleList.size()];
+    for (int i = 0; i < columnFamilyHandleList.size(); i++) {
+      cfHandles[i] = columnFamilyHandleList.get(i).nativeHandle_;
+    }
+    final byte[][] values = multiGet(nativeHandle_,
+        keys.toArray(new byte[keys.size()][]), cfHandles);
+
+    Map<byte[], byte[]> keyValueMap = new HashMap<>();
+    for(int i = 0; i < values.length; i++) {
+      if (values[i] == null) {
+        continue;
+      }
+      keyValueMap.put(keys.get(i), values[i]);
+>>>>>>> forknote/master
     }
     return keyValueMap;
   }
@@ -873,6 +1053,7 @@ public class RocksDB extends RocksObject {
       final List<byte[]> keys) throws RocksDBException {
     assert(keys.size() != 0);
 
+<<<<<<< HEAD
     List<byte[]> values = multiGet(
         nativeHandle_, opt.nativeHandle_, keys, keys.size());
 
@@ -883,6 +1064,18 @@ public class RocksDB extends RocksObject {
       }
 
       keyValueMap.put(keys.get(i), values.get(i));
+=======
+    final byte[][] values = multiGet(nativeHandle_, opt.nativeHandle_,
+        keys.toArray(new byte[keys.size()][]));
+
+    Map<byte[], byte[]> keyValueMap = new HashMap<>();
+    for(int i = 0; i < values.length; i++) {
+      if(values[i] == null) {
+        continue;
+      }
+
+      keyValueMap.put(keys.get(i), values[i]);
+>>>>>>> forknote/master
     }
 
     return keyValueMap;
@@ -917,6 +1110,7 @@ public class RocksDB extends RocksObject {
       throw new IllegalArgumentException(
           "For each key there must be a ColumnFamilyHandle.");
     }
+<<<<<<< HEAD
 
     List<byte[]> values = multiGet(nativeHandle_, opt.nativeHandle_,
         keys, keys.size(), columnFamilyHandleList);
@@ -927,6 +1121,21 @@ public class RocksDB extends RocksObject {
         continue;
       }
       keyValueMap.put(keys.get(i), values.get(i));
+=======
+    final long[] cfHandles = new long[columnFamilyHandleList.size()];
+    for (int i = 0; i < columnFamilyHandleList.size(); i++) {
+      cfHandles[i] = columnFamilyHandleList.get(i).nativeHandle_;
+    }
+    final byte[][] values = multiGet(nativeHandle_, opt.nativeHandle_,
+        keys.toArray(new byte[keys.size()][]), cfHandles);
+
+    Map<byte[], byte[]> keyValueMap = new HashMap<>();
+    for(int i = 0; i < values.length; i++) {
+      if(values[i] == null) {
+        continue;
+      }
+      keyValueMap.put(keys.get(i), values[i]);
+>>>>>>> forknote/master
     }
 
     return keyValueMap;
@@ -958,8 +1167,13 @@ public class RocksDB extends RocksObject {
    * @throws RocksDBException thrown if error happens in underlying
    *    native library.
    */
+<<<<<<< HEAD
   public void remove(final ColumnFamilyHandle columnFamilyHandle, final byte[] key)
       throws RocksDBException {
+=======
+  public void remove(final ColumnFamilyHandle columnFamilyHandle,
+      final byte[] key) throws RocksDBException {
+>>>>>>> forknote/master
     remove(nativeHandle_, key, key.length, columnFamilyHandle.nativeHandle_);
   }
 
@@ -1009,8 +1223,14 @@ public class RocksDB extends RocksObject {
    *
    * <p>Valid property names include:
    * <ul>
+<<<<<<< HEAD
    * <li>"rocksdb.num-files-at-level&lt;N&gt;" - return the number of files at level &lt;N&gt;,
    *     where &lt;N&gt; is an ASCII representation of a level number (e.g. "0").</li>
+=======
+   * <li>"rocksdb.num-files-at-level&lt;N&gt;" - return the number of files at
+   * level &lt;N&gt;, where &lt;N&gt; is an ASCII representation of a level
+   * number (e.g. "0").</li>
+>>>>>>> forknote/master
    * <li>"rocksdb.stats" - returns a multi-line string that describes statistics
    *     about the internal operation of the DB.</li>
    * <li>"rocksdb.sstables" - returns a multi-line string that describes all
@@ -1027,8 +1247,13 @@ public class RocksDB extends RocksObject {
    */
   public String getProperty(final ColumnFamilyHandle columnFamilyHandle,
       final String property) throws RocksDBException {
+<<<<<<< HEAD
     return getProperty0(nativeHandle_, columnFamilyHandle.nativeHandle_, property,
         property.length());
+=======
+    return getProperty0(nativeHandle_, columnFamilyHandle.nativeHandle_,
+        property, property.length());
+>>>>>>> forknote/master
   }
 
   /**
@@ -1039,8 +1264,14 @@ public class RocksDB extends RocksObject {
    *
    * <p>Valid property names include:
    * <ul>
+<<<<<<< HEAD
    * <li>"rocksdb.num-files-at-level&lt;N&gt;" - return the number of files at level &lt;N&gt;,
    *     where &lt;N&gt; is an ASCII representation of a level number (e.g. "0").</li>
+=======
+   * <li>"rocksdb.num-files-at-level&lt;N&gt;" - return the number of files at
+   * level &lt;N&gt;, where &lt;N&gt; is an ASCII representation of a level
+   * number (e.g. "0").</li>
+>>>>>>> forknote/master
    * <li>"rocksdb.stats" - returns a multi-line string that describes statistics
    *     about the internal operation of the DB.</li>
    * <li>"rocksdb.sstables" - returns a multi-line string that describes all
@@ -1058,8 +1289,13 @@ public class RocksDB extends RocksObject {
   }
 
   /**
+<<<<<<< HEAD
    * <p> Similar to GetProperty(), but only works for a subset of properties whose
    * return value is a numerical value. Return the value as long.</p>
+=======
+   * <p> Similar to GetProperty(), but only works for a subset of properties
+   * whose return value is a numerical value. Return the value as long.</p>
+>>>>>>> forknote/master
    *
    * <p><strong>Note</strong>: As the returned property is of type
    * {@code uint64_t} on C++ side the returning value can be negative
@@ -1084,8 +1320,13 @@ public class RocksDB extends RocksObject {
   }
 
   /**
+<<<<<<< HEAD
    * <p> Similar to GetProperty(), but only works for a subset of properties whose
    * return value is a numerical value. Return the value as long.</p>
+=======
+   * <p> Similar to GetProperty(), but only works for a subset of properties
+   * whose return value is a numerical value. Return the value as long.</p>
+>>>>>>> forknote/master
    *
    * <p><strong>Note</strong>: As the returned property is of type
    * {@code uint64_t} on C++ side the returning value can be negative
@@ -1109,8 +1350,13 @@ public class RocksDB extends RocksObject {
    */
   public long getLongProperty(final ColumnFamilyHandle columnFamilyHandle,
       final String property) throws RocksDBException {
+<<<<<<< HEAD
     return getLongProperty(nativeHandle_, columnFamilyHandle.nativeHandle_, property,
         property.length());
+=======
+    return getLongProperty(nativeHandle_, columnFamilyHandle.nativeHandle_,
+        property, property.length());
+>>>>>>> forknote/master
   }
 
   /**
@@ -1192,7 +1438,12 @@ public class RocksDB extends RocksObject {
    *     instance
    * @return instance of iterator object.
    */
+<<<<<<< HEAD
   public RocksIterator newIterator(final ColumnFamilyHandle columnFamilyHandle) {
+=======
+  public RocksIterator newIterator(
+      final ColumnFamilyHandle columnFamilyHandle) {
+>>>>>>> forknote/master
     return new RocksIterator(this, iteratorCF(nativeHandle_,
         columnFamilyHandle.nativeHandle_));
   }
@@ -1232,7 +1483,12 @@ public class RocksDB extends RocksObject {
    *    native library.
    */
   public List<RocksIterator> newIterators(
+<<<<<<< HEAD
       final List<ColumnFamilyHandle> columnFamilyHandleList) throws RocksDBException {
+=======
+      final List<ColumnFamilyHandle> columnFamilyHandleList)
+      throws RocksDBException {
+>>>>>>> forknote/master
     return newIterators(columnFamilyHandleList, new ReadOptions());
   }
 
@@ -1253,11 +1509,25 @@ public class RocksDB extends RocksObject {
   public List<RocksIterator> newIterators(
       final List<ColumnFamilyHandle> columnFamilyHandleList,
       final ReadOptions readOptions) throws RocksDBException {
+<<<<<<< HEAD
     List<RocksIterator> iterators =
         new ArrayList<>(columnFamilyHandleList.size());
 
     long[] iteratorRefs = iterators(nativeHandle_, columnFamilyHandleList,
         readOptions.nativeHandle_);
+=======
+
+    final long[] columnFamilyHandles = new long[columnFamilyHandleList.size()];
+    for (int i = 0; i < columnFamilyHandleList.size(); i++) {
+      columnFamilyHandles[i] = columnFamilyHandleList.get(i).nativeHandle_;
+    }
+
+    final long[] iteratorRefs = iterators(nativeHandle_, columnFamilyHandles,
+        readOptions.nativeHandle_);
+
+    final List<RocksIterator> iterators = new ArrayList<>(
+        columnFamilyHandleList.size());
+>>>>>>> forknote/master
     for (int i=0; i<columnFamilyHandleList.size(); i++){
       iterators.add(new RocksIterator(this, iteratorRefs[i]));
     }
@@ -1291,7 +1561,12 @@ public class RocksDB extends RocksObject {
       final ColumnFamilyDescriptor columnFamilyDescriptor)
       throws RocksDBException {
     return new ColumnFamilyHandle(this, createColumnFamily(nativeHandle_,
+<<<<<<< HEAD
         columnFamilyDescriptor));
+=======
+        columnFamilyDescriptor.columnFamilyName(),
+        columnFamilyDescriptor.columnFamilyOptions().nativeHandle_));
+>>>>>>> forknote/master
   }
 
   /**
@@ -1310,7 +1585,11 @@ public class RocksDB extends RocksObject {
     // throws RocksDBException if something goes wrong
     dropColumnFamily(nativeHandle_, columnFamilyHandle.nativeHandle_);
     // After the drop the native handle is not valid anymore
+<<<<<<< HEAD
     columnFamilyHandle.nativeHandle_ = 0;
+=======
+    columnFamilyHandle.disOwnNativeHandle();
+>>>>>>> forknote/master
   }
 
   /**
@@ -1601,6 +1880,26 @@ public class RocksDB extends RocksObject {
   }
 
   /**
+<<<<<<< HEAD
+=======
+   * This function will wait until all currently running background processes
+   * finish. After it returns, no background process will be run until
+   * {@link #continueBackgroundWork()} is called
+   */
+  public void pauseBackgroundWork() throws RocksDBException {
+    pauseBackgroundWork(nativeHandle_);
+  }
+
+  /**
+   * Resumes backround work which was suspended by
+   * previously calling {@link #pauseBackgroundWork()}
+   */
+  public void continueBackgroundWork() throws RocksDBException {
+    continueBackgroundWork(nativeHandle_);
+  }
+
+  /**
+>>>>>>> forknote/master
    * <p>The sequence number of the most recent transaction.</p>
    *
    * @return sequence number of the most
@@ -1672,6 +1971,7 @@ public class RocksDB extends RocksObject {
 
   /**
    * Private constructor.
+<<<<<<< HEAD
    */
   protected RocksDB() {
     super();
@@ -1692,6 +1992,57 @@ public class RocksDB extends RocksObject {
       long optionsHandle, String path,
       List<ColumnFamilyDescriptor> columnFamilyDescriptors,
       int columnFamilyDescriptorsLength) throws RocksDBException;
+=======
+   *
+   * @param nativeHandle The native handle of the C++ RocksDB object
+   */
+  protected RocksDB(final long nativeHandle) {
+    super(nativeHandle);
+  }
+
+  // native methods
+  protected native static long open(final long optionsHandle,
+      final String path) throws RocksDBException;
+
+  /**
+   * @param optionsHandle Native handle pointing to an Options object
+   * @param path The directory path for the database files
+   * @param columnFamilyNames An array of column family names
+   * @param columnFamilyOptions An array of native handles pointing to
+   *                            ColumnFamilyOptions objects
+   *
+   * @return An array of native handles, [0] is the handle of the RocksDB object
+   *   [1..1+n] are handles of the ColumnFamilyReferences
+   *
+   * @throws RocksDBException thrown if the database could not be opened
+   */
+  protected native static long[] open(final long optionsHandle,
+      final String path, final byte[][] columnFamilyNames,
+      final long[] columnFamilyOptions) throws RocksDBException;
+
+  protected native static long openROnly(final long optionsHandle,
+      final String path) throws RocksDBException;
+
+  /**
+   * @param optionsHandle Native handle pointing to an Options object
+   * @param path The directory path for the database files
+   * @param columnFamilyNames An array of column family names
+   * @param columnFamilyOptions An array of native handles pointing to
+   *                            ColumnFamilyOptions objects
+   *
+   * @return An array of native handles, [0] is the handle of the RocksDB object
+   *   [1..1+n] are handles of the ColumnFamilyReferences
+   *
+   * @throws RocksDBException thrown if the database could not be opened
+   */
+  protected native static long[] openROnly(final long optionsHandle,
+      final String path, final byte[][] columnFamilyNames,
+      final long[] columnFamilyOptions
+  ) throws RocksDBException;
+
+  protected native static byte[][] listColumnFamilies(
+      long optionsHandle, String path) throws RocksDBException;
+>>>>>>> forknote/master
   protected native void put(
       long handle, byte[] key, int keyLen,
       byte[] value, int valueLen) throws RocksDBException;
@@ -1706,6 +2057,7 @@ public class RocksDB extends RocksObject {
       long handle, long writeOptHandle,
       byte[] key, int keyLen,
       byte[] value, int valueLen, long cfHandle) throws RocksDBException;
+<<<<<<< HEAD
   protected native void write0(
       long writeOptHandle, long wbHandle) throws RocksDBException;
   protected native void write1(
@@ -1718,6 +2070,22 @@ public class RocksDB extends RocksObject {
       StringBuffer stringBuffer);
   protected native boolean keyMayExist(long optionsHandle, byte[] key, int keyLen,
       long cfHandle, StringBuffer stringBuffer);
+=======
+  protected native void write0(final long handle, long writeOptHandle,
+      long wbHandle) throws RocksDBException;
+  protected native void write1(final long handle, long writeOptHandle,
+      long wbwiHandle) throws RocksDBException;
+  protected native boolean keyMayExist(final long handle, final byte[] key,
+      final int keyLen, final StringBuffer stringBuffer);
+  protected native boolean keyMayExist(final long handle, final byte[] key,
+      final int keyLen, final long cfHandle, final StringBuffer stringBuffer);
+  protected native boolean keyMayExist(final long handle,
+      final long optionsHandle, final byte[] key, final int keyLen,
+      final StringBuffer stringBuffer);
+  protected native boolean keyMayExist(final long handle,
+      final long optionsHandle, final byte[] key, final int keyLen,
+      final long cfHandle, final StringBuffer stringBuffer);
+>>>>>>> forknote/master
   protected native void merge(
       long handle, byte[] key, int keyLen,
       byte[] value, int valueLen) throws RocksDBException;
@@ -1744,6 +2112,7 @@ public class RocksDB extends RocksObject {
   protected native int get(
       long handle, long readOptHandle, byte[] key, int keyLen,
       byte[] value, int valueLen, long cfHandle) throws RocksDBException;
+<<<<<<< HEAD
   protected native List<byte[]> multiGet(
       long dbHandle, List<byte[]> keys, int keysCount);
   protected native List<byte[]> multiGet(
@@ -1758,6 +2127,20 @@ public class RocksDB extends RocksObject {
       long handle, byte[] key, int keyLen) throws RocksDBException;
   protected native byte[] get(
       long handle, byte[] key, int keyLen, long cfHandle) throws RocksDBException;
+=======
+  protected native byte[][] multiGet(final long dbHandle, final byte[][] keys);
+  protected native byte[][] multiGet(final long dbHandle, final byte[][] keys,
+      final long[] columnFamilyHandles);
+  protected native byte[][] multiGet(final long dbHandle, final long rOptHandle,
+      final byte[][] keys);
+  protected native byte[][] multiGet(final long dbHandle, final long rOptHandle,
+      final byte[][] keys, final long[] columnFamilyHandles);
+  protected native byte[] get(
+      long handle, byte[] key, int keyLen) throws RocksDBException;
+  protected native byte[] get(
+      long handle, byte[] key, int keyLen, long cfHandle)
+      throws RocksDBException;
+>>>>>>> forknote/master
   protected native byte[] get(
       long handle, long readOptHandle,
       byte[] key, int keyLen) throws RocksDBException;
@@ -1767,7 +2150,12 @@ public class RocksDB extends RocksObject {
   protected native void remove(
       long handle, byte[] key, int keyLen) throws RocksDBException;
   protected native void remove(
+<<<<<<< HEAD
       long handle, byte[] key, int keyLen, long cfHandle) throws RocksDBException;
+=======
+      long handle, byte[] key, int keyLen, long cfHandle)
+      throws RocksDBException;
+>>>>>>> forknote/master
   protected native void remove(
       long handle, long writeOptHandle,
       byte[] key, int keyLen) throws RocksDBException;
@@ -1787,21 +2175,37 @@ public class RocksDB extends RocksObject {
   protected native long iteratorCF(long handle, long cfHandle);
   protected native long iteratorCF(long handle, long cfHandle,
       long readOptHandle);
+<<<<<<< HEAD
   protected native long[] iterators(long handle,
       List<ColumnFamilyHandle> columnFamilyNames, long readOptHandle)
+=======
+  protected native long[] iterators(final long handle,
+      final long[] columnFamilyHandles, final long readOptHandle)
+>>>>>>> forknote/master
       throws RocksDBException;
   protected native long getSnapshot(long nativeHandle);
   protected native void releaseSnapshot(
       long nativeHandle, long snapshotHandle);
+<<<<<<< HEAD
   private native void disposeInternal(long handle);
   private native long getDefaultColumnFamily(long handle);
   private native long createColumnFamily(long handle,
       ColumnFamilyDescriptor columnFamilyDescriptor) throws RocksDBException;
   private native void dropColumnFamily(long handle, long cfHandle) throws RocksDBException;
+=======
+  @Override protected final native void disposeInternal(final long handle);
+  private native long getDefaultColumnFamily(long handle);
+  private native long createColumnFamily(final long handle,
+      final byte[] columnFamilyName, final long columnFamilyOptions)
+      throws RocksDBException;
+  private native void dropColumnFamily(long handle, long cfHandle)
+      throws RocksDBException;
+>>>>>>> forknote/master
   private native void flush(long handle, long flushOptHandle)
       throws RocksDBException;
   private native void flush(long handle, long flushOptHandle,
       long cfHandle) throws RocksDBException;
+<<<<<<< HEAD
   private native void compactRange0(long handle, boolean reduce_level, int target_level,
       int target_path_id) throws RocksDBException;
   private native void compactRange0(long handle, byte[] begin, int beginLen, byte[] end,
@@ -1815,6 +2219,23 @@ public class RocksDB extends RocksObject {
   private native long getLatestSequenceNumber(long handle);
   private native void disableFileDeletions(long handle)
       throws RocksDBException;
+=======
+  private native void compactRange0(long handle, boolean reduce_level,
+      int target_level, int target_path_id) throws RocksDBException;
+  private native void compactRange0(long handle, byte[] begin, int beginLen,
+      byte[] end, int endLen, boolean reduce_level, int target_level,
+      int target_path_id) throws RocksDBException;
+  private native void compactRange(long handle, boolean reduce_level,
+      int target_level, int target_path_id, long cfHandle)
+      throws RocksDBException;
+  private native void compactRange(long handle, byte[] begin, int beginLen,
+      byte[] end, int endLen, boolean reduce_level, int target_level,
+      int target_path_id, long cfHandle) throws RocksDBException;
+  private native void pauseBackgroundWork(long handle) throws RocksDBException;
+  private native void continueBackgroundWork(long handle) throws RocksDBException;
+  private native long getLatestSequenceNumber(long handle);
+  private native void disableFileDeletions(long handle) throws RocksDBException;
+>>>>>>> forknote/master
   private native void enableFileDeletions(long handle,
       boolean force) throws RocksDBException;
   private native long getUpdatesSince(long handle, long sequenceNumber)

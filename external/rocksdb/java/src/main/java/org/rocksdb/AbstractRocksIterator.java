@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -25,8 +29,12 @@ public abstract class AbstractRocksIterator<P extends RocksObject>
 
   protected AbstractRocksIterator(final P parent,
       final long nativeHandle) {
+<<<<<<< HEAD
     super();
     nativeHandle_ = nativeHandle;
+=======
+    super(nativeHandle);
+>>>>>>> forknote/master
     // parent must point to a valid RocksDB instance.
     assert (parent != null);
     // RocksIterator must hold a reference to the related parent instance
@@ -37,43 +45,71 @@ public abstract class AbstractRocksIterator<P extends RocksObject>
 
   @Override
   public boolean isValid() {
+<<<<<<< HEAD
     assert (isInitialized());
+=======
+    assert (isOwningHandle());
+>>>>>>> forknote/master
     return isValid0(nativeHandle_);
   }
 
   @Override
   public void seekToFirst() {
+<<<<<<< HEAD
     assert (isInitialized());
+=======
+    assert (isOwningHandle());
+>>>>>>> forknote/master
     seekToFirst0(nativeHandle_);
   }
 
   @Override
   public void seekToLast() {
+<<<<<<< HEAD
     assert (isInitialized());
+=======
+    assert (isOwningHandle());
+>>>>>>> forknote/master
     seekToLast0(nativeHandle_);
   }
 
   @Override
   public void seek(byte[] target) {
+<<<<<<< HEAD
     assert (isInitialized());
+=======
+    assert (isOwningHandle());
+>>>>>>> forknote/master
     seek0(nativeHandle_, target, target.length);
   }
 
   @Override
   public void next() {
+<<<<<<< HEAD
     assert (isInitialized());
+=======
+    assert (isOwningHandle());
+>>>>>>> forknote/master
     next0(nativeHandle_);
   }
 
   @Override
   public void prev() {
+<<<<<<< HEAD
     assert (isInitialized());
+=======
+    assert (isOwningHandle());
+>>>>>>> forknote/master
     prev0(nativeHandle_);
   }
 
   @Override
   public void status() throws RocksDBException {
+<<<<<<< HEAD
     assert (isInitialized());
+=======
+    assert (isOwningHandle());
+>>>>>>> forknote/master
     status0(nativeHandle_);
   }
 
@@ -87,6 +123,7 @@ public abstract class AbstractRocksIterator<P extends RocksObject>
    */
   @Override
   protected void disposeInternal() {
+<<<<<<< HEAD
     synchronized (parent_) {
       assert (isInitialized());
       if (parent_.isInitialized()) {
@@ -96,6 +133,13 @@ public abstract class AbstractRocksIterator<P extends RocksObject>
   }
 
   abstract void disposeInternal(long handle);
+=======
+      if (parent_.isOwningHandle()) {
+        disposeInternal(nativeHandle_);
+      }
+  }
+
+>>>>>>> forknote/master
   abstract boolean isValid0(long handle);
   abstract void seekToFirst0(long handle);
   abstract void seekToLast0(long handle);

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -329,8 +333,13 @@ Status WalManager::GetSortedWalsOfType(const std::string& path,
         return s;
       }
 
+<<<<<<< HEAD
       log_files.push_back(std::move(std::unique_ptr<LogFile>(
           new LogFileImpl(number, log_type, sequence, size_bytes))));
+=======
+      log_files.push_back(std::unique_ptr<LogFile>(
+          new LogFileImpl(number, log_type, sequence, size_bytes)));
+>>>>>>> forknote/master
     }
   }
   CompareLogByPointer compare_log_files;
@@ -383,7 +392,11 @@ Status WalManager::ReadFirstRecord(const WalFileType type,
   Status s;
   if (type == kAliveLogFile) {
     std::string fname = LogFileName(db_options_.wal_dir, number);
+<<<<<<< HEAD
     s = ReadFirstLine(fname, sequence);
+=======
+    s = ReadFirstLine(fname, number, sequence);
+>>>>>>> forknote/master
     if (env_->FileExists(fname).ok() && !s.ok()) {
       // return any error that is not caused by non-existing file
       return s;
@@ -394,7 +407,11 @@ Status WalManager::ReadFirstRecord(const WalFileType type,
     //  check if the file got moved to archive.
     std::string archived_file =
         ArchivedLogFileName(db_options_.wal_dir, number);
+<<<<<<< HEAD
     s = ReadFirstLine(archived_file, sequence);
+=======
+    s = ReadFirstLine(archived_file, number, sequence);
+>>>>>>> forknote/master
     // maybe the file was deleted from archive dir. If that's the case, return
     // Status::OK(). The caller with identify this as empty file because
     // *sequence == 0
@@ -413,6 +430,10 @@ Status WalManager::ReadFirstRecord(const WalFileType type,
 // the function returns status.ok() and sequence == 0 if the file exists, but is
 // empty
 Status WalManager::ReadFirstLine(const std::string& fname,
+<<<<<<< HEAD
+=======
+                                 const uint64_t number,
+>>>>>>> forknote/master
                                  SequenceNumber* sequence) {
   struct LogReporter : public log::Reader::Reporter {
     Env* env;
@@ -448,14 +469,23 @@ Status WalManager::ReadFirstLine(const std::string& fname,
   reporter.fname = fname.c_str();
   reporter.status = &status;
   reporter.ignore_error = !db_options_.paranoid_checks;
+<<<<<<< HEAD
   log::Reader reader(std::move(file_reader), &reporter, true /*checksum*/,
                      0 /*initial_offset*/);
+=======
+  log::Reader reader(db_options_.info_log, std::move(file_reader), &reporter,
+                     true /*checksum*/, 0 /*initial_offset*/, number);
+>>>>>>> forknote/master
   std::string scratch;
   Slice record;
 
   if (reader.ReadRecord(&record, &scratch) &&
       (status.ok() || !db_options_.paranoid_checks)) {
+<<<<<<< HEAD
     if (record.size() < 12) {
+=======
+    if (record.size() < WriteBatchInternal::kHeader) {
+>>>>>>> forknote/master
       reporter.Corruption(record.size(),
                           Status::Corruption("log record too small"));
       // TODO read record's till the first no corrupt entry?

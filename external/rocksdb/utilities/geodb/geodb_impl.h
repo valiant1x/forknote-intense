@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -46,9 +50,14 @@ class GeoDBImpl : public GeoDB {
 
   // Returns a list of all items within a circular radius from the
   // specified gps location
+<<<<<<< HEAD
   virtual Status SearchRadial(const GeoPosition& pos, double radius,
                               std::vector<GeoObject>* values,
                               int number_of_values) override;
+=======
+  virtual GeoIterator* SearchRadial(const GeoPosition& pos, double radius,
+                                    int number_of_values) override;
+>>>>>>> forknote/master
 
  private:
   DB* db_;

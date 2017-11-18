@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -21,6 +25,10 @@ public class BlockBasedTableConfig extends TableFormatConfig {
     wholeKeyFiltering_ = true;
     filter_ = null;
     cacheIndexAndFilterBlocks_ = false;
+<<<<<<< HEAD
+=======
+    pinL0FilterAndIndexBlocksInCache_ = false;
+>>>>>>> forknote/master
     hashIndexAllowCollision_ = true;
     blockCacheCompressedSize_ = 0;
     blockCacheCompressedNumShardBits_ = 0;
@@ -227,6 +235,32 @@ public class BlockBasedTableConfig extends TableFormatConfig {
   }
 
   /**
+<<<<<<< HEAD
+=======
+   * Indicating if we'd like to pin L0 index/filter blocks to the block cache.
+     If not specified, defaults to false.
+   *
+   * @return if L0 index and filter blocks should be pinned to the block cache.
+   */
+  public boolean pinL0FilterAndIndexBlocksInCache() {
+    return pinL0FilterAndIndexBlocksInCache_;
+  }
+
+  /**
+   * Indicating if we'd like to pin L0 index/filter blocks to the block cache.
+     If not specified, defaults to false.
+   *
+   * @param pinL0FilterAndIndexBlocksInCache pin blocks in block cache
+   * @return the reference to the current config.
+   */
+  public BlockBasedTableConfig setPinL0FilterAndIndexBlocksInCache(
+      final boolean pinL0FilterAndIndexBlocksInCache) {
+    pinL0FilterAndIndexBlocksInCache_ = pinL0FilterAndIndexBlocksInCache;
+    return this;
+  }
+
+  /**
+>>>>>>> forknote/master
    * Influence the behavior when kHashSearch is used.
      if false, stores a precise prefix to block range mapping
      if true, does not store prefix and allows prefix hash collision
@@ -393,6 +427,10 @@ public class BlockBasedTableConfig extends TableFormatConfig {
         blockCacheNumShardBits_, blockSize_, blockSizeDeviation_,
         blockRestartInterval_, wholeKeyFiltering_,
         filterHandle, cacheIndexAndFilterBlocks_,
+<<<<<<< HEAD
+=======
+        pinL0FilterAndIndexBlocksInCache_,
+>>>>>>> forknote/master
         hashIndexAllowCollision_, blockCacheCompressedSize_,
         blockCacheCompressedNumShardBits_,
         checksumType_.getValue(), indexType_.getValue(),
@@ -403,11 +441,21 @@ public class BlockBasedTableConfig extends TableFormatConfig {
       boolean noBlockCache, long blockCacheSize, int blockCacheNumShardBits,
       long blockSize, int blockSizeDeviation, int blockRestartInterval,
       boolean wholeKeyFiltering, long filterPolicyHandle,
+<<<<<<< HEAD
       boolean cacheIndexAndFilterBlocks, boolean hashIndexAllowCollision,
       long blockCacheCompressedSize, int blockCacheCompressedNumShardBits,
       byte checkSumType, byte indexType, int formatVersion);
 
   private boolean cacheIndexAndFilterBlocks_;
+=======
+      boolean cacheIndexAndFilterBlocks, boolean pinL0FilterAndIndexBlocksInCache,
+      boolean hashIndexAllowCollision, long blockCacheCompressedSize,
+      int blockCacheCompressedNumShardBits, byte checkSumType,
+      byte indexType, int formatVersion);
+
+  private boolean cacheIndexAndFilterBlocks_;
+  private boolean pinL0FilterAndIndexBlocksInCache_;
+>>>>>>> forknote/master
   private IndexType indexType_;
   private boolean hashIndexAllowCollision_;
   private ChecksumType checksumType_;

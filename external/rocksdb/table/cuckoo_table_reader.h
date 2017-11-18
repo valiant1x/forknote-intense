@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -24,6 +28,10 @@ namespace rocksdb {
 
 class Arena;
 class TableReader;
+<<<<<<< HEAD
+=======
+class InternalIterator;
+>>>>>>> forknote/master
 
 class CuckooTableReader: public TableReader {
  public:
@@ -41,9 +49,16 @@ class CuckooTableReader: public TableReader {
   Status status() const { return status_; }
 
   Status Get(const ReadOptions& read_options, const Slice& key,
+<<<<<<< HEAD
              GetContext* get_context) override;
 
   Iterator* NewIterator(const ReadOptions&, Arena* arena = nullptr) override;
+=======
+             GetContext* get_context, bool skip_filters = false) override;
+
+  InternalIterator* NewIterator(const ReadOptions&, Arena* arena = nullptr,
+                                bool skip_filters = false) override;
+>>>>>>> forknote/master
   void Prepare(const Slice& target) override;
 
   // Report an approximation of how much memory has been used.

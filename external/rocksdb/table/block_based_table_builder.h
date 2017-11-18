@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -34,14 +38,27 @@ class BlockBasedTableBuilder : public TableBuilder {
   // Create a builder that will store the contents of the table it is
   // building in *file.  Does not close the file.  It is up to the
   // caller to close the file after calling Finish().
+<<<<<<< HEAD
+=======
+  // @param compression_dict Data for presetting the compression library's
+  //    dictionary, or nullptr.
+>>>>>>> forknote/master
   BlockBasedTableBuilder(
       const ImmutableCFOptions& ioptions,
       const BlockBasedTableOptions& table_options,
       const InternalKeyComparator& internal_comparator,
       const std::vector<std::unique_ptr<IntTblPropCollectorFactory>>*
           int_tbl_prop_collector_factories,
+<<<<<<< HEAD
       WritableFileWriter* file, const CompressionType compression_type,
       const CompressionOptions& compression_opts, const bool skip_filters);
+=======
+      uint32_t column_family_id, WritableFileWriter* file,
+      const CompressionType compression_type,
+      const CompressionOptions& compression_opts,
+      const std::string* compression_dict, const bool skip_filters,
+      const std::string& column_family_name);
+>>>>>>> forknote/master
 
   // REQUIRES: Either Finish() or Abandon() has been called.
   ~BlockBasedTableBuilder();
@@ -80,11 +97,22 @@ class BlockBasedTableBuilder : public TableBuilder {
 
  private:
   bool ok() const { return status().ok(); }
+<<<<<<< HEAD
   // Call block's Finish() method and then write the finalize block contents to
   // file.
   void WriteBlock(BlockBuilder* block, BlockHandle* handle);
   // Directly write block content to the file.
   void WriteBlock(const Slice& block_contents, BlockHandle* handle);
+=======
+
+  // Call block's Finish() method and then write the finalize block contents to
+  // file.
+  void WriteBlock(BlockBuilder* block, BlockHandle* handle, bool is_data_block);
+
+  // Directly write block content to the file.
+  void WriteBlock(const Slice& block_contents, BlockHandle* handle,
+                  bool is_data_block);
+>>>>>>> forknote/master
   void WriteRawBlock(const Slice& data, CompressionType, BlockHandle* handle);
   Status InsertBlockInCache(const Slice& block_contents,
                             const CompressionType type,

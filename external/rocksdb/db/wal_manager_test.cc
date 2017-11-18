@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -10,12 +14,19 @@
 
 #include "rocksdb/cache.h"
 #include "rocksdb/write_batch.h"
+<<<<<<< HEAD
+=======
+#include "rocksdb/write_buffer_manager.h"
+>>>>>>> forknote/master
 
 #include "db/wal_manager.h"
 #include "db/log_writer.h"
 #include "db/column_family.h"
 #include "db/version_set.h"
+<<<<<<< HEAD
 #include "db/writebuffer.h"
+=======
+>>>>>>> forknote/master
 #include "util/file_reader_writer.h"
 #include "util/mock_env.h"
 #include "util/string_util.h"
@@ -34,7 +45,11 @@ class WalManagerTest : public testing::Test {
       : env_(new MockEnv(Env::Default())),
         dbname_(test::TmpDir() + "/wal_manager_test"),
         table_cache_(NewLRUCache(50000, 16)),
+<<<<<<< HEAD
         write_buffer_(db_options_.db_write_buffer_size),
+=======
+        write_buffer_manager_(db_options_.db_write_buffer_size),
+>>>>>>> forknote/master
         current_log_number_(0) {
     DestroyDB(dbname_, Options());
   }
@@ -48,7 +63,11 @@ class WalManagerTest : public testing::Test {
     db_options_.env = env_.get();
 
     versions_.reset(new VersionSet(dbname_, &db_options_, env_options_,
+<<<<<<< HEAD
                                    table_cache_.get(), &write_buffer_,
+=======
+                                   table_cache_.get(), &write_buffer_manager_,
+>>>>>>> forknote/master
                                    &write_controller_));
 
     wal_manager_.reset(new WalManager(db_options_, env_options_));
@@ -77,7 +96,11 @@ class WalManagerTest : public testing::Test {
     ASSERT_OK(env_->NewWritableFile(fname, &file, env_options_));
     unique_ptr<WritableFileWriter> file_writer(
         new WritableFileWriter(std::move(file), env_options_));
+<<<<<<< HEAD
     current_log_writer_.reset(new log::Writer(std::move(file_writer)));
+=======
+    current_log_writer_.reset(new log::Writer(std::move(file_writer), 0, false));
+>>>>>>> forknote/master
   }
 
   void CreateArchiveLogs(int num_logs, int entries_per_log) {
@@ -95,7 +118,11 @@ class WalManagerTest : public testing::Test {
     Status status = wal_manager_->GetUpdatesSince(
         seq, &iter, TransactionLogIterator::ReadOptions(), versions_.get());
     EXPECT_OK(status);
+<<<<<<< HEAD
     return std::move(iter);
+=======
+    return iter;
+>>>>>>> forknote/master
   }
 
   std::unique_ptr<MockEnv> env_;
@@ -104,7 +131,11 @@ class WalManagerTest : public testing::Test {
   EnvOptions env_options_;
   std::shared_ptr<Cache> table_cache_;
   DBOptions db_options_;
+<<<<<<< HEAD
   WriteBuffer write_buffer_;
+=======
+  WriteBufferManager write_buffer_manager_;
+>>>>>>> forknote/master
   std::unique_ptr<VersionSet> versions_;
   std::unique_ptr<WalManager> wal_manager_;
 
@@ -119,15 +150,28 @@ TEST_F(WalManagerTest, ReadFirstRecordCache) {
   ASSERT_OK(env_->NewWritableFile(path, &file, EnvOptions()));
 
   SequenceNumber s;
+<<<<<<< HEAD
   ASSERT_OK(wal_manager_->TEST_ReadFirstLine(path, &s));
   ASSERT_EQ(s, 0U);
 
   ASSERT_OK(wal_manager_->TEST_ReadFirstRecord(kAliveLogFile, 1, &s));
+=======
+  ASSERT_OK(wal_manager_->TEST_ReadFirstLine(path, 1 /* number */, &s));
+  ASSERT_EQ(s, 0U);
+
+  ASSERT_OK(
+      wal_manager_->TEST_ReadFirstRecord(kAliveLogFile, 1 /* number */, &s));
+>>>>>>> forknote/master
   ASSERT_EQ(s, 0U);
 
   unique_ptr<WritableFileWriter> file_writer(
       new WritableFileWriter(std::move(file), EnvOptions()));
+<<<<<<< HEAD
   log::Writer writer(std::move(file_writer));
+=======
+  log::Writer writer(std::move(file_writer), 1,
+                     db_options_.recycle_log_file_num > 0);
+>>>>>>> forknote/master
   WriteBatch batch;
   batch.Put("foo", "bar");
   WriteBatchInternal::SetSequence(&batch, 10);
@@ -183,7 +227,11 @@ std::vector<std::uint64_t> ListSpecificFiles(
       }
     }
   }
+<<<<<<< HEAD
   return std::move(file_numbers);
+=======
+  return file_numbers;
+>>>>>>> forknote/master
 }
 
 int CountRecords(TransactionLogIterator* iter) {

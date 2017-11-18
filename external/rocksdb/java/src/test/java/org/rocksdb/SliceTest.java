@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -17,6 +21,7 @@ public class SliceTest {
 
   @Test
   public void slice() {
+<<<<<<< HEAD
     Slice slice = null;
     Slice otherSlice = null;
     Slice thirdSlice = null;
@@ -41,11 +46,26 @@ public class SliceTest {
       if (thirdSlice != null) {
         thirdSlice.dispose();
       }
+=======
+    try (final Slice slice = new Slice("testSlice")) {
+      assertThat(slice.empty()).isFalse();
+      assertThat(slice.size()).isEqualTo(9);
+      assertThat(slice.data()).isEqualTo("testSlice".getBytes());
+    }
+
+    try (final Slice otherSlice = new Slice("otherSlice".getBytes())) {
+      assertThat(otherSlice.data()).isEqualTo("otherSlice".getBytes());
+    }
+
+    try (final Slice thirdSlice = new Slice("otherSlice".getBytes(), 5)) {
+      assertThat(thirdSlice.data()).isEqualTo("Slice".getBytes());
+>>>>>>> forknote/master
     }
   }
 
   @Test
   public void sliceEquals() {
+<<<<<<< HEAD
     Slice slice = null;
     Slice slice2 = null;
     try {
@@ -86,11 +106,28 @@ public class SliceTest {
       if (noMatch != null) {
         noMatch.dispose();
       }
+=======
+    try (final Slice slice = new Slice("abc");
+         final Slice slice2 = new Slice("abc")) {
+      assertThat(slice.equals(slice2)).isTrue();
+      assertThat(slice.hashCode() == slice2.hashCode()).isTrue();
+    }
+  }
+
+  @Test
+  public void sliceStartWith() {
+    try (final Slice slice = new Slice("matchpoint");
+         final Slice match = new Slice("mat");
+         final Slice noMatch = new Slice("nomatch")) {
+      assertThat(slice.startsWith(match)).isTrue();
+      assertThat(slice.startsWith(noMatch)).isFalse();
+>>>>>>> forknote/master
     }
   }
 
   @Test
   public void sliceToString() {
+<<<<<<< HEAD
     Slice slice = null;
     try {
       slice = new Slice("stringTest");
@@ -100,6 +137,11 @@ public class SliceTest {
       if (slice != null) {
         slice.dispose();
       }
+=======
+    try (final Slice slice = new Slice("stringTest")) {
+      assertThat(slice.toString()).isEqualTo("stringTest");
+      assertThat(slice.toString(true)).isNotEqualTo("");
+>>>>>>> forknote/master
     }
   }
 }

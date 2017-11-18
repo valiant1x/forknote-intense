@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -6,8 +10,13 @@
 // Copyright (c) 2011 The LevelDB Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
+<<<<<<< HEAD
 #include "port/stack_trace.h"
 #include "util/db_test_util.h"
+=======
+#include "db/db_test_util.h"
+#include "port/stack_trace.h"
+>>>>>>> forknote/master
 
 namespace rocksdb {
 
@@ -18,12 +27,19 @@ class DBTestInPlaceUpdate : public DBTestBase {
 
 TEST_F(DBTestInPlaceUpdate, InPlaceUpdate) {
   do {
+<<<<<<< HEAD
     Options options;
+=======
+    Options options = CurrentOptions();
+>>>>>>> forknote/master
     options.create_if_missing = true;
     options.inplace_update_support = true;
     options.env = env_;
     options.write_buffer_size = 100000;
+<<<<<<< HEAD
     options = CurrentOptions(options);
+=======
+>>>>>>> forknote/master
     CreateAndReopenWithCF({"pikachu"}, options);
 
     // Update key with values of smaller size
@@ -41,12 +57,19 @@ TEST_F(DBTestInPlaceUpdate, InPlaceUpdate) {
 
 TEST_F(DBTestInPlaceUpdate, InPlaceUpdateLargeNewValue) {
   do {
+<<<<<<< HEAD
     Options options;
+=======
+    Options options = CurrentOptions();
+>>>>>>> forknote/master
     options.create_if_missing = true;
     options.inplace_update_support = true;
     options.env = env_;
     options.write_buffer_size = 100000;
+<<<<<<< HEAD
     options = CurrentOptions(options);
+=======
+>>>>>>> forknote/master
     CreateAndReopenWithCF({"pikachu"}, options);
 
     // Update key with values of larger size
@@ -64,7 +87,11 @@ TEST_F(DBTestInPlaceUpdate, InPlaceUpdateLargeNewValue) {
 
 TEST_F(DBTestInPlaceUpdate, InPlaceUpdateCallbackSmallerSize) {
   do {
+<<<<<<< HEAD
     Options options;
+=======
+    Options options = CurrentOptions();
+>>>>>>> forknote/master
     options.create_if_missing = true;
     options.inplace_update_support = true;
 
@@ -72,7 +99,10 @@ TEST_F(DBTestInPlaceUpdate, InPlaceUpdateCallbackSmallerSize) {
     options.write_buffer_size = 100000;
     options.inplace_callback =
       rocksdb::DBTestInPlaceUpdate::updateInPlaceSmallerSize;
+<<<<<<< HEAD
     options = CurrentOptions(options);
+=======
+>>>>>>> forknote/master
     CreateAndReopenWithCF({"pikachu"}, options);
 
     // Update key with values of smaller size
@@ -92,7 +122,11 @@ TEST_F(DBTestInPlaceUpdate, InPlaceUpdateCallbackSmallerSize) {
 
 TEST_F(DBTestInPlaceUpdate, InPlaceUpdateCallbackSmallerVarintSize) {
   do {
+<<<<<<< HEAD
     Options options;
+=======
+    Options options = CurrentOptions();
+>>>>>>> forknote/master
     options.create_if_missing = true;
     options.inplace_update_support = true;
 
@@ -100,7 +134,10 @@ TEST_F(DBTestInPlaceUpdate, InPlaceUpdateCallbackSmallerVarintSize) {
     options.write_buffer_size = 100000;
     options.inplace_callback =
       rocksdb::DBTestInPlaceUpdate::updateInPlaceSmallerVarintSize;
+<<<<<<< HEAD
     options = CurrentOptions(options);
+=======
+>>>>>>> forknote/master
     CreateAndReopenWithCF({"pikachu"}, options);
 
     // Update key with values of smaller varint size
@@ -120,7 +157,11 @@ TEST_F(DBTestInPlaceUpdate, InPlaceUpdateCallbackSmallerVarintSize) {
 
 TEST_F(DBTestInPlaceUpdate, InPlaceUpdateCallbackLargeNewValue) {
   do {
+<<<<<<< HEAD
     Options options;
+=======
+    Options options = CurrentOptions();
+>>>>>>> forknote/master
     options.create_if_missing = true;
     options.inplace_update_support = true;
 
@@ -128,7 +169,10 @@ TEST_F(DBTestInPlaceUpdate, InPlaceUpdateCallbackLargeNewValue) {
     options.write_buffer_size = 100000;
     options.inplace_callback =
       rocksdb::DBTestInPlaceUpdate::updateInPlaceLargerSize;
+<<<<<<< HEAD
     options = CurrentOptions(options);
+=======
+>>>>>>> forknote/master
     CreateAndReopenWithCF({"pikachu"}, options);
 
     // Update key with values of larger size
@@ -146,7 +190,11 @@ TEST_F(DBTestInPlaceUpdate, InPlaceUpdateCallbackLargeNewValue) {
 
 TEST_F(DBTestInPlaceUpdate, InPlaceUpdateCallbackNoAction) {
   do {
+<<<<<<< HEAD
     Options options;
+=======
+    Options options = CurrentOptions();
+>>>>>>> forknote/master
     options.create_if_missing = true;
     options.inplace_update_support = true;
 
@@ -154,7 +202,10 @@ TEST_F(DBTestInPlaceUpdate, InPlaceUpdateCallbackNoAction) {
     options.write_buffer_size = 100000;
     options.inplace_callback =
       rocksdb::DBTestInPlaceUpdate::updateInPlaceNoAction;
+<<<<<<< HEAD
     options = CurrentOptions(options);
+=======
+>>>>>>> forknote/master
     CreateAndReopenWithCF({"pikachu"}, options);
 
     // Callback function requests no actions from db

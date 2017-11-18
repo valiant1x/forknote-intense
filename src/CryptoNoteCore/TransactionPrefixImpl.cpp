@@ -51,14 +51,20 @@ public:
   virtual uint64_t getInputTotalAmount() const override;
   virtual TransactionTypes::InputType getInputType(size_t index) const override;
   virtual void getInput(size_t index, KeyInput& input) const override;
+<<<<<<< HEAD
   virtual void getInput(size_t index, MultisignatureInput& input) const override;
+=======
+>>>>>>> forknote/master
 
   // outputs
   virtual size_t getOutputCount() const override;
   virtual uint64_t getOutputTotalAmount() const override;
   virtual TransactionTypes::OutputType getOutputType(size_t index) const override;
   virtual void getOutput(size_t index, KeyOutput& output, uint64_t& amount) const override;
+<<<<<<< HEAD
   virtual void getOutput(size_t index, MultisignatureOutput& output, uint64_t& amount) const override;
+=======
+>>>>>>> forknote/master
 
   // signatures
   virtual size_t getRequiredSignaturesCount(size_t inputIndex) const override;
@@ -154,10 +160,13 @@ void TransactionPrefixImpl::getInput(size_t index, KeyInput& input) const {
   input = boost::get<KeyInput>(getInputChecked(m_txPrefix, index, TransactionTypes::InputType::Key));
 }
 
+<<<<<<< HEAD
 void TransactionPrefixImpl::getInput(size_t index, MultisignatureInput& input) const {
   input = boost::get<MultisignatureInput>(getInputChecked(m_txPrefix, index, TransactionTypes::InputType::Multisignature));
 }
 
+=======
+>>>>>>> forknote/master
 size_t TransactionPrefixImpl::getOutputCount() const {
   return m_txPrefix.outputs.size();
 }
@@ -177,12 +186,15 @@ void TransactionPrefixImpl::getOutput(size_t index, KeyOutput& output, uint64_t&
   amount = out.amount;
 }
 
+<<<<<<< HEAD
 void TransactionPrefixImpl::getOutput(size_t index, MultisignatureOutput& output, uint64_t& amount) const {
   const auto& out = getOutputChecked(m_txPrefix, index, TransactionTypes::OutputType::Multisignature);
   output = boost::get<MultisignatureOutput>(out.target);
   amount = out.amount;
 }
 
+=======
+>>>>>>> forknote/master
 size_t TransactionPrefixImpl::getRequiredSignaturesCount(size_t inputIndex) const {
   return ::CryptoNote::getRequiredSignaturesCount(getInputChecked(m_txPrefix, inputIndex));
 }
@@ -195,8 +207,12 @@ bool TransactionPrefixImpl::validateInputs() const {
   return
     checkInputTypesSupported(m_txPrefix) &&
     checkInputsOverflow(m_txPrefix) &&
+<<<<<<< HEAD
     checkInputsKeyimagesDiff(m_txPrefix) &&
     checkMultisignatureInputsDiff(m_txPrefix);
+=======
+    checkInputsKeyimagesDiff(m_txPrefix);
+>>>>>>> forknote/master
 }
 
 bool TransactionPrefixImpl::validateOutputs() const {

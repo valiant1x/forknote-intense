@@ -28,7 +28,10 @@ void serialize(TransactionOutputReferenceDetails& outputReference, ISerializer& 
 
 void serialize(BaseInputDetails& inputBase, ISerializer& serializer);
 void serialize(KeyInputDetails& inputToKey, ISerializer& serializer);
+<<<<<<< HEAD
 void serialize(MultisignatureInputDetails& inputMultisig, ISerializer& serializer);
+=======
+>>>>>>> forknote/master
 void serialize(TransactionInputDetails& input, ISerializer& serializer);
 
 void serialize(TransactionExtraDetails& extra, ISerializer& serializer);

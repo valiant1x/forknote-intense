@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -75,11 +79,27 @@ struct BackupableDBOptions {
   // Default: 0
   uint64_t backup_rate_limit;
 
+<<<<<<< HEAD
+=======
+  // Backup rate limiter. Used to control transfer speed for backup. If this is
+  // not null, backup_rate_limit is ignored.
+  // Default: nullptr
+  std::shared_ptr<RateLimiter> backup_rate_limiter{nullptr};
+
+>>>>>>> forknote/master
   // Max bytes that can be transferred in a second during restore.
   // If 0, go as fast as you can
   // Default: 0
   uint64_t restore_rate_limit;
 
+<<<<<<< HEAD
+=======
+  // Restore rate limiter. Used to control transfer speed during restore. If
+  // this is not null, restore_rate_limit is ignored.
+  // Default: nullptr
+  std::shared_ptr<RateLimiter> restore_rate_limiter{nullptr};
+
+>>>>>>> forknote/master
   // Only used if share_table_files is set to true. If true, will consider that
   // backups can come from different databases, hence a sst is not uniquely
   // identifed by its name, but by the triple (file name, crc32, file length)
@@ -143,13 +163,26 @@ struct BackupInfo {
   uint64_t size;
 
   uint32_t number_files;
+<<<<<<< HEAD
+=======
+  std::string app_metadata;
+>>>>>>> forknote/master
 
   BackupInfo() {}
 
   BackupInfo(BackupID _backup_id, int64_t _timestamp, uint64_t _size,
+<<<<<<< HEAD
              uint32_t _number_files)
       : backup_id(_backup_id), timestamp(_timestamp), size(_size),
         number_files(_number_files) {}
+=======
+             uint32_t _number_files, const std::string& _app_metadata)
+      : backup_id(_backup_id),
+        timestamp(_timestamp),
+        size(_size),
+        number_files(_number_files),
+        app_metadata(_app_metadata) {}
+>>>>>>> forknote/master
 };
 
 class BackupStatistics {
@@ -179,6 +212,11 @@ class BackupStatistics {
   uint32_t number_fail_backup;
 };
 
+<<<<<<< HEAD
+=======
+// A backup engine for accessing information about backups and restoring from
+// them.
+>>>>>>> forknote/master
 class BackupEngineReadOnly {
  public:
   virtual ~BackupEngineReadOnly() {}
@@ -186,9 +224,18 @@ class BackupEngineReadOnly {
   static Status Open(Env* db_env, const BackupableDBOptions& options,
                      BackupEngineReadOnly** backup_engine_ptr);
 
+<<<<<<< HEAD
   // You can GetBackupInfo safely, even with other BackupEngine performing
   // backups on the same directory
   virtual void GetBackupInfo(std::vector<BackupInfo>* backup_info) = 0;
+=======
+  // Returns info about backups in backup_info
+  // You can GetBackupInfo safely, even with other BackupEngine performing
+  // backups on the same directory
+  virtual void GetBackupInfo(std::vector<BackupInfo>* backup_info) = 0;
+
+  // Returns info about corrupt backups in corrupt_backups
+>>>>>>> forknote/master
   virtual void GetCorruptedBackups(
       std::vector<BackupID>* corrupt_backup_ids) = 0;
 
@@ -196,9 +243,18 @@ class BackupEngineReadOnly {
   // running that might call DeleteBackup() or PurgeOldBackups(). It is caller's
   // responsibility to synchronize the operation, i.e. don't delete the backup
   // when you're restoring from it
+<<<<<<< HEAD
   virtual Status RestoreDBFromBackup(
       BackupID backup_id, const std::string& db_dir, const std::string& wal_dir,
       const RestoreOptions& restore_options = RestoreOptions()) = 0;
+=======
+  // See also the corresponding doc in BackupEngine
+  virtual Status RestoreDBFromBackup(
+      BackupID backup_id, const std::string& db_dir, const std::string& wal_dir,
+      const RestoreOptions& restore_options = RestoreOptions()) = 0;
+
+  // See the corresponding doc in BackupEngine
+>>>>>>> forknote/master
   virtual Status RestoreDBFromLatestBackup(
       const std::string& db_dir, const std::string& wal_dir,
       const RestoreOptions& restore_options = RestoreOptions()) = 0;
@@ -209,15 +265,25 @@ class BackupEngineReadOnly {
   virtual Status VerifyBackup(BackupID backup_id) = 0;
 };
 
+<<<<<<< HEAD
 // Please see the documentation in BackupableDB and RestoreBackupableDB
+=======
+// A backup engine for creating new backups.
+>>>>>>> forknote/master
 class BackupEngine {
  public:
   virtual ~BackupEngine() {}
 
+<<<<<<< HEAD
+=======
+  // BackupableDBOptions have to be the same as the ones used in previous
+  // BackupEngines for the same backup directory.
+>>>>>>> forknote/master
   static Status Open(Env* db_env,
                      const BackupableDBOptions& options,
                      BackupEngine** backup_engine_ptr);
 
+<<<<<<< HEAD
   virtual Status CreateNewBackup(
       DB* db, bool flush_before_backup = false,
       std::function<void()> progress_callback = []() {}) = 0;
@@ -265,6 +331,28 @@ class BackupableDB : public StackableDB {
   Status PurgeOldBackups(uint32_t num_backups_to_keep);
   // deletes a specific backup
   Status DeleteBackup(BackupID backup_id);
+=======
+  // same as CreateNewBackup, but stores extra application metadata
+  virtual Status CreateNewBackupWithMetadata(
+      DB* db, const std::string& app_metadata, bool flush_before_backup = false,
+      std::function<void()> progress_callback = []() {}) = 0;
+
+  // Captures the state of the database in the latest backup
+  // NOT a thread safe call
+  virtual Status CreateNewBackup(DB* db, bool flush_before_backup = false,
+                                 std::function<void()> progress_callback =
+                                     []() {}) {
+    return CreateNewBackupWithMetadata(db, "", flush_before_backup,
+                                       progress_callback);
+  }
+
+  // deletes old backups, keeping latest num_backups_to_keep alive
+  virtual Status PurgeOldBackups(uint32_t num_backups_to_keep) = 0;
+
+  // deletes a specific backup
+  virtual Status DeleteBackup(BackupID backup_id) = 0;
+
+>>>>>>> forknote/master
   // Call this from another thread if you want to stop the backup
   // that is currently happening. It will return immediatelly, will
   // not wait for the backup to stop.
@@ -272,6 +360,7 @@ class BackupableDB : public StackableDB {
   // return Status::Incomplete(). It will not clean up after itself, but
   // the state will remain consistent. The state will be cleaned up
   // next time you create BackupableDB or RestoreBackupableDB.
+<<<<<<< HEAD
   void StopBackup();
 
   // Will delete all the files we don't need anymore
@@ -299,12 +388,29 @@ class RestoreBackupableDB {
   // IMPORTANT -- if options_.share_table_files == true and you restore DB
   // from some backup that is not the latest, and you start creating new
   // backups from the new DB, they will probably fail
+=======
+  virtual void StopBackup() = 0;
+
+  // Returns info about backups in backup_info
+  virtual void GetBackupInfo(std::vector<BackupInfo>* backup_info) = 0;
+
+  // Returns info about corrupt backups in corrupt_backups
+  virtual void GetCorruptedBackups(
+      std::vector<BackupID>* corrupt_backup_ids) = 0;
+
+  // restore from backup with backup_id
+  // IMPORTANT -- if options_.share_table_files == true,
+  // options_.share_files_with_checksum == false, you restore DB from some
+  // backup that is not the latest, and you start creating new backups from the
+  // new DB, they will probably fail.
+>>>>>>> forknote/master
   //
   // Example: Let's say you have backups 1, 2, 3, 4, 5 and you restore 3.
   // If you add new data to the DB and try creating a new backup now, the
   // database will diverge from backups 4 and 5 and the new backup will fail.
   // If you want to create new backup, you will first have to delete backups 4
   // and 5.
+<<<<<<< HEAD
   Status RestoreDBFromBackup(BackupID backup_id, const std::string& db_dir,
                              const std::string& wal_dir,
                              const RestoreOptions& restore_options =
@@ -319,15 +425,34 @@ class RestoreBackupableDB {
   Status PurgeOldBackups(uint32_t num_backups_to_keep);
   // deletes a specific backup
   Status DeleteBackup(BackupID backup_id);
+=======
+  virtual Status RestoreDBFromBackup(
+      BackupID backup_id, const std::string& db_dir, const std::string& wal_dir,
+      const RestoreOptions& restore_options = RestoreOptions()) = 0;
+
+  // restore from the latest backup
+  virtual Status RestoreDBFromLatestBackup(
+      const std::string& db_dir, const std::string& wal_dir,
+      const RestoreOptions& restore_options = RestoreOptions()) = 0;
+
+  // checks that each file exists and that the size of the file matches our
+  // expectations. it does not check file checksum.
+  // Returns Status::OK() if all checks are good
+  virtual Status VerifyBackup(BackupID backup_id) = 0;
+>>>>>>> forknote/master
 
   // Will delete all the files we don't need anymore
   // It will do the full scan of the files/ directory and delete all the
   // files that are not referenced.
+<<<<<<< HEAD
   Status GarbageCollect();
 
  private:
   BackupEngine* backup_engine_;
   Status status_;
+=======
+  virtual Status GarbageCollect() = 0;
+>>>>>>> forknote/master
 };
 
 }  // namespace rocksdb

@@ -337,7 +337,10 @@ void TransactionOutputInformationSerialized::serialize(CryptoNote::ISerializer& 
   serializer(transactionHash, "transactionHash");
   serializer(transactionPublicKey, "transactionPublicKey");
   serializer(outputKey, "outputKey");
+<<<<<<< HEAD
   serializer(requiredSignatures, "requiredSignatures");
+=======
+>>>>>>> forknote/master
 }
 
 void SendFusionTransaction::Request::serialize(CryptoNote::ISerializer& serializer) {

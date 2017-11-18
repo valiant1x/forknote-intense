@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -25,16 +29,36 @@ class Slice;
 class Status;
 
 struct TableReaderOptions {
+<<<<<<< HEAD
   TableReaderOptions(const ImmutableCFOptions& _ioptions,
                      const EnvOptions& _env_options,
                      const InternalKeyComparator& _internal_comparator)
       : ioptions(_ioptions),
         env_options(_env_options),
         internal_comparator(_internal_comparator) {}
+=======
+  // @param skip_filters Disables loading/accessing the filter block
+  TableReaderOptions(const ImmutableCFOptions& _ioptions,
+                     const EnvOptions& _env_options,
+                     const InternalKeyComparator& _internal_comparator,
+                     bool _skip_filters = false, int _level = -1)
+      : ioptions(_ioptions),
+        env_options(_env_options),
+        internal_comparator(_internal_comparator),
+        skip_filters(_skip_filters),
+        level(_level) {}
+>>>>>>> forknote/master
 
   const ImmutableCFOptions& ioptions;
   const EnvOptions& env_options;
   const InternalKeyComparator& internal_comparator;
+<<<<<<< HEAD
+=======
+  // This is only used for BlockBasedTable (reader)
+  bool skip_filters;
+  // what level this table/file is on, -1 for "not set, don't know"
+  int level;
+>>>>>>> forknote/master
 };
 
 struct TableBuilderOptions {
@@ -44,20 +68,39 @@ struct TableBuilderOptions {
       const std::vector<std::unique_ptr<IntTblPropCollectorFactory>>*
           _int_tbl_prop_collector_factories,
       CompressionType _compression_type,
+<<<<<<< HEAD
       const CompressionOptions& _compression_opts, bool _skip_filters)
+=======
+      const CompressionOptions& _compression_opts,
+      const std::string* _compression_dict, bool _skip_filters,
+      const std::string& _column_family_name)
+>>>>>>> forknote/master
       : ioptions(_ioptions),
         internal_comparator(_internal_comparator),
         int_tbl_prop_collector_factories(_int_tbl_prop_collector_factories),
         compression_type(_compression_type),
         compression_opts(_compression_opts),
+<<<<<<< HEAD
         skip_filters(_skip_filters) {}
+=======
+        compression_dict(_compression_dict),
+        skip_filters(_skip_filters),
+        column_family_name(_column_family_name) {}
+>>>>>>> forknote/master
   const ImmutableCFOptions& ioptions;
   const InternalKeyComparator& internal_comparator;
   const std::vector<std::unique_ptr<IntTblPropCollectorFactory>>*
       int_tbl_prop_collector_factories;
   CompressionType compression_type;
   const CompressionOptions& compression_opts;
+<<<<<<< HEAD
   bool skip_filters = false;
+=======
+  // Data for presetting the compression library's dictionary, or nullptr.
+  const std::string* compression_dict;
+  bool skip_filters;  // only used by BlockBasedTableBuilder
+  const std::string& column_family_name;
+>>>>>>> forknote/master
 };
 
 // TableBuilder provides the interface used to build a Table

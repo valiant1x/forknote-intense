@@ -389,7 +389,10 @@ struct TransactionOutputInformationSerialized {
   std::string transactionHash;
   std::string transactionPublicKey;
   std::string outputKey;         // Type: Key 
+<<<<<<< HEAD
   uint32_t requiredSignatures; // Type: Multisignature
+=======
+>>>>>>> forknote/master
 
   void serialize(CryptoNote::ISerializer& serializer);
 };

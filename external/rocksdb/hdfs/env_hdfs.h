@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -89,7 +93,13 @@ class HdfsEnv : public Env {
 
   virtual Status RenameFile(const std::string& src, const std::string& target);
 
+<<<<<<< HEAD
   virtual Status LinkFile(const std::string& src, const std::string& target);
+=======
+  virtual Status LinkFile(const std::string& src, const std::string& target) {
+    return Status::NotSupported(); // not supported
+  }
+>>>>>>> forknote/master
 
   virtual Status LockFile(const std::string& fname, FileLock** lock);
 
@@ -99,8 +109,13 @@ class HdfsEnv : public Env {
                            std::shared_ptr<Logger>* result);
 
   virtual void Schedule(void (*function)(void* arg), void* arg,
+<<<<<<< HEAD
                         Priority pri = LOW, void* tag = nullptr) {
     posixEnv->Schedule(function, arg, pri, tag);
+=======
+                        Priority pri = LOW, void* tag = nullptr, void (*unschedFunction)(void* arg) = 0) {
+    posixEnv->Schedule(function, arg, pri, tag, unschedFunction);
+>>>>>>> forknote/master
   }
 
   virtual int UnSchedule(void* tag, Priority pri) {
@@ -322,7 +337,12 @@ class HdfsEnv : public Env {
   }
 
   virtual void Schedule(void (*function)(void* arg), void* arg,
+<<<<<<< HEAD
                         Priority pri = LOW, void* tag = nullptr) override {}
+=======
+                        Priority pri = LOW, void* tag = nullptr,
+                        void (*unschedFunction)(void* arg) = 0) override {}
+>>>>>>> forknote/master
 
   virtual int UnSchedule(void* tag, Priority pri) override { return 0; }
 

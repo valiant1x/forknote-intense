@@ -94,6 +94,7 @@ void findMyOutputs(
       checkOutputKey(derivation, out.key, keyIndex, idx, spendKeys, outputs);
       ++keyIndex;
 
+<<<<<<< HEAD
     } else if (outType == TransactionTypes::OutputType::Multisignature) {
 
       uint64_t amount;
@@ -103,6 +104,8 @@ void findMyOutputs(
         checkOutputKey(derivation, key, idx, idx, spendKeys, outputs);
         ++keyIndex;
       }
+=======
+>>>>>>> forknote/master
     }
   }
 }
@@ -439,8 +442,12 @@ std::error_code createTransfers(
     auto outType = tx.getOutputType(size_t(idx));
 
     if (
+<<<<<<< HEAD
       outType != TransactionTypes::OutputType::Key &&
       outType != TransactionTypes::OutputType::Multisignature) {
+=======
+      outType != TransactionTypes::OutputType::Key) {
+>>>>>>> forknote/master
       continue;
     }
 
@@ -470,6 +477,7 @@ std::error_code createTransfers(
       info.amount = amount;
       info.outputKey = out.key;
 
+<<<<<<< HEAD
     } else if (outType == TransactionTypes::OutputType::Multisignature) {
       uint64_t amount;
       MultisignatureOutput out;
@@ -477,6 +485,8 @@ std::error_code createTransfers(
 
       info.amount = amount;
       info.requiredSignatures = out.requiredSignatureCount;
+=======
+>>>>>>> forknote/master
     }
 
     transfers.push_back(info);

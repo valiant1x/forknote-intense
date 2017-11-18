@@ -1,18 +1,25 @@
 .DS_Store
+<<<<<<< HEAD
 build
 .vs
 CMakeFiles
 *.dir
 *.vcxproj
 *.filters
+=======
+/build
+>>>>>>> forknote/master
 /tags
 .idea
 .ycm_extra_conf.py
 .ycm_extra_conf.pyc
 Release
 Debug
+<<<<<<< HEAD
 x64
 *.d
 *.o
 *.a
 *.mk
+=======
+>>>>>>> forknote/master

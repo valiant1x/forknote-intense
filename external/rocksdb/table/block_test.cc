@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -18,7 +22,10 @@
 #include "table/block.h"
 #include "table/block_builder.h"
 #include "table/format.h"
+<<<<<<< HEAD
 #include "table/block_hash_index.h"
+=======
+>>>>>>> forknote/master
 #include "util/random.h"
 #include "util/testharness.h"
 #include "util/testutil.h"
@@ -96,7 +103,11 @@ TEST_F(BlockTest, SimpleTest) {
 
   // read contents of block sequentially
   int count = 0;
+<<<<<<< HEAD
   Iterator* iter = reader.NewIterator(options.comparator);
+=======
+  InternalIterator *iter = reader.NewIterator(options.comparator);
+>>>>>>> forknote/master
   for (iter->SeekToFirst();iter->Valid(); count++, iter->Next()) {
 
     // read kv from block
@@ -159,6 +170,7 @@ void CheckBlockContents(BlockContents contents, const int max_key,
   std::unique_ptr<const SliceTransform> prefix_extractor(
       NewFixedPrefixTransform(prefix_size));
 
+<<<<<<< HEAD
   {
     auto iter1 = reader1.NewIterator(nullptr);
     auto iter2 = reader1.NewIterator(nullptr);
@@ -174,15 +186,26 @@ void CheckBlockContents(BlockContents contents, const int max_key,
       reader1.NewIterator(BytewiseComparator(), nullptr, false));
 
   std::unique_ptr<Iterator> regular_iter(
+=======
+  std::unique_ptr<InternalIterator> regular_iter(
+>>>>>>> forknote/master
       reader2.NewIterator(BytewiseComparator()));
 
   // Seek existent keys
   for (size_t i = 0; i < keys.size(); i++) {
+<<<<<<< HEAD
     hash_iter->Seek(keys[i]);
     ASSERT_OK(hash_iter->status());
     ASSERT_TRUE(hash_iter->Valid());
 
     Slice v = hash_iter->value();
+=======
+    regular_iter->Seek(keys[i]);
+    ASSERT_OK(regular_iter->status());
+    ASSERT_TRUE(regular_iter->Valid());
+
+    Slice v = regular_iter->value();
+>>>>>>> forknote/master
     ASSERT_EQ(v.ToString().compare(values[i]), 0);
   }
 
@@ -192,9 +215,12 @@ void CheckBlockContents(BlockContents contents, const int max_key,
   // return the one that is closest.
   for (int i = 1; i < max_key - 1; i += 2) {
     auto key = GenerateKey(i, 0, 0, nullptr);
+<<<<<<< HEAD
     hash_iter->Seek(key);
     ASSERT_TRUE(!hash_iter->Valid());
 
+=======
+>>>>>>> forknote/master
     regular_iter->Seek(key);
     ASSERT_TRUE(regular_iter->Valid());
   }

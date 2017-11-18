@@ -40,6 +40,14 @@ class StackableDB : public DB {
     return db_->DropColumnFamily(column_family);
   }
 
+<<<<<<< HEAD
+=======
+  virtual Status DestroyColumnFamilyHandle(
+      ColumnFamilyHandle* column_family) override {
+    return db_->DestroyColumnFamilyHandle(column_family);
+  }
+
+>>>>>>> forknote/master
   using DB::Put;
   virtual Status Put(const WriteOptions& options,
                      ColumnFamilyHandle* column_family, const Slice& key,
@@ -65,6 +73,7 @@ class StackableDB : public DB {
 
   using DB::AddFile;
   virtual Status AddFile(ColumnFamilyHandle* column_family,
+<<<<<<< HEAD
                          const ExternalSstFileInfo* file_info,
                          bool move_file) override {
     return db_->AddFile(column_family, file_info, move_file);
@@ -73,6 +82,16 @@ class StackableDB : public DB {
                          const std::string& file_path,
                          bool move_file) override {
     return db_->AddFile(column_family, file_path, move_file);
+=======
+                         const std::vector<ExternalSstFileInfo>& file_info_list,
+                         bool move_file) override {
+    return db_->AddFile(column_family, file_info_list, move_file);
+  }
+  virtual Status AddFile(ColumnFamilyHandle* column_family,
+                         const std::vector<std::string>& file_path_list,
+                         bool move_file) override {
+    return db_->AddFile(column_family, file_path_list, move_file);
+>>>>>>> forknote/master
   }
 
   using DB::KeyMayExist;
@@ -144,11 +163,25 @@ class StackableDB : public DB {
     return db_->GetIntProperty(column_family, property, value);
   }
 
+<<<<<<< HEAD
+=======
+  using DB::GetAggregatedIntProperty;
+  virtual bool GetAggregatedIntProperty(const Slice& property,
+                                        uint64_t* value) override {
+    return db_->GetAggregatedIntProperty(property, value);
+  }
+
+>>>>>>> forknote/master
   using DB::GetApproximateSizes;
   virtual void GetApproximateSizes(ColumnFamilyHandle* column_family,
                                    const Range* r, int n, uint64_t* sizes,
                                    bool include_memtable = false) override {
+<<<<<<< HEAD
       return db_->GetApproximateSizes(column_family, r, n, sizes);
+=======
+    return db_->GetApproximateSizes(column_family, r, n, sizes,
+                                    include_memtable);
+>>>>>>> forknote/master
   }
 
   using DB::CompactRange;
@@ -176,6 +209,14 @@ class StackableDB : public DB {
     return db_->ContinueBackgroundWork();
   }
 
+<<<<<<< HEAD
+=======
+  virtual Status EnableAutoCompaction(
+      const std::vector<ColumnFamilyHandle*>& column_family_handles) override {
+    return db_->EnableAutoCompaction(column_family_handles);
+  }
+
+>>>>>>> forknote/master
   using DB::NumberLevels;
   virtual int NumberLevels(ColumnFamilyHandle* column_family) override {
     return db_->NumberLevels(column_family);
@@ -267,9 +308,16 @@ class StackableDB : public DB {
   }
 
   using DB::SetOptions;
+<<<<<<< HEAD
   virtual Status SetOptions(
     const std::unordered_map<std::string, std::string>& new_options) override {
     return db_->SetOptions(new_options);
+=======
+  virtual Status SetOptions(ColumnFamilyHandle* column_family_handle,
+                            const std::unordered_map<std::string, std::string>&
+                                new_options) override {
+    return db_->SetOptions(column_family_handle, new_options);
+>>>>>>> forknote/master
   }
 
   using DB::GetPropertiesOfAllTables;
@@ -279,6 +327,16 @@ class StackableDB : public DB {
     return db_->GetPropertiesOfAllTables(column_family, props);
   }
 
+<<<<<<< HEAD
+=======
+  using DB::GetPropertiesOfTablesInRange;
+  virtual Status GetPropertiesOfTablesInRange(
+      ColumnFamilyHandle* column_family, const Range* range, std::size_t n,
+      TablePropertiesCollection* props) override {
+    return db_->GetPropertiesOfTablesInRange(column_family, range, n, props);
+  }
+
+>>>>>>> forknote/master
   virtual Status GetUpdatesSince(
       SequenceNumber seq_number, unique_ptr<TransactionLogIterator>* iter,
       const TransactionLogIterator::ReadOptions& read_options) override {

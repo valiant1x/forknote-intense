@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -21,10 +25,13 @@
 
 namespace rocksdb {
 
+<<<<<<< HEAD
 namespace {
   const size_t c_OneMb = (1 << 20);
 }
 
+=======
+>>>>>>> forknote/master
 Status SequentialFileReader::Read(size_t n, Slice* result, char* scratch) {
   Status s = file_->Read(n, result, scratch);
   IOSTATS_ADD(bytes_read, result->size());
@@ -57,7 +64,12 @@ Status WritableFileWriter::Append(const Slice& data) {
   pending_sync_ = true;
   pending_fsync_ = true;
 
+<<<<<<< HEAD
   TEST_KILL_RANDOM(rocksdb_kill_odds * REDUCE_ODDS2);
+=======
+  TEST_KILL_RANDOM("WritableFileWriter::Append:0",
+                   rocksdb_kill_odds * REDUCE_ODDS2);
+>>>>>>> forknote/master
 
   {
     IOSTATS_TIMER_GUARD(prepare_write_nanos);
@@ -75,9 +87,15 @@ Status WritableFileWriter::Append(const Slice& data) {
       }
     }
 
+<<<<<<< HEAD
     if (buf_.Capacity() < c_OneMb) {
       size_t desiredCapacity = buf_.Capacity() * 2;
       desiredCapacity = std::min(desiredCapacity, c_OneMb);
+=======
+    if (buf_.Capacity() < max_buffer_size_) {
+      size_t desiredCapacity = buf_.Capacity() * 2;
+      desiredCapacity = std::min(desiredCapacity, max_buffer_size_);
+>>>>>>> forknote/master
       buf_.AllocateNewBuffer(desiredCapacity);
     }
     assert(buf_.CurrentSize() == 0);
@@ -101,9 +119,15 @@ Status WritableFileWriter::Append(const Slice& data) {
         // We double the buffer here because
         // Flush calls do not keep up with the incoming bytes
         // This is the only place when buffer is changed with unbuffered I/O
+<<<<<<< HEAD
         if (buf_.Capacity() < (1 << 20)) {
           size_t desiredCapacity = buf_.Capacity() * 2;
           desiredCapacity = std::min(desiredCapacity, c_OneMb);
+=======
+        if (buf_.Capacity() < max_buffer_size_) {
+          size_t desiredCapacity = buf_.Capacity() * 2;
+          desiredCapacity = std::min(desiredCapacity, max_buffer_size_);
+>>>>>>> forknote/master
           buf_.AllocateNewBuffer(desiredCapacity);
         }
       }
@@ -114,9 +138,17 @@ Status WritableFileWriter::Append(const Slice& data) {
     s = WriteBuffered(src, left);
   }
 
+<<<<<<< HEAD
   TEST_KILL_RANDOM(rocksdb_kill_odds);
   filesize_ += data.size();
   return Status::OK();
+=======
+  TEST_KILL_RANDOM("WritableFileWriter::Append:1", rocksdb_kill_odds);
+  if (s.ok()) {
+    filesize_ += data.size();
+  }
+  return s;
+>>>>>>> forknote/master
 }
 
 Status WritableFileWriter::Close() {
@@ -141,22 +173,38 @@ Status WritableFileWriter::Close() {
     s = interim;
   }
 
+<<<<<<< HEAD
   TEST_KILL_RANDOM(rocksdb_kill_odds);
+=======
+  TEST_KILL_RANDOM("WritableFileWriter::Close:0", rocksdb_kill_odds);
+>>>>>>> forknote/master
   interim = writable_file_->Close();
   if (!interim.ok() && s.ok()) {
     s = interim;
   }
 
   writable_file_.reset();
+<<<<<<< HEAD
+=======
+  TEST_KILL_RANDOM("WritableFileWriter::Close:1", rocksdb_kill_odds);
+>>>>>>> forknote/master
 
   return s;
 }
 
+<<<<<<< HEAD
 
 // write out the cached data to the OS cache
 Status WritableFileWriter::Flush() {
   Status s;
   TEST_KILL_RANDOM(rocksdb_kill_odds * REDUCE_ODDS2);
+=======
+// write out the cached data to the OS cache
+Status WritableFileWriter::Flush() {
+  Status s;
+  TEST_KILL_RANDOM("WritableFileWriter::Flush:0",
+                   rocksdb_kill_odds * REDUCE_ODDS2);
+>>>>>>> forknote/master
 
   if (buf_.CurrentSize() > 0) {
     if (use_os_buffer_) {
@@ -209,14 +257,22 @@ Status WritableFileWriter::Sync(bool use_fsync) {
   if (!s.ok()) {
     return s;
   }
+<<<<<<< HEAD
   TEST_KILL_RANDOM(rocksdb_kill_odds);
+=======
+  TEST_KILL_RANDOM("WritableFileWriter::Sync:0", rocksdb_kill_odds);
+>>>>>>> forknote/master
   if (!direct_io_ && pending_sync_) {
     s = SyncInternal(use_fsync);
     if (!s.ok()) {
       return s;
     }
   }
+<<<<<<< HEAD
   TEST_KILL_RANDOM(rocksdb_kill_odds);
+=======
+  TEST_KILL_RANDOM("WritableFileWriter::Sync:1", rocksdb_kill_odds);
+>>>>>>> forknote/master
   pending_sync_ = false;
   if (use_fsync) {
     pending_fsync_ = false;
@@ -248,7 +304,11 @@ Status WritableFileWriter::SyncInternal(bool use_fsync) {
   return s;
 }
 
+<<<<<<< HEAD
 Status WritableFileWriter::RangeSync(off_t offset, off_t nbytes) {
+=======
+Status WritableFileWriter::RangeSync(uint64_t offset, uint64_t nbytes) {
+>>>>>>> forknote/master
   IOSTATS_TIMER_GUARD(range_sync_nanos);
   TEST_SYNC_POINT("WritableFileWriter::RangeSync:0");
   return writable_file_->RangeSync(offset, nbytes);
@@ -294,7 +354,11 @@ Status WritableFileWriter::WriteBuffered(const char* data, size_t size) {
     }
 
     IOSTATS_ADD(bytes_written, allowed);
+<<<<<<< HEAD
     TEST_KILL_RANDOM(rocksdb_kill_odds);
+=======
+    TEST_KILL_RANDOM("WritableFileWriter::WriteBuffered:0", rocksdb_kill_odds);
+>>>>>>> forknote/master
 
     left -= allowed;
     src += allowed;
@@ -376,6 +440,7 @@ Status WritableFileWriter::WriteUnbuffered() {
 namespace {
 class ReadaheadRandomAccessFile : public RandomAccessFile {
  public:
+<<<<<<< HEAD
    ReadaheadRandomAccessFile(std::unique_ptr<RandomAccessFile>&& file,
      size_t readahead_size)
      : file_(std::move(file)),
@@ -384,6 +449,22 @@ class ReadaheadRandomAccessFile : public RandomAccessFile {
        buffer_(new char[readahead_size_]),
        buffer_offset_(0),
        buffer_len_(0) {}
+=======
+  ReadaheadRandomAccessFile(std::unique_ptr<RandomAccessFile>&& file,
+                            size_t readahead_size)
+      : file_(std::move(file)),
+        readahead_size_(readahead_size),
+        forward_calls_(file_->ShouldForwardRawRequest()),
+        buffer_(),
+        buffer_offset_(0),
+        buffer_len_(0) {
+    if (!forward_calls_) {
+      buffer_.reset(new char[readahead_size_]);
+    } else if (readahead_size_ > 0) {
+      file_->EnableReadAhead();
+    }
+  }
+>>>>>>> forknote/master
 
  ReadaheadRandomAccessFile(const ReadaheadRandomAccessFile&) = delete;
 
@@ -409,8 +490,12 @@ class ReadaheadRandomAccessFile : public RandomAccessFile {
     // if offset between [buffer_offset_, buffer_offset_ + buffer_len>
     if (offset >= buffer_offset_ && offset < buffer_len_ + buffer_offset_) {
       uint64_t offset_in_buffer = offset - buffer_offset_;
+<<<<<<< HEAD
       copied = std::min(static_cast<uint64_t>(buffer_len_) - offset_in_buffer,
         static_cast<uint64_t>(n));
+=======
+      copied = std::min(buffer_len_ - static_cast<size_t>(offset_in_buffer), n);
+>>>>>>> forknote/master
       memcpy(scratch, buffer_.get() + offset_in_buffer, copied);
       if (copied == n) {
         // fully cached
@@ -468,4 +553,15 @@ std::unique_ptr<RandomAccessFile> NewReadaheadRandomAccessFile(
   return result;
 }
 
+<<<<<<< HEAD
+=======
+Status NewWritableFile(Env* env, const std::string& fname,
+                       unique_ptr<WritableFile>* result,
+                       const EnvOptions& options) {
+  Status s = env->NewWritableFile(fname, result, options);
+  TEST_KILL_RANDOM("NewWritableFile:0", rocksdb_kill_odds * REDUCE_ODDS2);
+  return s;
+}
+
+>>>>>>> forknote/master
 }  // namespace rocksdb

@@ -1133,7 +1133,10 @@ std::vector<WalletOutput> WalletGreen::getAddressOutputs(const std::string& addr
     output.transactionHash = Common::podToHex(out.transactionHash);
     output.transactionPublicKey = Common::podToHex(out.transactionPublicKey);
     output.outputKey = Common::podToHex(out.outputKey);
+<<<<<<< HEAD
     output.requiredSignatures = out.requiredSignatures;
+=======
+>>>>>>> forknote/master
 
     outputs.push_back(output);
   }

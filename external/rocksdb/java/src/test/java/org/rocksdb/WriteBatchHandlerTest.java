@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -23,6 +27,7 @@ public class WriteBatchHandlerTest {
 
   @Test
   public void writeBatchHandler() throws IOException, RocksDBException {
+<<<<<<< HEAD
     WriteBatch batch = null;
     CapturingWriteBatchHandler handler = null;
     try {
@@ -45,6 +50,28 @@ public class WriteBatchHandlerTest {
 
       // load test data to the write batch
       batch = new WriteBatch();
+=======
+    // setup test data
+    final List<Tuple<Action, Tuple<byte[], byte[]>>> testEvents = Arrays.asList(
+        new Tuple<>(Action.DELETE,
+            new Tuple<byte[], byte[]>("k0".getBytes(), null)),
+        new Tuple<>(Action.PUT,
+            new Tuple<>("k1".getBytes(), "v1".getBytes())),
+        new Tuple<>(Action.PUT,
+            new Tuple<>("k2".getBytes(), "v2".getBytes())),
+        new Tuple<>(Action.PUT,
+            new Tuple<>("k3".getBytes(), "v3".getBytes())),
+        new Tuple<>(Action.LOG,
+            new Tuple<byte[], byte[]>(null, "log1".getBytes())),
+        new Tuple<>(Action.MERGE,
+            new Tuple<>("k2".getBytes(), "v22".getBytes())),
+        new Tuple<>(Action.DELETE,
+            new Tuple<byte[], byte[]>("k3".getBytes(), null))
+    );
+
+    // load test data to the write batch
+    try (final WriteBatch batch = new WriteBatch()) {
+>>>>>>> forknote/master
       for (final Tuple<Action, Tuple<byte[], byte[]>> testEvent : testEvents) {
         final Tuple<byte[], byte[]> data = testEvent.value;
         switch (testEvent.key) {
@@ -67,6 +94,7 @@ public class WriteBatchHandlerTest {
         }
       }
 
+<<<<<<< HEAD
       // attempt to read test data back from the WriteBatch by iterating with a handler
       handler = new CapturingWriteBatchHandler();
       batch.iterate(handler);
@@ -84,12 +112,34 @@ public class WriteBatchHandlerTest {
       }
       if (batch != null) {
         batch.dispose();
+=======
+      // attempt to read test data back from the WriteBatch by iterating
+      // with a handler
+      try (final CapturingWriteBatchHandler handler =
+               new CapturingWriteBatchHandler()) {
+        batch.iterate(handler);
+
+        // compare the results to the test data
+        final List<Tuple<Action, Tuple<byte[], byte[]>>> actualEvents =
+            handler.getEvents();
+        assertThat(testEvents.size()).isSameAs(actualEvents.size());
+
+        for (int i = 0; i < testEvents.size(); i++) {
+          assertThat(equals(testEvents.get(i), actualEvents.get(i))).isTrue();
+        }
+>>>>>>> forknote/master
       }
     }
   }
 
+<<<<<<< HEAD
   private static boolean equals(final Tuple<Action, Tuple<byte[], byte[]>> expected,
                                 final Tuple<Action, Tuple<byte[], byte[]>> actual) {
+=======
+  private static boolean equals(
+      final Tuple<Action, Tuple<byte[], byte[]>> expected,
+      final Tuple<Action, Tuple<byte[], byte[]>> actual) {
+>>>>>>> forknote/master
     if (!expected.key.equals(actual.key)) {
       return false;
     }
@@ -136,7 +186,12 @@ public class WriteBatchHandlerTest {
    */
   private static class CapturingWriteBatchHandler extends WriteBatch.Handler {
 
+<<<<<<< HEAD
     private final List<Tuple<Action, Tuple<byte[], byte[]>>> events = new ArrayList<>();
+=======
+    private final List<Tuple<Action, Tuple<byte[], byte[]>>> events
+        = new ArrayList<>();
+>>>>>>> forknote/master
 
     /**
      * Returns a copy of the current events list
@@ -159,12 +214,22 @@ public class WriteBatchHandlerTest {
 
     @Override
     public void delete(final byte[] key) {
+<<<<<<< HEAD
       events.add(new Tuple<>(Action.DELETE, new Tuple<byte[], byte[]>(key, null)));
+=======
+      events.add(new Tuple<>(Action.DELETE,
+          new Tuple<byte[], byte[]>(key, null)));
+>>>>>>> forknote/master
     }
 
     @Override
     public void logData(final byte[] blob) {
+<<<<<<< HEAD
       events.add(new Tuple<>(Action.LOG, new Tuple<byte[], byte[]>(null, blob)));
+=======
+      events.add(new Tuple<>(Action.LOG,
+          new Tuple<byte[], byte[]>(null, blob)));
+>>>>>>> forknote/master
     }
   }
 }

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -10,6 +14,13 @@
 #ifndef OS_WIN
 #include <sys/ioctl.h>
 #endif
+<<<<<<< HEAD
+=======
+
+#ifdef ROCKSDB_MALLOC_USABLE_SIZE
+#include <malloc.h>
+#endif
+>>>>>>> forknote/master
 #include <sys/types.h>
 
 #include <iostream>
@@ -18,6 +29,10 @@
 #include <list>
 
 #ifdef OS_LINUX
+<<<<<<< HEAD
+=======
+#include <fcntl.h>
+>>>>>>> forknote/master
 #include <linux/fs.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -26,6 +41,7 @@
 
 #ifdef ROCKSDB_FALLOCATE_PRESENT
 #include <errno.h>
+<<<<<<< HEAD
 #include <fcntl.h>
 #endif
 
@@ -35,6 +51,18 @@
 #include "util/log_buffer.h"
 #include "util/mutexlock.h"
 #include "util/string_util.h"
+=======
+#endif
+
+#include "port/port.h"
+#include "rocksdb/env.h"
+#include "util/coding.h"
+#include "util/env_chroot.h"
+#include "util/log_buffer.h"
+#include "util/mutexlock.h"
+#include "util/string_util.h"
+#include "util/sync_point.h"
+>>>>>>> forknote/master
 #include "util/testharness.h"
 #include "util/testutil.h"
 
@@ -42,6 +70,38 @@ namespace rocksdb {
 
 static const int kDelayMicros = 100000;
 
+<<<<<<< HEAD
+=======
+struct Deleter {
+  explicit Deleter(void (*fn)(void*)) : fn_(fn) {}
+
+  void operator()(void* ptr) {
+    assert(fn_);
+    assert(ptr);
+    (*fn_)(ptr);
+  }
+
+  void (*fn_)(void*);
+};
+
+std::unique_ptr<char, Deleter> NewAligned(const size_t size, const char ch) {
+  char* ptr = nullptr;
+#ifdef OS_WIN
+  if (!(ptr = reinterpret_cast<char*>(_aligned_malloc(size, 4 * 1024)))) {
+    return std::unique_ptr<char, Deleter>(nullptr, Deleter(_aligned_free));
+  }
+  std::unique_ptr<char, Deleter> uptr(ptr, Deleter(_aligned_free));
+#else
+  if (posix_memalign(reinterpret_cast<void**>(&ptr), 4 * 1024, size) != 0) {
+    return std::unique_ptr<char, Deleter>(nullptr, Deleter(free));
+  }
+  std::unique_ptr<char, Deleter> uptr(ptr, Deleter(free));
+#endif
+  memset(uptr.get(), ch, size);
+  return uptr;
+}
+
+>>>>>>> forknote/master
 class EnvPosixTest : public testing::Test {
  private:
   port::Mutex mu_;
@@ -52,19 +112,36 @@ class EnvPosixTest : public testing::Test {
   EnvPosixTest() : env_(Env::Default()) { }
 };
 
+<<<<<<< HEAD
+=======
+class EnvPosixTestWithParam : public EnvPosixTest,
+                              public ::testing::WithParamInterface<Env*> {
+ public:
+  EnvPosixTestWithParam() { env_ = GetParam(); }
+};
+
+>>>>>>> forknote/master
 static void SetBool(void* ptr) {
   reinterpret_cast<std::atomic<bool>*>(ptr)
       ->store(true, std::memory_order_relaxed);
 }
 
+<<<<<<< HEAD
 TEST_F(EnvPosixTest, RunImmediately) {
+=======
+TEST_P(EnvPosixTestWithParam, RunImmediately) {
+>>>>>>> forknote/master
   std::atomic<bool> called(false);
   env_->Schedule(&SetBool, &called);
   Env::Default()->SleepForMicroseconds(kDelayMicros);
   ASSERT_TRUE(called.load(std::memory_order_relaxed));
 }
 
+<<<<<<< HEAD
 TEST_F(EnvPosixTest, UnSchedule) {
+=======
+TEST_P(EnvPosixTestWithParam, UnSchedule) {
+>>>>>>> forknote/master
   std::atomic<bool> called(false);
   env_->SetBackgroundThreads(1, Env::LOW);
 
@@ -99,7 +176,11 @@ TEST_F(EnvPosixTest, UnSchedule) {
   ASSERT_TRUE(!sleeping_task.IsSleeping() && !sleeping_task1.IsSleeping());
 }
 
+<<<<<<< HEAD
 TEST_F(EnvPosixTest, RunMany) {
+=======
+TEST_P(EnvPosixTestWithParam, RunMany) {
+>>>>>>> forknote/master
   std::atomic<int> last_id(0);
 
   struct CB {
@@ -145,7 +226,11 @@ static void ThreadBody(void* arg) {
   s->mu.Unlock();
 }
 
+<<<<<<< HEAD
 TEST_F(EnvPosixTest, StartThread) {
+=======
+TEST_P(EnvPosixTestWithParam, StartThread) {
+>>>>>>> forknote/master
   State state;
   state.val = 0;
   state.num_running = 3;
@@ -164,7 +249,11 @@ TEST_F(EnvPosixTest, StartThread) {
   ASSERT_EQ(state.val, 3);
 }
 
+<<<<<<< HEAD
 TEST_F(EnvPosixTest, TwoPools) {
+=======
+TEST_P(EnvPosixTestWithParam, TwoPools) {
+>>>>>>> forknote/master
   class CB {
    public:
     CB(const std::string& pool_name, int pool_size)
@@ -281,7 +370,11 @@ TEST_F(EnvPosixTest, TwoPools) {
   env_->SetBackgroundThreads(kHighPoolSize, Env::Priority::HIGH);
 }
 
+<<<<<<< HEAD
 TEST_F(EnvPosixTest, DecreaseNumBgThreads) {
+=======
+TEST_P(EnvPosixTestWithParam, DecreaseNumBgThreads) {
+>>>>>>> forknote/master
   std::vector<test::SleepingBackgroundTask> tasks(10);
 
   // Set number of thread to 1 first.
@@ -514,7 +607,11 @@ class IoctlFriendlyTmpdir {
         } else {
           // Diagnose ioctl-related failure only if this is the
           // directory specified via that envvar.
+<<<<<<< HEAD
           if (tmp == d) {
+=======
+          if (tmp && tmp == d) {
+>>>>>>> forknote/master
             fprintf(stderr, "TEST_IOCTL_FRIENDLY_TMPDIR-specified directory is "
                     "not suitable: %s\n", d.c_str());
           }
@@ -546,6 +643,7 @@ class IoctlFriendlyTmpdir {
 
 // Only works in linux platforms
 TEST_F(EnvPosixTest, RandomAccessUniqueID) {
+<<<<<<< HEAD
   // Create file.
   const EnvOptions soptions;
   IoctlFriendlyTmpdir ift;
@@ -583,11 +681,54 @@ TEST_F(EnvPosixTest, RandomAccessUniqueID) {
 
   // Delete the file
   env_->DeleteFile(fname);
+=======
+  for (bool directio : {true, false}) {
+    // Create file.
+    EnvOptions soptions;
+    soptions.use_direct_reads = soptions.use_direct_writes = directio;
+    IoctlFriendlyTmpdir ift;
+    std::string fname = ift.name() + "/testfile";
+    unique_ptr<WritableFile> wfile;
+    ASSERT_OK(env_->NewWritableFile(fname, &wfile, soptions));
+
+    unique_ptr<RandomAccessFile> file;
+
+    // Get Unique ID
+    ASSERT_OK(env_->NewRandomAccessFile(fname, &file, soptions));
+    size_t id_size = file->GetUniqueId(temp_id, MAX_ID_SIZE);
+    ASSERT_TRUE(id_size > 0);
+    std::string unique_id1(temp_id, id_size);
+    ASSERT_TRUE(IsUniqueIDValid(unique_id1));
+
+    // Get Unique ID again
+    ASSERT_OK(env_->NewRandomAccessFile(fname, &file, soptions));
+    id_size = file->GetUniqueId(temp_id, MAX_ID_SIZE);
+    ASSERT_TRUE(id_size > 0);
+    std::string unique_id2(temp_id, id_size);
+    ASSERT_TRUE(IsUniqueIDValid(unique_id2));
+
+    // Get Unique ID again after waiting some time.
+    env_->SleepForMicroseconds(1000000);
+    ASSERT_OK(env_->NewRandomAccessFile(fname, &file, soptions));
+    id_size = file->GetUniqueId(temp_id, MAX_ID_SIZE);
+    ASSERT_TRUE(id_size > 0);
+    std::string unique_id3(temp_id, id_size);
+    ASSERT_TRUE(IsUniqueIDValid(unique_id3));
+
+    // Check IDs are the same.
+    ASSERT_EQ(unique_id1, unique_id2);
+    ASSERT_EQ(unique_id2, unique_id3);
+
+    // Delete the file
+    env_->DeleteFile(fname);
+  }
+>>>>>>> forknote/master
 }
 
 // only works in linux platforms
 #ifdef ROCKSDB_FALLOCATE_PRESENT
 TEST_F(EnvPosixTest, AllocateTest) {
+<<<<<<< HEAD
   IoctlFriendlyTmpdir ift;
   std::string fname = ift.name() + "/preallocate_testfile";
 
@@ -648,6 +789,76 @@ TEST_F(EnvPosixTest, AllocateTest) {
   // Because the FS might give us more blocks, we add a full page to the size
   // and expect the number of blocks to be less or equal to that.
   ASSERT_GE((f_stat.st_size + kPageSize + kBlockSize - 1) / kBlockSize, (unsigned int)f_stat.st_blocks);
+=======
+  for (bool directio : {true, false}) {
+    IoctlFriendlyTmpdir ift;
+    std::string fname = ift.name() + "/preallocate_testfile";
+
+    // Try fallocate in a file to see whether the target file system supports
+    // it.
+    // Skip the test if fallocate is not supported.
+    std::string fname_test_fallocate = ift.name() + "/preallocate_testfile_2";
+    int fd = -1;
+    do {
+      fd = open(fname_test_fallocate.c_str(), O_CREAT | O_RDWR | O_TRUNC, 0644);
+    } while (fd < 0 && errno == EINTR);
+    ASSERT_GT(fd, 0);
+
+    int alloc_status = fallocate(fd, 0, 0, 1);
+
+    int err_number = 0;
+    if (alloc_status != 0) {
+      err_number = errno;
+      fprintf(stderr, "Warning: fallocate() fails, %s\n", strerror(err_number));
+    }
+    close(fd);
+    ASSERT_OK(env_->DeleteFile(fname_test_fallocate));
+    if (alloc_status != 0 && err_number == EOPNOTSUPP) {
+      // The filesystem containing the file does not support fallocate
+      return;
+    }
+
+    EnvOptions soptions;
+    soptions.use_mmap_writes = false;
+    soptions.use_direct_reads = soptions.use_direct_writes = directio;
+    unique_ptr<WritableFile> wfile;
+    ASSERT_OK(env_->NewWritableFile(fname, &wfile, soptions));
+
+    // allocate 100 MB
+    size_t kPreallocateSize = 100 * 1024 * 1024;
+    size_t kBlockSize = 512;
+    size_t kPageSize = 4096;
+    size_t kDataSize = 1024 * 1024;
+    auto data_ptr = NewAligned(kDataSize, 'A');
+    Slice data(data_ptr.get(), kDataSize);
+    wfile->SetPreallocationBlockSize(kPreallocateSize);
+    wfile->PrepareWrite(wfile->GetFileSize(), kDataSize);
+    ASSERT_OK(wfile->Append(data));
+    ASSERT_OK(wfile->Flush());
+
+    struct stat f_stat;
+    ASSERT_EQ(stat(fname.c_str(), &f_stat), 0);
+    ASSERT_EQ((unsigned int)kDataSize, f_stat.st_size);
+    // verify that blocks are preallocated
+    // Note here that we don't check the exact number of blocks preallocated --
+    // we only require that number of allocated blocks is at least what we
+    // expect.
+    // It looks like some FS give us more blocks that we asked for. That's fine.
+    // It might be worth investigating further.
+    ASSERT_LE((unsigned int)(kPreallocateSize / kBlockSize), f_stat.st_blocks);
+
+    // close the file, should deallocate the blocks
+    wfile.reset();
+
+    stat(fname.c_str(), &f_stat);
+    ASSERT_EQ((unsigned int)kDataSize, f_stat.st_size);
+    // verify that preallocated blocks were deallocated on file close
+    // Because the FS might give us more blocks, we add a full page to the size
+    // and expect the number of blocks to be less or equal to that.
+    ASSERT_GE((f_stat.st_size + kPageSize + kBlockSize - 1) / kBlockSize,
+              (unsigned int)f_stat.st_blocks);
+  }
+>>>>>>> forknote/master
 }
 #endif  // ROCKSDB_FALLOCATE_PRESENT
 
@@ -668,6 +879,7 @@ bool HasPrefix(const std::unordered_set<std::string>& ss) {
 
 // Only works in linux platforms
 TEST_F(EnvPosixTest, RandomAccessUniqueIDConcurrent) {
+<<<<<<< HEAD
   // Check whether a bunch of concurrently existing files have unique IDs.
   const EnvOptions soptions;
 
@@ -781,6 +993,164 @@ TEST_F(EnvPosixTest, InvalidateCache) {
   }
   // Delete the file
   ASSERT_OK(env_->DeleteFile(fname));
+=======
+  for (bool directio : {true, false}) {
+    // Check whether a bunch of concurrently existing files have unique IDs.
+    EnvOptions soptions;
+    soptions.use_direct_reads = soptions.use_direct_writes = directio;
+
+    // Create the files
+    IoctlFriendlyTmpdir ift;
+    std::vector<std::string> fnames;
+    for (int i = 0; i < 1000; ++i) {
+      fnames.push_back(ift.name() + "/" + "testfile" + ToString(i));
+
+      // Create file.
+      unique_ptr<WritableFile> wfile;
+      ASSERT_OK(env_->NewWritableFile(fnames[i], &wfile, soptions));
+    }
+
+    // Collect and check whether the IDs are unique.
+    std::unordered_set<std::string> ids;
+    for (const std::string fname : fnames) {
+      unique_ptr<RandomAccessFile> file;
+      std::string unique_id;
+      ASSERT_OK(env_->NewRandomAccessFile(fname, &file, soptions));
+      size_t id_size = file->GetUniqueId(temp_id, MAX_ID_SIZE);
+      ASSERT_TRUE(id_size > 0);
+      unique_id = std::string(temp_id, id_size);
+      ASSERT_TRUE(IsUniqueIDValid(unique_id));
+
+      ASSERT_TRUE(ids.count(unique_id) == 0);
+      ids.insert(unique_id);
+    }
+
+    // Delete the files
+    for (const std::string fname : fnames) {
+      ASSERT_OK(env_->DeleteFile(fname));
+    }
+
+    ASSERT_TRUE(!HasPrefix(ids));
+  }
+}
+
+// Only works in linux platforms
+TEST_F(EnvPosixTest, RandomAccessUniqueIDDeletes) {
+  for (bool directio : {true, false}) {
+    EnvOptions soptions;
+    soptions.use_direct_reads = soptions.use_direct_writes = directio;
+
+    IoctlFriendlyTmpdir ift;
+    std::string fname = ift.name() + "/" + "testfile";
+
+    // Check that after file is deleted we don't get same ID again in a new
+    // file.
+    std::unordered_set<std::string> ids;
+    for (int i = 0; i < 1000; ++i) {
+      // Create file.
+      {
+        unique_ptr<WritableFile> wfile;
+        ASSERT_OK(env_->NewWritableFile(fname, &wfile, soptions));
+      }
+
+      // Get Unique ID
+      std::string unique_id;
+      {
+        unique_ptr<RandomAccessFile> file;
+        ASSERT_OK(env_->NewRandomAccessFile(fname, &file, soptions));
+        size_t id_size = file->GetUniqueId(temp_id, MAX_ID_SIZE);
+        ASSERT_TRUE(id_size > 0);
+        unique_id = std::string(temp_id, id_size);
+      }
+
+      ASSERT_TRUE(IsUniqueIDValid(unique_id));
+      ASSERT_TRUE(ids.count(unique_id) == 0);
+      ids.insert(unique_id);
+
+      // Delete the file
+      ASSERT_OK(env_->DeleteFile(fname));
+    }
+
+    ASSERT_TRUE(!HasPrefix(ids));
+  }
+}
+
+// Only works in linux platforms
+TEST_P(EnvPosixTestWithParam, InvalidateCache) {
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
+  for (bool directio : {true, false}) {
+    EnvOptions soptions;
+    soptions.use_direct_reads = soptions.use_direct_writes = directio;
+    std::string fname = test::TmpDir(env_) + "/" + "testfile";
+
+    const size_t kSectorSize = 512;
+    auto data = NewAligned(kSectorSize, 'A');
+    Slice slice(data.get(), kSectorSize);
+
+    // Create file.
+    {
+      unique_ptr<WritableFile> wfile;
+#if !defined(OS_MACOSX) && !defined(OS_WIN)
+      if (soptions.use_direct_writes) {
+        rocksdb::SyncPoint::GetInstance()->SetCallBack(
+            "NewWritableFile:O_DIRECT", [&](void* arg) {
+              int* val = static_cast<int*>(arg);
+              *val &= ~O_DIRECT;
+            });
+      }
+#endif
+      ASSERT_OK(env_->NewWritableFile(fname, &wfile, soptions));
+      ASSERT_OK(wfile.get()->Append(slice));
+      ASSERT_OK(wfile.get()->InvalidateCache(0, 0));
+      ASSERT_OK(wfile.get()->Close());
+    }
+
+    // Random Read
+    {
+      unique_ptr<RandomAccessFile> file;
+      char scratch[kSectorSize];
+      Slice result;
+#if !defined(OS_MACOSX) && !defined(OS_WIN)
+      if (soptions.use_direct_reads) {
+        rocksdb::SyncPoint::GetInstance()->SetCallBack(
+            "NewRandomAccessFile:O_DIRECT", [&](void* arg) {
+              int* val = static_cast<int*>(arg);
+              *val &= ~O_DIRECT;
+            });
+      }
+#endif
+      ASSERT_OK(env_->NewRandomAccessFile(fname, &file, soptions));
+      ASSERT_OK(file.get()->Read(0, kSectorSize, &result, scratch));
+      ASSERT_EQ(memcmp(scratch, data.get(), kSectorSize), 0);
+      ASSERT_OK(file.get()->InvalidateCache(0, 11));
+      ASSERT_OK(file.get()->InvalidateCache(0, 0));
+    }
+
+    // Sequential Read
+    {
+      unique_ptr<SequentialFile> file;
+      char scratch[kSectorSize];
+      Slice result;
+#if !defined(OS_MACOSX) && !defined(OS_WIN)
+      if (soptions.use_direct_reads) {
+        rocksdb::SyncPoint::GetInstance()->SetCallBack(
+            "NewSequentialFile:O_DIRECT", [&](void* arg) {
+              int* val = static_cast<int*>(arg);
+              *val &= ~O_DIRECT;
+            });
+      }
+#endif
+      ASSERT_OK(env_->NewSequentialFile(fname, &file, soptions));
+      ASSERT_OK(file.get()->Read(kSectorSize, &result, scratch));
+      ASSERT_EQ(memcmp(scratch, data.get(), kSectorSize), 0);
+      ASSERT_OK(file.get()->InvalidateCache(0, 11));
+      ASSERT_OK(file.get()->InvalidateCache(0, 0));
+    }
+    // Delete the file
+    ASSERT_OK(env_->DeleteFile(fname));
+  }
+  rocksdb::SyncPoint::GetInstance()->ClearTrace();
+>>>>>>> forknote/master
 }
 #endif  // not TRAVIS
 #endif  // OS_LINUX
@@ -828,7 +1198,11 @@ class TestLogger : public Logger {
   int char_0_count;
 };
 
+<<<<<<< HEAD
 TEST_F(EnvPosixTest, LogBufferTest) {
+=======
+TEST_P(EnvPosixTestWithParam, LogBufferTest) {
+>>>>>>> forknote/master
   TestLogger test_logger;
   test_logger.SetInfoLogLevel(InfoLogLevel::INFO_LEVEL);
   test_logger.log_count = 0;
@@ -886,7 +1260,11 @@ class TestLogger2 : public Logger {
   size_t max_log_size_;
 };
 
+<<<<<<< HEAD
 TEST_F(EnvPosixTest, LogBufferMaxSizeTest) {
+=======
+TEST_P(EnvPosixTestWithParam, LogBufferMaxSizeTest) {
+>>>>>>> forknote/master
   char bytes9000[9000];
   std::fill_n(bytes9000, sizeof(bytes9000), '1');
   bytes9000[sizeof(bytes9000) - 1] = '\0';
@@ -901,6 +1279,7 @@ TEST_F(EnvPosixTest, LogBufferMaxSizeTest) {
   }
 }
 
+<<<<<<< HEAD
 TEST_F(EnvPosixTest, Preallocation) {
   const std::string src = test::TmpDir() + "/" + "testfile";
   unique_ptr<WritableFile> srcfile;
@@ -937,6 +1316,118 @@ TEST_F(EnvPosixTest, Preallocation) {
 
 // Test that all WritableFileWrapper forwards all calls to WritableFile.
 TEST_F(EnvPosixTest, WritableFileWrapper) {
+=======
+TEST_P(EnvPosixTestWithParam, Preallocation) {
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
+  for (bool directio : {true, false}) {
+    const std::string src = test::TmpDir(env_) + "/" + "testfile";
+    unique_ptr<WritableFile> srcfile;
+    EnvOptions soptions;
+    soptions.use_direct_reads = soptions.use_direct_writes = directio;
+#if !defined(OS_MACOSX) && !defined(OS_WIN)
+    if (soptions.use_direct_writes) {
+      rocksdb::SyncPoint::GetInstance()->SetCallBack(
+          "NewWritableFile:O_DIRECT", [&](void* arg) {
+            int* val = static_cast<int*>(arg);
+            *val &= ~O_DIRECT;
+          });
+    }
+#endif
+    ASSERT_OK(env_->NewWritableFile(src, &srcfile, soptions));
+    srcfile->SetPreallocationBlockSize(1024 * 1024);
+
+    // No writes should mean no preallocation
+    size_t block_size, last_allocated_block;
+    srcfile->GetPreallocationStatus(&block_size, &last_allocated_block);
+    ASSERT_EQ(last_allocated_block, 0UL);
+
+    // Small write should preallocate one block
+    size_t kStrSize = 512;
+    auto data = NewAligned(kStrSize, 'A');
+    Slice str(data.get(), kStrSize);
+    srcfile->PrepareWrite(srcfile->GetFileSize(), kStrSize);
+    srcfile->Append(str);
+    srcfile->GetPreallocationStatus(&block_size, &last_allocated_block);
+    ASSERT_EQ(last_allocated_block, 1UL);
+
+    // Write an entire preallocation block, make sure we increased by two.
+    {
+      auto buf_ptr = NewAligned(block_size, ' ');
+      Slice buf(buf_ptr.get(), block_size);
+      srcfile->PrepareWrite(srcfile->GetFileSize(), block_size);
+      srcfile->Append(buf);
+      srcfile->GetPreallocationStatus(&block_size, &last_allocated_block);
+      ASSERT_EQ(last_allocated_block, 2UL);
+    }
+
+    // Write five more blocks at once, ensure we're where we need to be.
+    {
+      auto buf_ptr = NewAligned(block_size * 5, ' ');
+      Slice buf = Slice(buf_ptr.get(), block_size * 5);
+      srcfile->PrepareWrite(srcfile->GetFileSize(), buf.size());
+      srcfile->Append(buf);
+      srcfile->GetPreallocationStatus(&block_size, &last_allocated_block);
+      ASSERT_EQ(last_allocated_block, 7UL);
+    }
+  }
+  rocksdb::SyncPoint::GetInstance()->ClearTrace();
+}
+
+// Test that the two ways to get children file attributes (in bulk or
+// individually) behave consistently.
+TEST_P(EnvPosixTestWithParam, ConsistentChildrenAttributes) {
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
+  for (bool directio : {true, false}) {
+    EnvOptions soptions;
+    soptions.use_direct_reads = soptions.use_direct_writes = directio;
+    const int kNumChildren = 10;
+
+    std::string data;
+    for (int i = 0; i < kNumChildren; ++i) {
+      std::ostringstream oss;
+      oss << test::TmpDir(env_) << "/testfile_" << i;
+      const std::string path = oss.str();
+      unique_ptr<WritableFile> file;
+#if !defined(OS_MACOSX) && !defined(OS_WIN)
+      if (soptions.use_direct_writes) {
+        rocksdb::SyncPoint::GetInstance()->SetCallBack(
+            "NewWritableFile:O_DIRECT", [&](void* arg) {
+              int* val = static_cast<int*>(arg);
+              *val &= ~O_DIRECT;
+            });
+      }
+#endif
+      ASSERT_OK(env_->NewWritableFile(path, &file, soptions));
+      auto buf_ptr = NewAligned(data.size(), 'T');
+      Slice buf(buf_ptr.get(), data.size());
+      file->Append(buf);
+      data.append(std::string(512, 'T'));
+    }
+
+    std::vector<Env::FileAttributes> file_attrs;
+    ASSERT_OK(env_->GetChildrenFileAttributes(test::TmpDir(env_), &file_attrs));
+    for (int i = 0; i < kNumChildren; ++i) {
+      std::ostringstream oss;
+      oss << "testfile_" << i;
+      const std::string name = oss.str();
+      const std::string path = test::TmpDir(env_) + "/" + name;
+
+      auto file_attrs_iter = std::find_if(
+          file_attrs.begin(), file_attrs.end(),
+          [&name](const Env::FileAttributes& fm) { return fm.name == name; });
+      ASSERT_TRUE(file_attrs_iter != file_attrs.end());
+      uint64_t size;
+      ASSERT_OK(env_->GetFileSize(path, &size));
+      ASSERT_EQ(size, 512 * i);
+      ASSERT_EQ(size, file_attrs_iter->size_bytes);
+    }
+  }
+  rocksdb::SyncPoint::GetInstance()->ClearTrace();
+}
+
+// Test that all WritableFileWrapper forwards all calls to WritableFile.
+TEST_P(EnvPosixTestWithParam, WritableFileWrapper) {
+>>>>>>> forknote/master
   class Base : public WritableFile {
    public:
     mutable int *step_;
@@ -971,11 +1462,19 @@ TEST_F(EnvPosixTest, WritableFileWrapper) {
     }
 
    protected:
+<<<<<<< HEAD
     Status Allocate(off_t offset, off_t len) override {
       inc(11);
       return Status::OK();
     }
     Status RangeSync(off_t offset, off_t nbytes) override {
+=======
+    Status Allocate(uint64_t offset, uint64_t len) override {
+      inc(11);
+      return Status::OK();
+    }
+    Status RangeSync(uint64_t offset, uint64_t nbytes) override {
+>>>>>>> forknote/master
       inc(12);
       return Status::OK();
     }
@@ -1017,6 +1516,18 @@ TEST_F(EnvPosixTest, WritableFileWrapper) {
   EXPECT_EQ(14, step);
 }
 
+<<<<<<< HEAD
+=======
+INSTANTIATE_TEST_CASE_P(DefaultEnv, EnvPosixTestWithParam,
+                        ::testing::Values(Env::Default()));
+#if !defined(ROCKSDB_LITE) && !defined(OS_WIN)
+static unique_ptr<Env> chroot_env(NewChrootEnv(Env::Default(),
+                                               test::TmpDir(Env::Default())));
+INSTANTIATE_TEST_CASE_P(ChrootEnv, EnvPosixTestWithParam,
+                        ::testing::Values(chroot_env.get()));
+#endif  // !defined(ROCKSDB_LITE) && !defined(OS_WIN)
+
+>>>>>>> forknote/master
 }  // namespace rocksdb
 
 int main(int argc, char** argv) {

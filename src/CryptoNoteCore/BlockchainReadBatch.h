@@ -61,6 +61,7 @@ struct BlockchainReadState {
   std::unordered_map<Crypto::Hash, uint32_t> blockIndexesByBlockHashes;
   std::unordered_map<IBlockchainCache::Amount, uint32_t> keyOutputGlobalIndexesCountForAmounts;
   std::unordered_map<std::pair<IBlockchainCache::Amount, uint32_t>, PackedOutIndex> keyOutputGlobalIndexesForAmounts;
+<<<<<<< HEAD
   std::unordered_map<IBlockchainCache::Amount, uint32_t> multisignatureOutputGlobalIndexesCountForAmounts;
   std::unordered_map<std::pair<IBlockchainCache::Amount, uint32_t>, PackedOutIndex> multisignatureOutputGlobalIndexesForAmounts;
   std::unordered_map<uint32_t, std::vector<std::pair<IBlockchainCache::Amount, IBlockchainCache::GlobalOutputIndex>>> spentMultisignatureOutputGlobalIndexesByBlocks;
@@ -69,6 +70,11 @@ struct BlockchainReadState {
   std::unordered_map<uint64_t, uint32_t> closestTimestampBlockIndex;
   std::unordered_map<uint32_t, IBlockchainCache::Amount> keyOutputAmounts;
   std::unordered_map<uint32_t, IBlockchainCache::Amount> multisignatureOutputAmounts;
+=======
+  std::unordered_map<uint32_t, RawBlock> rawBlocks;
+  std::unordered_map<uint64_t, uint32_t> closestTimestampBlockIndex;
+  std::unordered_map<uint32_t, IBlockchainCache::Amount> keyOutputAmounts;
+>>>>>>> forknote/master
   std::unordered_map<Crypto::Hash, uint32_t> transactionCountsByPaymentIds;
   std::unordered_map<std::pair<Crypto::Hash, uint32_t>, Crypto::Hash> transactionHashesByPaymentIds;
   std::unordered_map<uint64_t, std::vector<Crypto::Hash>> blockHashesByTimestamp;
@@ -76,7 +82,10 @@ struct BlockchainReadState {
 
   std::pair<uint32_t, bool> lastBlockIndex = { 0, false };
   std::pair<uint32_t, bool> keyOutputAmountsCount = { {}, false };
+<<<<<<< HEAD
   std::pair<uint32_t, bool> multisignatureOutputAmountsCount = { {}, false };
+=======
+>>>>>>> forknote/master
   std::pair<uint64_t, bool> transactionsCount = { 0, false };
 
   BlockchainReadState() = default;
@@ -101,17 +110,24 @@ public:
   const std::unordered_map<Crypto::Hash, uint32_t>& getBlockIndexesByBlockHashes() const;
   const std::unordered_map<IBlockchainCache::Amount, uint32_t>& getKeyOutputGlobalIndexesCountForAmounts() const;
   const std::unordered_map<std::pair<IBlockchainCache::Amount, uint32_t>, PackedOutIndex>& getKeyOutputGlobalIndexesForAmounts() const;
+<<<<<<< HEAD
   const std::unordered_map<IBlockchainCache::Amount, uint32_t>& getMultisignatureOutputGlobalIndexesCountForAmounts() const;
   const std::unordered_map<std::pair<IBlockchainCache::Amount, uint32_t>, PackedOutIndex>& getMultisignatureOutputGlobalIndexesForAmounts() const;
   const std::unordered_map<uint32_t, std::vector<std::pair<IBlockchainCache::Amount, IBlockchainCache::GlobalOutputIndex>>>& getSpentMultisignatureOutputGlobalIndexesByBlocks() const;
   const std::unordered_map<std::pair<IBlockchainCache::Amount, IBlockchainCache::GlobalOutputIndex>, bool>& getMultisignatureOutputsSpendingStatuses() const;
+=======
+>>>>>>> forknote/master
   const std::unordered_map<uint32_t, RawBlock>& getRawBlocks() const;
   const std::pair<uint32_t, bool>& getLastBlockIndex() const;
   const std::unordered_map<uint64_t, uint32_t>& getClosestTimestampBlockIndex() const;
   uint32_t getKeyOutputAmountsCount() const;
+<<<<<<< HEAD
   uint32_t getMultisignatureOutputAmountsCount() const;
   const std::unordered_map<uint32_t, IBlockchainCache::Amount>& getKeyOutputAmounts() const;
   const std::unordered_map<uint32_t, IBlockchainCache::Amount>& getMultisignatureOutputAmounts() const;
+=======
+  const std::unordered_map<uint32_t, IBlockchainCache::Amount>& getKeyOutputAmounts() const;
+>>>>>>> forknote/master
   const std::unordered_map<Crypto::Hash, uint32_t>& getTransactionCountByPaymentIds() const;
   const std::unordered_map<std::pair<Crypto::Hash, uint32_t>, Crypto::Hash>& getTransactionHashesByPaymentIds() const;
   const std::unordered_map<uint64_t, std::vector<Crypto::Hash> >& getBlockHashesByTimestamp() const;
@@ -135,17 +151,24 @@ public:
   BlockchainReadBatch& requestBlockIndexByBlockHash(const Crypto::Hash& blockHash);
   BlockchainReadBatch& requestKeyOutputGlobalIndexesCountForAmount(IBlockchainCache::Amount amount);
   BlockchainReadBatch& requestKeyOutputGlobalIndexForAmount(IBlockchainCache::Amount amount, uint32_t outputIndexWithinAmout);
+<<<<<<< HEAD
   BlockchainReadBatch& requestMultisignatureOutputGlobalIndexesCountForAmount(IBlockchainCache::Amount amount);
   BlockchainReadBatch& requestMultisignatureOutputGlobalIndexForAmount(IBlockchainCache::Amount amount, uint32_t outputIndexWithinAmout);
   BlockchainReadBatch& requestSpentMultisignatureOutputGlobalIndexesByBlock(uint32_t blockIndex);
   BlockchainReadBatch& requestMultisignatureOutputSpendingStatus(IBlockchainCache::Amount amount, IBlockchainCache::GlobalOutputIndex index);
+=======
+>>>>>>> forknote/master
   BlockchainReadBatch& requestRawBlock(uint32_t blockIndex);
   BlockchainReadBatch& requestLastBlockIndex();
   BlockchainReadBatch& requestClosestTimestampBlockIndex(uint64_t timestamp);
   BlockchainReadBatch& requestKeyOutputAmountsCount();
+<<<<<<< HEAD
   BlockchainReadBatch& requestMultisignatureOutputAmountsCount();
   BlockchainReadBatch& requestKeyOutputAmount(uint32_t index);
   BlockchainReadBatch& requestMultisignatureOutputAmount(uint32_t index);
+=======
+  BlockchainReadBatch& requestKeyOutputAmount(uint32_t index);
+>>>>>>> forknote/master
   BlockchainReadBatch& requestTransactionCountByPaymentId(const Crypto::Hash& paymentId);
   BlockchainReadBatch& requestTransactionHashByPaymentId(const Crypto::Hash& paymentId, uint32_t transactionIndexWithinPaymentId);
   BlockchainReadBatch& requestBlockHashesByTimestamp(uint64_t timestamp);

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -16,6 +20,7 @@ public class WriteOptions extends RocksObject {
    * Construct WriteOptions instance.
    */
   public WriteOptions() {
+<<<<<<< HEAD
     super();
     newWriteOptions();
   }
@@ -23,6 +28,10 @@ public class WriteOptions extends RocksObject {
   @Override protected void disposeInternal() {
     assert(isInitialized());
     disposeInternal(nativeHandle_);
+=======
+    super(newWriteOptions());
+
+>>>>>>> forknote/master
   }
 
   /**
@@ -97,10 +106,18 @@ public class WriteOptions extends RocksObject {
     return disableWAL(nativeHandle_);
   }
 
+<<<<<<< HEAD
   private native void newWriteOptions();
+=======
+  private native static long newWriteOptions();
+>>>>>>> forknote/master
   private native void setSync(long handle, boolean flag);
   private native boolean sync(long handle);
   private native void setDisableWAL(long handle, boolean flag);
   private native boolean disableWAL(long handle);
+<<<<<<< HEAD
   private native void disposeInternal(long handle);
+=======
+  @Override protected final native void disposeInternal(final long handle);
+>>>>>>> forknote/master
 }

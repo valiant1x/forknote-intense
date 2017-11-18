@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc. All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc. All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -55,6 +59,7 @@ class CuckooTableFactory : public TableFactory {
 
   const char* Name() const override { return "CuckooTable"; }
 
+<<<<<<< HEAD
   Status NewTableReader(const TableReaderOptions& table_reader_options,
                         unique_ptr<RandomAccessFileReader>&& file,
                         uint64_t file_size,
@@ -63,6 +68,17 @@ class CuckooTableFactory : public TableFactory {
   TableBuilder* NewTableBuilder(
       const TableBuilderOptions& table_builder_options,
       WritableFileWriter* file) const override;
+=======
+  Status NewTableReader(
+      const TableReaderOptions& table_reader_options,
+      unique_ptr<RandomAccessFileReader>&& file, uint64_t file_size,
+      unique_ptr<TableReader>* table,
+      bool prefetch_index_and_filter_in_cache = true) const override;
+
+  TableBuilder* NewTableBuilder(
+      const TableBuilderOptions& table_builder_options,
+      uint32_t column_family_id, WritableFileWriter* file) const override;
+>>>>>>> forknote/master
 
   // Sanitizes the specified DB Options.
   Status SanitizeOptions(const DBOptions& db_opts,
@@ -72,8 +88,15 @@ class CuckooTableFactory : public TableFactory {
 
   std::string GetPrintableTableOptions() const override;
 
+<<<<<<< HEAD
  private:
   const CuckooTableOptions table_options_;
+=======
+  void* GetOptions() override { return &table_options_; }
+
+ private:
+  CuckooTableOptions table_options_;
+>>>>>>> forknote/master
 };
 
 }  // namespace rocksdb

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -18,12 +22,35 @@ namespace rocksdb {
 // package.
 class Random {
  private:
+<<<<<<< HEAD
   uint32_t seed_;
  public:
   explicit Random(uint32_t s) : seed_(s & 0x7fffffffu) { }
   uint32_t Next() {
     static const uint32_t M = 2147483647L;   // 2^31-1
     static const uint64_t A = 16807;  // bits 14, 8, 7, 5, 2, 1, 0
+=======
+  enum : uint32_t {
+    M = 2147483647L  // 2^31-1
+  };
+  enum : uint64_t {
+    A = 16807  // bits 14, 8, 7, 5, 2, 1, 0
+  };
+
+  uint32_t seed_;
+
+  static uint32_t GoodSeed(uint32_t s) { return (s & M) != 0 ? (s & M) : 1; }
+
+ public:
+  // This is the largest value that can be returned from Next()
+  enum : uint32_t { kMaxNext = M };
+
+  explicit Random(uint32_t s) : seed_(GoodSeed(s)) {}
+
+  void Reset(uint32_t s) { seed_ = GoodSeed(s); }
+
+  uint32_t Next() {
+>>>>>>> forknote/master
     // We are computing
     //       seed_ = (seed_ * A) % M,    where M = 2^31-1
     //
@@ -42,6 +69,10 @@ class Random {
     }
     return seed_;
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> forknote/master
   // Returns a uniformly distributed value in the range [0..n-1]
   // REQUIRES: n > 0
   uint32_t Uniform(int n) { return Next() % n; }
@@ -56,6 +87,13 @@ class Random {
   uint32_t Skewed(int max_log) {
     return Uniform(1 << Uniform(max_log + 1));
   }
+<<<<<<< HEAD
+=======
+
+  // Returns a Random instance for use by the current thread without
+  // additional locking
+  static Random* GetTLSInstance();
+>>>>>>> forknote/master
 };
 
 // A simple 64bit random number generator based on std::mt19937_64
@@ -83,7 +121,11 @@ class Random64 {
   // return "base" random bits.  The effect is to pick a number in the
   // range [0,2^max_log-1] with exponential bias towards smaller numbers.
   uint64_t Skewed(int max_log) {
+<<<<<<< HEAD
     return Uniform(1 << Uniform(max_log + 1));
+=======
+    return Uniform(uint64_t(1) << Uniform(max_log + 1));
+>>>>>>> forknote/master
   }
 };
 

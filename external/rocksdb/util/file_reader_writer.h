@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -7,6 +11,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 #pragma once
+<<<<<<< HEAD
+=======
+#include <string>
+>>>>>>> forknote/master
 #include "rocksdb/env.h"
 #include "util/aligned_buffer.h"
 #include "port/port.h"
@@ -36,8 +44,13 @@ class SequentialFileReader {
     return *this;
   }
 
+<<<<<<< HEAD
   SequentialFileReader(SequentialFileReader&) = delete;
   SequentialFileReader& operator=(SequentialFileReader&) = delete;
+=======
+  SequentialFileReader(const SequentialFileReader&) = delete;
+  SequentialFileReader& operator=(const SequentialFileReader&) = delete;
+>>>>>>> forknote/master
 
   Status Read(size_t n, Slice* result, char* scratch);
 
@@ -92,6 +105,10 @@ class WritableFileWriter {
  private:
   std::unique_ptr<WritableFile> writable_file_;
   AlignedBuffer           buf_;
+<<<<<<< HEAD
+=======
+  size_t                  max_buffer_size_;
+>>>>>>> forknote/master
   // Actually written data size can be used for truncate
   // not counting padding data
   uint64_t                filesize_;
@@ -112,6 +129,10 @@ class WritableFileWriter {
                      const EnvOptions& options)
       : writable_file_(std::move(file)),
         buf_(),
+<<<<<<< HEAD
+=======
+        max_buffer_size_(options.writable_file_max_buffer_size),
+>>>>>>> forknote/master
         filesize_(0),
         next_write_offset_(0),
         pending_sync_(false),
@@ -159,8 +180,19 @@ class WritableFileWriter {
   Status WriteUnbuffered();
   // Normal write
   Status WriteBuffered(const char* data, size_t size);
+<<<<<<< HEAD
   Status RangeSync(off_t offset, off_t nbytes);
   size_t RequestToken(size_t bytes, bool align);
   Status SyncInternal(bool use_fsync);
 };
+=======
+  Status RangeSync(uint64_t offset, uint64_t nbytes);
+  size_t RequestToken(size_t bytes, bool align);
+  Status SyncInternal(bool use_fsync);
+};
+
+extern Status NewWritableFile(Env* env, const std::string& fname,
+                              unique_ptr<WritableFile>* result,
+                              const EnvOptions& options);
+>>>>>>> forknote/master
 }  // namespace rocksdb

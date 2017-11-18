@@ -35,12 +35,18 @@ public:
   BlockchainWriteBatch& insertPaymentId(const Crypto::Hash& transactionHash, const Crypto::Hash paymentId, uint32_t totalTxsCountForPaymentId);
   BlockchainWriteBatch& insertCachedBlock(const CachedBlockInfo& block, uint32_t blockIndex, const std::vector<Crypto::Hash>& blockTxs);
   BlockchainWriteBatch& insertKeyOutputGlobalIndexes(IBlockchainCache::Amount amount, const std::vector<PackedOutIndex>& outputs, uint32_t totalOutputsCountForAmount);
+<<<<<<< HEAD
   BlockchainWriteBatch& insertMultisignatureOutputGlobalIndexes(IBlockchainCache::Amount amount, const std::vector<PackedOutIndex>& outputs, uint32_t totalOutputsCountForAmount);
   BlockchainWriteBatch& insertSpentMultisignatureOutputGlobalIndexes(uint32_t spendingBlockIndex, const std::set<std::pair<IBlockchainCache::Amount, IBlockchainCache::GlobalOutputIndex>>& outputs);
   BlockchainWriteBatch& insertRawBlock(uint32_t blockIndex, const RawBlock& block);
   BlockchainWriteBatch& insertClosestTimestampBlockIndex(uint64_t timestamp, uint32_t blockIndex);
   BlockchainWriteBatch& insertKeyOutputAmounts(const std::set<IBlockchainCache::Amount>& amounts, uint32_t totalKeyOutputAmountsCount);
   BlockchainWriteBatch& insertMultisignatureOutputAmounts(const std::set<IBlockchainCache::Amount>& amounts, uint32_t totalMultisignatureOutputAmountsCount);
+=======
+  BlockchainWriteBatch& insertRawBlock(uint32_t blockIndex, const RawBlock& block);
+  BlockchainWriteBatch& insertClosestTimestampBlockIndex(uint64_t timestamp, uint32_t blockIndex);
+  BlockchainWriteBatch& insertKeyOutputAmounts(const std::set<IBlockchainCache::Amount>& amounts, uint32_t totalKeyOutputAmountsCount);
+>>>>>>> forknote/master
   BlockchainWriteBatch& insertTimestamp(uint64_t timestamp, const std::vector<Crypto::Hash>& blockHashes);
   BlockchainWriteBatch& insertKeyOutputInfo(IBlockchainCache::Amount amount, IBlockchainCache::GlobalOutputIndex globalIndex, const KeyOutputInfo& outputInfo);
 
@@ -49,13 +55,19 @@ public:
   BlockchainWriteBatch& removePaymentId(const Crypto::Hash paymentId, uint32_t totalTxsCountForPaytmentId);
   BlockchainWriteBatch& removeCachedBlock(const Crypto::Hash& blockHash, uint32_t blockIndex);
   BlockchainWriteBatch& removeKeyOutputGlobalIndexes(IBlockchainCache::Amount amount, uint32_t outputsToRemoveCount, uint32_t totalOutputsCountForAmount);
+<<<<<<< HEAD
   BlockchainWriteBatch& removeMultisignatureOutputGlobalIndexes(IBlockchainCache::Amount amount, uint32_t outputsToRemoveCount, uint32_t totalOutputsCountForAmount);
   BlockchainWriteBatch& removeSpentMultisignatureOutputGlobalIndexes(uint32_t spendingBlockIndex, const std::vector<std::pair<IBlockchainCache::Amount, IBlockchainCache::GlobalOutputIndex>>& outputs);
+=======
+>>>>>>> forknote/master
   BlockchainWriteBatch& removeRawBlock(uint32_t blockIndex);
   BlockchainWriteBatch& removeClosestTimestampBlockIndex(uint64_t timestamp);
   BlockchainWriteBatch& removeTimestamp(uint64_t timestamp);
   BlockchainWriteBatch& removeKeyOutputAmounts(uint32_t keyOutputAmountsToRemoveCount, uint32_t totalKeyOutputAmountsCount);
+<<<<<<< HEAD
   BlockchainWriteBatch& removeMultisignatureOutputAmounts(uint32_t multisignatureOutputAmountsToRemoveCount, uint32_t totalMultisignatureOutputAmountsCount);
+=======
+>>>>>>> forknote/master
   BlockchainWriteBatch& removeKeyOutputInfo(IBlockchainCache::Amount amount, IBlockchainCache::GlobalOutputIndex globalIndex);
 
   std::vector<std::pair<std::string, std::string>> extractRawDataToInsert() override;

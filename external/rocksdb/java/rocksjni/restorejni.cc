@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -13,7 +17,10 @@
 #include <string>
 
 #include "include/org_rocksdb_RestoreOptions.h"
+<<<<<<< HEAD
 #include "include/org_rocksdb_RestoreBackupableDB.h"
+=======
+>>>>>>> forknote/master
 #include "rocksjni/portal.h"
 #include "rocksdb/utilities/backupable_db.h"
 /*
@@ -22,22 +29,34 @@
  * Signature: (Z)J
  */
 jlong Java_org_rocksdb_RestoreOptions_newRestoreOptions(JNIEnv* env,
+<<<<<<< HEAD
     jobject jobj, jboolean keep_log_files) {
+=======
+    jclass jcls, jboolean keep_log_files) {
+>>>>>>> forknote/master
   auto ropt = new rocksdb::RestoreOptions(keep_log_files);
   return reinterpret_cast<jlong>(ropt);
 }
 
 /*
  * Class:     org_rocksdb_RestoreOptions
+<<<<<<< HEAD
  * Method:    dispose
  * Signature: (J)V
  */
 void Java_org_rocksdb_RestoreOptions_dispose(JNIEnv* env, jobject jobj,
+=======
+ * Method:    disposeInternal
+ * Signature: (J)V
+ */
+void Java_org_rocksdb_RestoreOptions_disposeInternal(JNIEnv* env, jobject jobj,
+>>>>>>> forknote/master
     jlong jhandle) {
   auto ropt = reinterpret_cast<rocksdb::RestoreOptions*>(jhandle);
   assert(ropt);
   delete ropt;
 }
+<<<<<<< HEAD
 
 /*
  * Class:     org_rocksdb_RestoreBackupableDB
@@ -201,3 +220,5 @@ void Java_org_rocksdb_RestoreBackupableDB_dispose(JNIEnv* env, jobject jobj,
   assert(ropt);
   delete ropt;
 }
+=======
+>>>>>>> forknote/master

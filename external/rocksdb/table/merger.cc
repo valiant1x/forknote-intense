@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -11,6 +15,7 @@
 
 #include <vector>
 
+<<<<<<< HEAD
 #include "rocksdb/comparator.h"
 #include "rocksdb/iterator.h"
 #include "rocksdb/options.h"
@@ -22,6 +27,21 @@
 #include "util/sync_point.h"
 #include "util/perf_context_imp.h"
 #include "util/autovector.h"
+=======
+#include "db/pinned_iterators_manager.h"
+#include "rocksdb/comparator.h"
+#include "rocksdb/iterator.h"
+#include "rocksdb/options.h"
+#include "table/internal_iterator.h"
+#include "table/iter_heap.h"
+#include "table/iterator_wrapper.h"
+#include "util/arena.h"
+#include "util/autovector.h"
+#include "util/heap.h"
+#include "util/perf_context_imp.h"
+#include "util/stop_watch.h"
+#include "util/sync_point.h"
+>>>>>>> forknote/master
 
 namespace rocksdb {
 // Without anonymous namespace here, we fail the warning -Wmissing-prototypes
@@ -32,15 +52,27 @@ typedef BinaryHeap<IteratorWrapper*, MinIteratorComparator> MergerMinIterHeap;
 
 const size_t kNumIterReserve = 4;
 
+<<<<<<< HEAD
 class MergingIterator : public Iterator {
  public:
   MergingIterator(const Comparator* comparator, Iterator** children, int n,
                   bool is_arena_mode)
+=======
+class MergingIterator : public InternalIterator {
+ public:
+  MergingIterator(const Comparator* comparator, InternalIterator** children,
+                  int n, bool is_arena_mode)
+>>>>>>> forknote/master
       : is_arena_mode_(is_arena_mode),
         comparator_(comparator),
         current_(nullptr),
         direction_(kForward),
+<<<<<<< HEAD
         minHeap_(comparator_) {
+=======
+        minHeap_(comparator_),
+        pinned_iters_mgr_(nullptr) {
+>>>>>>> forknote/master
     children_.resize(n);
     for (int i = 0; i < n; i++) {
       children_[i].Set(children[i]);
@@ -53,9 +85,18 @@ class MergingIterator : public Iterator {
     current_ = CurrentForward();
   }
 
+<<<<<<< HEAD
   virtual void AddIterator(Iterator* iter) {
     assert(direction_ == kForward);
     children_.emplace_back(iter);
+=======
+  virtual void AddIterator(InternalIterator* iter) {
+    assert(direction_ == kForward);
+    children_.emplace_back(iter);
+    if (pinned_iters_mgr_) {
+      iter->SetPinnedItersMgr(pinned_iters_mgr_);
+    }
+>>>>>>> forknote/master
     auto new_wrapper = children_.back();
     if (new_wrapper.Valid()) {
       minHeap_.push(&new_wrapper);
@@ -237,6 +278,29 @@ class MergingIterator : public Iterator {
     return s;
   }
 
+<<<<<<< HEAD
+=======
+  virtual void SetPinnedItersMgr(
+      PinnedIteratorsManager* pinned_iters_mgr) override {
+    pinned_iters_mgr_ = pinned_iters_mgr;
+    for (auto& child : children_) {
+      child.SetPinnedItersMgr(pinned_iters_mgr);
+    }
+  }
+
+  virtual bool IsKeyPinned() const override {
+    assert(Valid());
+    return pinned_iters_mgr_ && pinned_iters_mgr_->PinningEnabled() &&
+           current_->IsKeyPinned();
+  }
+
+  virtual bool IsValuePinned() const override {
+    assert(Valid());
+    return pinned_iters_mgr_ && pinned_iters_mgr_->PinningEnabled() &&
+           current_->IsValuePinned();
+  }
+
+>>>>>>> forknote/master
  private:
   // Clears heaps for both directions, used when changing direction or seeking
   void ClearHeaps();
@@ -262,6 +326,10 @@ class MergingIterator : public Iterator {
   // Max heap is used for reverse iteration, which is way less common than
   // forward.  Lazily initialize it to save memory.
   std::unique_ptr<MergerMaxIterHeap> maxHeap_;
+<<<<<<< HEAD
+=======
+  PinnedIteratorsManager* pinned_iters_mgr_;
+>>>>>>> forknote/master
 
   IteratorWrapper* CurrentForward() const {
     assert(direction_ == kForward);
@@ -288,11 +356,20 @@ void MergingIterator::InitMaxHeap() {
   }
 }
 
+<<<<<<< HEAD
 Iterator* NewMergingIterator(const Comparator* cmp, Iterator** list, int n,
                              Arena* arena) {
   assert(n >= 0);
   if (n == 0) {
     return NewEmptyIterator(arena);
+=======
+InternalIterator* NewMergingIterator(const Comparator* cmp,
+                                     InternalIterator** list, int n,
+                                     Arena* arena) {
+  assert(n >= 0);
+  if (n == 0) {
+    return NewEmptyInternalIterator(arena);
+>>>>>>> forknote/master
   } else if (n == 1) {
     return list[0];
   } else {
@@ -313,7 +390,11 @@ MergeIteratorBuilder::MergeIteratorBuilder(const Comparator* comparator,
   merge_iter = new (mem) MergingIterator(comparator, nullptr, 0, true);
 }
 
+<<<<<<< HEAD
 void MergeIteratorBuilder::AddIterator(Iterator* iter) {
+=======
+void MergeIteratorBuilder::AddIterator(InternalIterator* iter) {
+>>>>>>> forknote/master
   if (!use_merging_iter && first_iter != nullptr) {
     merge_iter->AddIterator(first_iter);
     use_merging_iter = true;
@@ -325,7 +406,11 @@ void MergeIteratorBuilder::AddIterator(Iterator* iter) {
   }
 }
 
+<<<<<<< HEAD
 Iterator* MergeIteratorBuilder::Finish() {
+=======
+InternalIterator* MergeIteratorBuilder::Finish() {
+>>>>>>> forknote/master
   if (!use_merging_iter) {
     return first_iter;
   } else {

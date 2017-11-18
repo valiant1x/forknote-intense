@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -18,6 +22,10 @@
 #include <iostream>
 #include <sstream>
 #include "rocksdb/status.h"
+<<<<<<< HEAD
+=======
+#include "util/string_util.h"
+>>>>>>> forknote/master
 
 #define HDFS_EXISTS 0
 #define HDFS_DOESNT_EXIST -1
@@ -470,7 +478,11 @@ Status HdfsEnv::GetChildren(const std::string& path,
     if (numEntries >= 0) {
       for(int i = 0; i < numEntries; i++) {
         char* pathname = pHdfsFileInfo[i].mName;
+<<<<<<< HEAD
         char* filename = rindex(pathname, '/');
+=======
+        char* filename = std::rindex(pathname, '/');
+>>>>>>> forknote/master
         if (filename != nullptr) {
           result->push_back(filename+1);
         }
@@ -593,6 +605,14 @@ Status HdfsEnv::NewLogger(const std::string& fname,
   return Status::OK();
 }
 
+<<<<<<< HEAD
+=======
+// The factory method for creating an HDFS Env
+Status NewHdfsEnv(Env** hdfs_env, const std::string& fsname) {
+  *hdfs_env = new HdfsEnv(fsname);
+  return Status::OK();
+}
+>>>>>>> forknote/master
 }  // namespace rocksdb
 
 #endif // ROCKSDB_HDFS_FILE_C
@@ -606,6 +626,13 @@ namespace rocksdb {
                                    const EnvOptions& options) {
    return Status::NotSupported("Not compiled with hdfs support");
  }
+<<<<<<< HEAD
+=======
+
+ Status NewHdfsEnv(Env** hdfs_env, const std::string& fsname) {
+   return Status::NotSupported("Not compiled with hdfs support");
+ }
+>>>>>>> forknote/master
 }
 
 #endif

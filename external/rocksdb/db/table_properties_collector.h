@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -16,6 +20,10 @@ namespace rocksdb {
 
 struct InternalKeyTablePropertiesNames {
   static const std::string kDeletedKeys;
+<<<<<<< HEAD
+=======
+  static const std::string kMergeOperands;
+>>>>>>> forknote/master
 };
 
 // Base class for internal table properties collector.
@@ -41,7 +49,12 @@ class IntTblPropCollectorFactory {
  public:
   virtual ~IntTblPropCollectorFactory() {}
   // has to be thread-safe
+<<<<<<< HEAD
   virtual IntTblPropCollector* CreateIntTblPropCollector() = 0;
+=======
+  virtual IntTblPropCollector* CreateIntTblPropCollector(
+      uint32_t column_family_id) = 0;
+>>>>>>> forknote/master
 
   // The name of the properties collector can be used for debugging purpose.
   virtual const char* Name() const = 0;
@@ -64,12 +77,21 @@ class InternalKeyPropertiesCollector : public IntTblPropCollector {
 
  private:
   uint64_t deleted_keys_ = 0;
+<<<<<<< HEAD
+=======
+  uint64_t merge_operands_ = 0;
+>>>>>>> forknote/master
 };
 
 class InternalKeyPropertiesCollectorFactory
     : public IntTblPropCollectorFactory {
  public:
+<<<<<<< HEAD
   virtual IntTblPropCollector* CreateIntTblPropCollector() override {
+=======
+  virtual IntTblPropCollector* CreateIntTblPropCollector(
+      uint32_t column_family_id) override {
+>>>>>>> forknote/master
     return new InternalKeyPropertiesCollector();
   }
 
@@ -114,9 +136,18 @@ class UserKeyTablePropertiesCollectorFactory
   explicit UserKeyTablePropertiesCollectorFactory(
       std::shared_ptr<TablePropertiesCollectorFactory> user_collector_factory)
       : user_collector_factory_(user_collector_factory) {}
+<<<<<<< HEAD
   virtual IntTblPropCollector* CreateIntTblPropCollector() override {
     return new UserKeyTablePropertiesCollector(
         user_collector_factory_->CreateTablePropertiesCollector());
+=======
+  virtual IntTblPropCollector* CreateIntTblPropCollector(
+      uint32_t column_family_id) override {
+    TablePropertiesCollectorFactory::Context context;
+    context.column_family_id = column_family_id;
+    return new UserKeyTablePropertiesCollector(
+        user_collector_factory_->CreateTablePropertiesCollector(context));
+>>>>>>> forknote/master
   }
 
   virtual const char* Name() const override {

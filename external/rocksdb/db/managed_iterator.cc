@@ -1,10 +1,19 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
 
 #ifndef ROCKSDB_LITE
 
+<<<<<<< HEAD
+=======
+#include "db/managed_iterator.h"
+
+>>>>>>> forknote/master
 #include <limits>
 #include <string>
 #include <utility>
@@ -13,7 +22,11 @@
 #include "db/db_impl.h"
 #include "db/db_iter.h"
 #include "db/dbformat.h"
+<<<<<<< HEAD
 #include "db/managed_iterator.h"
+=======
+#include "db/xfunc_test_points.h"
+>>>>>>> forknote/master
 #include "rocksdb/env.h"
 #include "rocksdb/slice.h"
 #include "rocksdb/slice_transform.h"
@@ -77,7 +90,11 @@ ManagedIterator::ManagedIterator(DBImpl* db, const ReadOptions& read_options,
       release_supported_(true) {
   read_options_.managed = false;
   if ((!read_options_.tailing) && (read_options_.snapshot == nullptr)) {
+<<<<<<< HEAD
     assert(read_options_.snapshot = db_->GetSnapshot());
+=======
+    assert(nullptr != (read_options_.snapshot = db_->GetSnapshot()));
+>>>>>>> forknote/master
     snapshot_created_ = true;
   }
   cfh_.SetCFD(cfd);
@@ -208,7 +225,12 @@ void ManagedIterator::RebuildIterator() {
 void ManagedIterator::UpdateCurrent() {
   assert(mutable_iter_ != nullptr);
 
+<<<<<<< HEAD
   if (!(valid_ = mutable_iter_->Valid())) {
+=======
+  valid_ = mutable_iter_->Valid();
+  if (!valid_) {
+>>>>>>> forknote/master
     status_ = mutable_iter_->status();
     return;
   }

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -21,9 +25,17 @@ namespace log {
 Reader::Reporter::~Reporter() {
 }
 
+<<<<<<< HEAD
 Reader::Reader(unique_ptr<SequentialFileReader>&& _file, Reporter* reporter,
                bool checksum, uint64_t initial_offset)
     : file_(std::move(_file)),
+=======
+Reader::Reader(std::shared_ptr<Logger> info_log,
+               unique_ptr<SequentialFileReader>&& _file, Reporter* reporter,
+               bool checksum, uint64_t initial_offset, uint64_t log_num)
+    : info_log_(info_log),
+      file_(std::move(_file)),
+>>>>>>> forknote/master
       reporter_(reporter),
       checksum_(checksum),
       backing_store_(new char[kBlockSize]),
@@ -33,7 +45,13 @@ Reader::Reader(unique_ptr<SequentialFileReader>&& _file, Reporter* reporter,
       eof_offset_(0),
       last_record_offset_(0),
       end_of_buffer_offset_(0),
+<<<<<<< HEAD
       initial_offset_(initial_offset) {}
+=======
+      initial_offset_(initial_offset),
+      log_number_(log_num),
+      recycled_(false) {}
+>>>>>>> forknote/master
 
 Reader::~Reader() {
   delete[] backing_store_;
@@ -62,8 +80,20 @@ bool Reader::SkipToInitialBlock() {
   return true;
 }
 
+<<<<<<< HEAD
 bool Reader::ReadRecord(Slice* record, std::string* scratch,
                         const bool report_eof_inconsistency) {
+=======
+// For kAbsoluteConsistency, on clean shutdown we don't expect any error
+// in the log files.  For other modes, we can ignore only incomplete records
+// in the last log file, which are presumably due to a write in progress
+// during restart (or from log recycling).
+//
+// TODO krad: Evaluate if we need to move to a more strict mode where we
+// restrict the inconsistency to only the last log
+bool Reader::ReadRecord(Slice* record, std::string* scratch,
+                        WALRecoveryMode wal_recovery_mode) {
+>>>>>>> forknote/master
   if (last_record_offset_ < initial_offset_) {
     if (!SkipToInitialBlock()) {
       return false;
@@ -80,10 +110,18 @@ bool Reader::ReadRecord(Slice* record, std::string* scratch,
   Slice fragment;
   while (true) {
     uint64_t physical_record_offset = end_of_buffer_offset_ - buffer_.size();
+<<<<<<< HEAD
     const unsigned int record_type =
         ReadPhysicalRecord(&fragment, report_eof_inconsistency);
     switch (record_type) {
       case kFullType:
+=======
+    size_t drop_size = 0;
+    const unsigned int record_type = ReadPhysicalRecord(&fragment, &drop_size);
+    switch (record_type) {
+      case kFullType:
+      case kRecyclableFullType:
+>>>>>>> forknote/master
         if (in_fragmented_record && !scratch->empty()) {
           // Handle bug in earlier versions of log::Writer where
           // it could emit an empty kFirstType record at the tail end
@@ -98,6 +136,10 @@ bool Reader::ReadRecord(Slice* record, std::string* scratch,
         return true;
 
       case kFirstType:
+<<<<<<< HEAD
+=======
+      case kRecyclableFirstType:
+>>>>>>> forknote/master
         if (in_fragmented_record && !scratch->empty()) {
           // Handle bug in earlier versions of log::Writer where
           // it could emit an empty kFirstType record at the tail end
@@ -111,6 +153,10 @@ bool Reader::ReadRecord(Slice* record, std::string* scratch,
         break;
 
       case kMiddleType:
+<<<<<<< HEAD
+=======
+      case kRecyclableMiddleType:
+>>>>>>> forknote/master
         if (!in_fragmented_record) {
           ReportCorruption(fragment.size(),
                            "missing start of fragmented record(1)");
@@ -120,6 +166,10 @@ bool Reader::ReadRecord(Slice* record, std::string* scratch,
         break;
 
       case kLastType:
+<<<<<<< HEAD
+=======
+      case kRecyclableLastType:
+>>>>>>> forknote/master
         if (!in_fragmented_record) {
           ReportCorruption(fragment.size(),
                            "missing start of fragmented record(2)");
@@ -131,9 +181,23 @@ bool Reader::ReadRecord(Slice* record, std::string* scratch,
         }
         break;
 
+<<<<<<< HEAD
       case kEof:
         if (in_fragmented_record) {
           if (report_eof_inconsistency) {
+=======
+      case kBadHeader:
+        if (wal_recovery_mode == WALRecoveryMode::kAbsoluteConsistency) {
+          // in clean shutdown we don't expect any error in the log files
+          ReportCorruption(drop_size, "truncated header");
+        }
+      // fall-thru
+
+      case kEof:
+        if (in_fragmented_record) {
+          if (wal_recovery_mode == WALRecoveryMode::kAbsoluteConsistency) {
+            // in clean shutdown we don't expect any error in the log files
+>>>>>>> forknote/master
             ReportCorruption(scratch->size(), "error reading trailing data");
           }
           // This can be caused by the writer dying immediately after
@@ -143,6 +207,26 @@ bool Reader::ReadRecord(Slice* record, std::string* scratch,
         }
         return false;
 
+<<<<<<< HEAD
+=======
+      case kOldRecord:
+        if (wal_recovery_mode != WALRecoveryMode::kSkipAnyCorruptedRecords) {
+          // Treat a record from a previous instance of the log as EOF.
+          if (in_fragmented_record) {
+            if (wal_recovery_mode == WALRecoveryMode::kAbsoluteConsistency) {
+              // in clean shutdown we don't expect any error in the log files
+              ReportCorruption(scratch->size(), "error reading trailing data");
+            }
+            // This can be caused by the writer dying immediately after
+            //  writing a physical record but before completing the next; don't
+            //  treat it as a corruption, just ignore the entire logical record.
+            scratch->clear();
+          }
+          return false;
+        }
+      // fall-thru
+
+>>>>>>> forknote/master
       case kBadRecord:
         if (in_fragmented_record) {
           ReportCorruption(scratch->size(), "error in middle of record");
@@ -151,6 +235,29 @@ bool Reader::ReadRecord(Slice* record, std::string* scratch,
         }
         break;
 
+<<<<<<< HEAD
+=======
+      case kBadRecordLen:
+      case kBadRecordChecksum:
+        if (recycled_ &&
+            wal_recovery_mode ==
+                WALRecoveryMode::kTolerateCorruptedTailRecords) {
+          scratch->clear();
+          return false;
+        }
+        if (record_type == kBadRecordLen) {
+          ReportCorruption(drop_size, "bad record length");
+        } else {
+          ReportCorruption(drop_size, "checksum mismatch");
+        }
+        if (in_fragmented_record) {
+          ReportCorruption(scratch->size(), "error in middle of record");
+          in_fragmented_record = false;
+          scratch->clear();
+        }
+        break;
+
+>>>>>>> forknote/master
       default: {
         char buf[40];
         snprintf(buf, sizeof(buf), "unknown record type %u", record_type);
@@ -244,6 +351,7 @@ void Reader::ReportDrop(size_t bytes, const Status& reason) {
   }
 }
 
+<<<<<<< HEAD
 unsigned int Reader::ReadPhysicalRecord(Slice* result,
                                         const bool report_eof_inconsistency) {
   while (true) {
@@ -274,6 +382,51 @@ unsigned int Reader::ReadPhysicalRecord(Slice* result,
         buffer_.clear();
         return kEof;
       }
+=======
+bool Reader::ReadMore(size_t* drop_size, int *error) {
+  if (!eof_ && !read_error_) {
+    // Last read was a full read, so this is a trailer to skip
+    buffer_.clear();
+    Status status = file_->Read(kBlockSize, &buffer_, backing_store_);
+    end_of_buffer_offset_ += buffer_.size();
+    if (!status.ok()) {
+      buffer_.clear();
+      ReportDrop(kBlockSize, status);
+      read_error_ = true;
+      *error = kEof;
+      return false;
+    } else if (buffer_.size() < (size_t)kBlockSize) {
+      eof_ = true;
+      eof_offset_ = buffer_.size();
+    }
+    return true;
+  } else {
+    // Note that if buffer_ is non-empty, we have a truncated header at the
+    //  end of the file, which can be caused by the writer crashing in the
+    //  middle of writing the header. Unless explicitly requested we don't
+    //  considering this an error, just report EOF.
+    if (buffer_.size()) {
+      *drop_size = buffer_.size();
+      buffer_.clear();
+      *error = kBadHeader;
+      return false;
+    }
+    buffer_.clear();
+    *error = kEof;
+    return false;
+  }
+}
+
+unsigned int Reader::ReadPhysicalRecord(Slice* result, size_t* drop_size) {
+  while (true) {
+    // We need at least the minimum header size
+    if (buffer_.size() < (size_t)kHeaderSize) {
+      int r;
+      if (!ReadMore(drop_size, &r)) {
+        return r;
+      }
+      continue;
+>>>>>>> forknote/master
     }
 
     // Parse the header
@@ -282,18 +435,50 @@ unsigned int Reader::ReadPhysicalRecord(Slice* result,
     const uint32_t b = static_cast<uint32_t>(header[5]) & 0xff;
     const unsigned int type = header[6];
     const uint32_t length = a | (b << 8);
+<<<<<<< HEAD
     if (kHeaderSize + length > buffer_.size()) {
       size_t drop_size = buffer_.size();
       buffer_.clear();
       if (!eof_) {
         ReportCorruption(drop_size, "bad record length");
         return kBadRecord;
+=======
+    int header_size = kHeaderSize;
+    if (type >= kRecyclableFullType && type <= kRecyclableLastType) {
+      if (end_of_buffer_offset_ - buffer_.size() == 0) {
+        recycled_ = true;
+      }
+      header_size = kRecyclableHeaderSize;
+      // We need enough for the larger header
+      if (buffer_.size() < (size_t)kRecyclableHeaderSize) {
+        int r;
+        if (!ReadMore(drop_size, &r)) {
+          return r;
+        }
+        continue;
+      }
+      const uint32_t log_num = DecodeFixed32(header + 7);
+      if (log_num != log_number_) {
+        return kOldRecord;
+      }
+    }
+    if (header_size + length > buffer_.size()) {
+      *drop_size = buffer_.size();
+      buffer_.clear();
+      if (!eof_) {
+        return kBadRecordLen;
+>>>>>>> forknote/master
       }
       // If the end of the file has been reached without reading |length| bytes
       // of payload, assume the writer died in the middle of writing the record.
       // Don't report a corruption unless requested.
+<<<<<<< HEAD
       if (drop_size && report_eof_inconsistency) {
         ReportCorruption(drop_size, "truncated header");
+=======
+      if (*drop_size) {
+        return kBadHeader;
+>>>>>>> forknote/master
       }
       return kEof;
     }
@@ -311,12 +496,17 @@ unsigned int Reader::ReadPhysicalRecord(Slice* result,
     // Check crc
     if (checksum_) {
       uint32_t expected_crc = crc32c::Unmask(DecodeFixed32(header));
+<<<<<<< HEAD
       uint32_t actual_crc = crc32c::Value(header + 6, 1 + length);
+=======
+      uint32_t actual_crc = crc32c::Value(header + 6, length + header_size - 6);
+>>>>>>> forknote/master
       if (actual_crc != expected_crc) {
         // Drop the rest of the buffer since "length" itself may have
         // been corrupted and if we trust it, we could find some
         // fragment of a real log record that just happens to look
         // like a valid log record.
+<<<<<<< HEAD
         size_t drop_size = buffer_.size();
         buffer_.clear();
         ReportCorruption(drop_size, "checksum mismatch");
@@ -328,12 +518,28 @@ unsigned int Reader::ReadPhysicalRecord(Slice* result,
 
     // Skip physical record that started before initial_offset_
     if (end_of_buffer_offset_ - buffer_.size() - kHeaderSize - length <
+=======
+        *drop_size = buffer_.size();
+        buffer_.clear();
+        return kBadRecordChecksum;
+      }
+    }
+
+    buffer_.remove_prefix(header_size + length);
+
+    // Skip physical record that started before initial_offset_
+    if (end_of_buffer_offset_ - buffer_.size() - header_size - length <
+>>>>>>> forknote/master
         initial_offset_) {
       result->clear();
       return kBadRecord;
     }
 
+<<<<<<< HEAD
     *result = Slice(header + kHeaderSize, length);
+=======
+    *result = Slice(header + header_size, length);
+>>>>>>> forknote/master
     return type;
   }
 }

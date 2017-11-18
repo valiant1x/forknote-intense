@@ -2,12 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
+<<<<<<< HEAD
 #include <memory>
 #include <string>
 #include <vector>
 #include "util/mock_env.h"
 #include "db/db_impl.h"
 #include "rocksdb/db.h"
+=======
+#include "util/mock_env.h"
+
+#include <memory>
+#include <string>
+
+>>>>>>> forknote/master
 #include "rocksdb/env.h"
 #include "util/testharness.h"
 
@@ -26,6 +34,7 @@ class MockEnvTest : public testing::Test {
   }
 };
 
+<<<<<<< HEAD
 TEST_F(MockEnvTest, Basics) {
   uint64_t file_size;
   unique_ptr<WritableFile> writable_file;
@@ -182,6 +191,8 @@ TEST_F(MockEnvTest, LargeWrite) {
   delete [] scratch;
 }
 
+=======
+>>>>>>> forknote/master
 TEST_F(MockEnvTest, Corrupt) {
   const std::string kGood = "this is a good string, synced to disk";
   const std::string kCorrupted = "this part may be corrupted";
@@ -221,6 +232,7 @@ TEST_F(MockEnvTest, Corrupt) {
   ASSERT_NE(result.compare(kCorrupted), 0);
 }
 
+<<<<<<< HEAD
 TEST_F(MockEnvTest, DBTest) {
   Options options;
   options.create_if_missing = true;
@@ -267,6 +279,8 @@ TEST_F(MockEnvTest, DBTest) {
   delete db;
 }
 
+=======
+>>>>>>> forknote/master
 TEST_F(MockEnvTest, FakeSleeping) {
   int64_t now = 0;
   auto s = env_->GetCurrentTime(&now);

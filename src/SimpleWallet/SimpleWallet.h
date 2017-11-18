@@ -163,6 +163,11 @@ std::string m_import_new;
     std::string m_daemon_host;
     uint16_t m_daemon_port;
 uint32_t m_mandatoryTransaction;
+<<<<<<< HEAD
+=======
+uint16_t m_minMixin;
+uint8_t m_mandatoryMixinBlockVersion;
+>>>>>>> forknote/master
 uint64_t m_maxTransactionSizeLimit;
 uint64_t m_default_fee;
 

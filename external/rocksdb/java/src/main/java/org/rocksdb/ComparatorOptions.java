@@ -10,8 +10,12 @@ package org.rocksdb;
  */
 public class ComparatorOptions extends RocksObject {
   public ComparatorOptions() {
+<<<<<<< HEAD
     super();
     newComparatorOptions();
+=======
+    super(newComparatorOptions());
+>>>>>>> forknote/master
   }
 
   /**
@@ -24,7 +28,11 @@ public class ComparatorOptions extends RocksObject {
    * @return true if adaptive mutex is used.
    */
   public boolean useAdaptiveMutex() {
+<<<<<<< HEAD
     assert(isInitialized());
+=======
+    assert(isOwningHandle());
+>>>>>>> forknote/master
     return useAdaptiveMutex(nativeHandle_);
   }
 
@@ -39,11 +47,16 @@ public class ComparatorOptions extends RocksObject {
    * @return the reference to the current comparator options.
    */
   public ComparatorOptions setUseAdaptiveMutex(final boolean useAdaptiveMutex) {
+<<<<<<< HEAD
     assert (isInitialized());
+=======
+    assert (isOwningHandle());
+>>>>>>> forknote/master
     setUseAdaptiveMutex(nativeHandle_, useAdaptiveMutex);
     return this;
   }
 
+<<<<<<< HEAD
   @Override protected void disposeInternal() {
     assert(isInitialized());
     disposeInternal(nativeHandle_);
@@ -54,4 +67,11 @@ public class ComparatorOptions extends RocksObject {
   private native void setUseAdaptiveMutex(final long handle,
       final boolean useAdaptiveMutex);
   private native void disposeInternal(long handle);
+=======
+  private native static long newComparatorOptions();
+  private native boolean useAdaptiveMutex(final long handle);
+  private native void setUseAdaptiveMutex(final long handle,
+      final boolean useAdaptiveMutex);
+  @Override protected final native void disposeInternal(final long handle);
+>>>>>>> forknote/master
 }

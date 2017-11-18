@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -70,6 +74,7 @@ void MutableCFOptions::Dump(Logger* log) const {
       max_write_buffer_number);
   Log(log, "                         arena_block_size: %" ROCKSDB_PRIszt,
       arena_block_size);
+<<<<<<< HEAD
   Log(log, "               memtable_prefix_bloom_bits: %" PRIu32,
       memtable_prefix_bloom_bits);
   Log(log, "             memtable_prefix_bloom_probes: %" PRIu32,
@@ -84,6 +89,18 @@ void MutableCFOptions::Dump(Logger* log) const {
       disable_auto_compactions);
   Log(log, "                          soft_rate_limit: %lf",
       soft_rate_limit);
+=======
+  Log(log, "              memtable_prefix_bloom_ratio: %f",
+      memtable_prefix_bloom_size_ratio);
+  Log(log, " memtable_huge_page_size: %" ROCKSDB_PRIszt,
+      memtable_huge_page_size);
+  Log(log, "                    max_successive_merges: %" ROCKSDB_PRIszt,
+      max_successive_merges);
+  Log(log, "                 disable_auto_compactions: %d",
+      disable_auto_compactions);
+  Log(log, "      soft_pending_compaction_bytes_limit: %" PRIu64,
+      soft_pending_compaction_bytes_limit);
+>>>>>>> forknote/master
   Log(log, "      hard_pending_compaction_bytes_limit: %" PRIu64,
       hard_pending_compaction_bytes_limit);
   Log(log, "       level0_file_num_compaction_trigger: %d",

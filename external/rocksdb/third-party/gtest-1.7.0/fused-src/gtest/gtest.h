@@ -7682,7 +7682,11 @@ namespace edit_distance {
 // Returns the optimal edits to go from 'left' to 'right'.
 // All edits cost the same, with replace having lower priority than
 // add/remove.
+<<<<<<< HEAD
 // Simple implementation of the Wagner–Fischer algorithm.
+=======
+// Simple implementation of the Wagner-Fischer algorithm.
+>>>>>>> forknote/master
 // See http://en.wikipedia.org/wiki/Wagner-Fischer_algorithm
 enum EditType { kMatch, kAdd, kRemove, kReplace };
 GTEST_API_ std::vector<EditType> CalculateOptimalEdits(
@@ -17586,7 +17590,11 @@ internal::CartesianProductHolder10<Generator1, Generator2, Generator3,
                       GTEST_TEST_CLASS_NAME_(test_case_name, test_name)>()); \
       return 0; \
     } \
+<<<<<<< HEAD
     static int gtest_registering_dummy_; \
+=======
+    static int gtest_registering_dummy_ GTEST_ATTRIBUTE_UNUSED_; \
+>>>>>>> forknote/master
     GTEST_DISALLOW_COPY_AND_ASSIGN_(\
         GTEST_TEST_CLASS_NAME_(test_case_name, test_name)); \
   }; \

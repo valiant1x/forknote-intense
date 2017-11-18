@@ -245,7 +245,10 @@ std::vector<PaymentService::TransactionOutputInformationSerialized> convertWalle
     rpcOutput.transactionHash = output.transactionHash;
     rpcOutput.transactionPublicKey = output.transactionPublicKey;
     rpcOutput.outputKey = output.outputKey;
+<<<<<<< HEAD
     rpcOutput.requiredSignatures = output.requiredSignatures;
+=======
+>>>>>>> forknote/master
 
     rpcOutputs.push_back(std::move(rpcOutput));
   }
@@ -292,6 +295,16 @@ std::vector<PaymentService::TransactionHashesInBlockRpcInfo> convertTransactions
   return transactionHashes;
 }
 
+<<<<<<< HEAD
+=======
+void validateMixin(const uint16_t& mixin, const CryptoNote::Currency& currency, Logging::LoggerRef logger) {
+  if (mixin < currency.minMixin()) {
+    logger(Logging::WARNING, Logging::BRIGHT_YELLOW) << "Mixin must be equal or bigger to " << currency.minMixin();
+    throw std::system_error(make_error_code(CryptoNote::error::MIXIN_COUNT_TOO_SMALL));
+  }
+}
+
+>>>>>>> forknote/master
 void validateAddresses(const std::vector<std::string>& addresses, const CryptoNote::Currency& currency, Logging::LoggerRef logger) {
   for (const auto& address: addresses) {
     if (!CryptoNote::validateAddress(address, currency)) {
@@ -857,6 +870,10 @@ std::error_code WalletService::sendTransaction(const SendTransaction::Request& r
       validateAddresses({ request.changeAddress }, currency, logger);
     }
 
+<<<<<<< HEAD
+=======
+validateMixin(request.anonymity, currency, logger);
+>>>>>>> forknote/master
     CryptoNote::TransactionParameters sendParams;
     if (!request.paymentId.empty()) {
       addPaymentIdToExtra(request.paymentId, sendParams.extra);
@@ -896,6 +913,10 @@ std::error_code WalletService::createDelayedTransaction(const CreateDelayedTrans
       validateAddresses({ request.changeAddress }, currency, logger);
     }
 
+<<<<<<< HEAD
+=======
+validateMixin(request.anonymity, currency, logger);
+>>>>>>> forknote/master
     CryptoNote::TransactionParameters sendParams;
     if (!request.paymentId.empty()) {
       addPaymentIdToExtra(request.paymentId, sendParams.extra);

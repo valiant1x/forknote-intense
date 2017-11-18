@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2015, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -54,10 +58,17 @@ struct TransactionDBOptions {
   // If negative, there is no timeout and will block indefinitely when acquiring
   // a lock.
   //
+<<<<<<< HEAD
   // Not using a a timeout can lead to deadlocks.  Currently, there
   // is no deadlock-detection to recover from a deadlock.  While DB writes
   // cannot deadlock with other DB writes, they can deadlock with a transaction.
   // A negative timeout should only be used if all transactions have an small
+=======
+  // Not using a timeout can lead to deadlocks.  Currently, there
+  // is no deadlock-detection to recover from a deadlock.  While DB writes
+  // cannot deadlock with other DB writes, they can deadlock with a transaction.
+  // A negative timeout should only be used if all transactions have a small
+>>>>>>> forknote/master
   // expiration set.
   int64_t default_lock_timeout = 1000;  // 1 second
 
@@ -92,8 +103,11 @@ struct TransactionOptions {
   // will never relinquish any locks it holds.  This could prevent keys from
   // being
   // written by other writers.
+<<<<<<< HEAD
   //
   // TODO(agiardullo):  Improve performance of checking expiration time.
+=======
+>>>>>>> forknote/master
   int64_t expiration = -1;
 };
 
@@ -113,6 +127,7 @@ class TransactionDB : public StackableDB {
 
   virtual ~TransactionDB() {}
 
+<<<<<<< HEAD
   // Starts a new Transaction.  Passing set_snapshot=true has the same effect
   // as calling Transaction::SetSnapshot().
   //
@@ -121,6 +136,23 @@ class TransactionDB : public StackableDB {
   virtual Transaction* BeginTransaction(
       const WriteOptions& write_options,
       const TransactionOptions& txn_options = TransactionOptions()) = 0;
+=======
+  // Starts a new Transaction.
+  //
+  // Caller is responsible for deleting the returned transaction when no
+  // longer needed.
+  //
+  // If old_txn is not null, BeginTransaction will reuse this Transaction
+  // handle instead of allocating a new one.  This is an optimization to avoid
+  // extra allocations when repeatedly creating transactions.
+  virtual Transaction* BeginTransaction(
+      const WriteOptions& write_options,
+      const TransactionOptions& txn_options = TransactionOptions(),
+      Transaction* old_txn = nullptr) = 0;
+
+  virtual Transaction* GetTransactionByName(const TransactionName& name) = 0;
+  virtual void GetAllPreparedTransactions(std::vector<Transaction*>* trans) = 0;
+>>>>>>> forknote/master
 
  protected:
   // To Create an TransactionDB, call Open()

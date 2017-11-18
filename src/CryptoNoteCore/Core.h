@@ -106,8 +106,11 @@ public:
   virtual uint64_t getTotalGeneratedAmount() const override;
   virtual std::vector<BlockTemplate> getAlternativeBlocks() const override;
   virtual std::vector<Transaction> getPoolTransactions() const override;
+<<<<<<< HEAD
   boost::optional<std::pair<MultisignatureOutput, uint64_t>>
   getMultisignatureOutput(uint64_t amount, uint32_t globalIndex) const override;
+=======
+>>>>>>> forknote/master
 
   const Currency& getCurrency() const;
 
@@ -145,6 +148,11 @@ private:
   void throwIfNotInitialized() const;
   bool extractTransactions(const std::vector<BinaryArray>& rawTransactions, std::vector<CachedTransaction>& transactions, uint64_t& cumulativeSize);
 
+<<<<<<< HEAD
+=======
+bool f_getMixin(const Transaction& transaction, uint64_t& mixin);
+std::error_code validateMixin(const Transaction& transaction, uint8_t majorBlockVersion);
+>>>>>>> forknote/master
   std::error_code validateSemantic(const Transaction& transaction, uint64_t& fee, uint32_t blockIndex);
   std::error_code validateTransaction(const CachedTransaction& transaction, TransactionValidatorState& state, IBlockchainCache* cache, uint64_t& fee, uint32_t blockIndex);
   

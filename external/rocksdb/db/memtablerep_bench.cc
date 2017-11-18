@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -28,13 +32,20 @@ int main() {
 
 #include "db/dbformat.h"
 #include "db/memtable.h"
+<<<<<<< HEAD
 #include "db/writebuffer.h"
+=======
+>>>>>>> forknote/master
 #include "port/port.h"
 #include "port/stack_trace.h"
 #include "rocksdb/comparator.h"
 #include "rocksdb/memtablerep.h"
 #include "rocksdb/options.h"
 #include "rocksdb/slice_transform.h"
+<<<<<<< HEAD
+=======
+#include "rocksdb/write_buffer_manager.h"
+>>>>>>> forknote/master
 #include "util/arena.h"
 #include "util/mutexlock.h"
 #include "util/stop_watch.h"
@@ -132,8 +143,11 @@ DEFINE_int64(seed, 0,
              "Seed base for random number generators. "
              "When 0 it is deterministic.");
 
+<<<<<<< HEAD
 static rocksdb::Env* FLAGS_env = rocksdb::Env::Default();
 
+=======
+>>>>>>> forknote/master
 namespace rocksdb {
 
 namespace {
@@ -592,6 +606,10 @@ int main(int argc, char** argv) {
   std::unique_ptr<rocksdb::MemTableRepFactory> factory;
   if (FLAGS_memtablerep == "skiplist") {
     factory.reset(new rocksdb::SkipListFactory);
+<<<<<<< HEAD
+=======
+#ifndef ROCKSDB_LITE
+>>>>>>> forknote/master
   } else if (FLAGS_memtablerep == "vector") {
     factory.reset(new rocksdb::VectorRepFactory);
   } else if (FLAGS_memtablerep == "hashskiplist") {
@@ -613,6 +631,10 @@ int main(int argc, char** argv) {
         static_cast<uint32_t>(FLAGS_hash_function_count)));
     options.prefix_extractor.reset(
         rocksdb::NewFixedPrefixTransform(FLAGS_prefix_length));
+<<<<<<< HEAD
+=======
+#endif  // ROCKSDB_LITE
+>>>>>>> forknote/master
   } else {
     fprintf(stdout, "Unknown memtablerep: %s\n", FLAGS_memtablerep.c_str());
     exit(1);
@@ -622,7 +644,11 @@ int main(int argc, char** argv) {
       rocksdb::BytewiseComparator());
   rocksdb::MemTable::KeyComparator key_comp(internal_key_comp);
   rocksdb::Arena arena;
+<<<<<<< HEAD
   rocksdb::WriteBuffer wb(FLAGS_write_buffer_size);
+=======
+  rocksdb::WriteBufferManager wb(FLAGS_write_buffer_size);
+>>>>>>> forknote/master
   rocksdb::MemTableAllocator memtable_allocator(&arena, &wb);
   uint64_t sequence;
   auto createMemtableRep = [&] {

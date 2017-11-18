@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2015, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -20,6 +24,22 @@ class Iterator;
 class TransactionDB;
 class WriteBatchWithIndex;
 
+<<<<<<< HEAD
+=======
+typedef std::string TransactionName;
+
+// Provides notification to the caller of SetSnapshotOnNextOperation when
+// the actual snapshot gets created
+class TransactionNotifier {
+ public:
+  virtual ~TransactionNotifier() {}
+
+  // Implement this method to receive notification when a snapshot is
+  // requested via SetSnapshotOnNextOperation.
+  virtual void SnapshotCreated(const Snapshot* newSnapshot) = 0;
+};
+
+>>>>>>> forknote/master
 // Provides BEGIN/COMMIT/ROLLBACK transactions.
 //
 // To use transactions, you must first create either an OptimisticTransactionDB
@@ -61,12 +81,60 @@ class Transaction {
   // methods.  See Transaction::Get() for more details.
   virtual void SetSnapshot() = 0;
 
+<<<<<<< HEAD
   // Returns the Snapshot created by the last call to SetSnapshot().
   //
   // REQUIRED: The returned Snapshot is only valid up until the next time
   // SetSnapshot() is called or the Transaction is deleted.
   virtual const Snapshot* GetSnapshot() const = 0;
 
+=======
+  // Similar to SetSnapshot(), but will not change the current snapshot
+  // until Put/Merge/Delete/GetForUpdate/MultigetForUpdate is called.
+  // By calling this function, the transaction will essentially call
+  // SetSnapshot() for you right before performing the next write/GetForUpdate.
+  //
+  // Calling SetSnapshotOnNextOperation() will not affect what snapshot is
+  // returned by GetSnapshot() until the next write/GetForUpdate is executed.
+  //
+  // When the snapshot is created the notifier's SnapshotCreated method will
+  // be called so that the caller can get access to the snapshot.
+  //
+  // This is an optimization to reduce the likelihood of conflicts that
+  // could occur in between the time SetSnapshot() is called and the first
+  // write/GetForUpdate operation.  Eg, this prevents the following
+  // race-condition:
+  //
+  //   txn1->SetSnapshot();
+  //                             txn2->Put("A", ...);
+  //                             txn2->Commit();
+  //   txn1->GetForUpdate(opts, "A", ...);  // FAIL!
+  virtual void SetSnapshotOnNextOperation(
+      std::shared_ptr<TransactionNotifier> notifier = nullptr) = 0;
+
+  // Returns the Snapshot created by the last call to SetSnapshot().
+  //
+  // REQUIRED: The returned Snapshot is only valid up until the next time
+  // SetSnapshot()/SetSnapshotOnNextSavePoint() is called, ClearSnapshot()
+  // is called, or the Transaction is deleted.
+  virtual const Snapshot* GetSnapshot() const = 0;
+
+  // Clears the current snapshot (i.e. no snapshot will be 'set')
+  //
+  // This removes any snapshot that currently exists or is set to be created
+  // on the next update operation (SetSnapshotOnNextOperation).
+  //
+  // Calling ClearSnapshot() has no effect on keys written before this function
+  // has been called.
+  //
+  // If a reference to a snapshot was retrieved via GetSnapshot(), it will no
+  // longer be valid and should be discarded after a call to ClearSnapshot().
+  virtual void ClearSnapshot() = 0;
+
+  // Prepare the current transation for 2PC
+  virtual Status Prepare() = 0;
+
+>>>>>>> forknote/master
   // Write all batched keys to the db atomically.
   //
   // Returns OK on success.
@@ -85,7 +153,11 @@ class Transaction {
   virtual Status Commit() = 0;
 
   // Discard all batched writes in this transaction.
+<<<<<<< HEAD
   virtual void Rollback() = 0;
+=======
+  virtual Status Rollback() = 0;
+>>>>>>> forknote/master
 
   // Records the state of the transaction for future calls to
   // RollbackToSavePoint().  May be called multiple times to set multiple save
@@ -178,6 +250,7 @@ class Transaction {
   // in this transaction do not yet belong to any snapshot and will be fetched
   // regardless).
   //
+<<<<<<< HEAD
   // Caller is reponsible for deleting the returned Iterator.
   //
   // The returned iterator is only valid until Commit(), Rollback(), or
@@ -186,6 +259,12 @@ class Transaction {
   // until
   // the following issue is fixed:
   // https://github.com/facebook/rocksdb/issues/616
+=======
+  // Caller is responsible for deleting the returned Iterator.
+  //
+  // The returned iterator is only valid until Commit(), Rollback(), or
+  // RollbackToSavePoint() is called.
+>>>>>>> forknote/master
   virtual Iterator* GetIterator(const ReadOptions& read_options) = 0;
 
   virtual Iterator* GetIterator(const ReadOptions& read_options,
@@ -263,6 +342,24 @@ class Transaction {
   // Similar to WriteBatch::PutLogData
   virtual void PutLogData(const Slice& blob) = 0;
 
+<<<<<<< HEAD
+=======
+  // By default, all Put/Merge/Delete operations will be indexed in the
+  // transaction so that Get/GetForUpdate/GetIterator can search for these
+  // keys.
+  //
+  // If the caller does not want to fetch the keys about to be written,
+  // they may want to avoid indexing as a performance optimization.
+  // Calling DisableIndexing() will turn off indexing for all future
+  // Put/Merge/Delete operations until EnableIndexing() is called.
+  //
+  // If a key is Put/Merge/Deleted after DisableIndexing is called and then
+  // is fetched via Get/GetForUpdate/GetIterator, the result of the fetch is
+  // undefined.
+  virtual void DisableIndexing() = 0;
+  virtual void EnableIndexing() = 0;
+
+>>>>>>> forknote/master
   // Returns the number of distinct Keys being tracked by this transaction.
   // If this transaction was created by a TransactinDB, this is the number of
   // keys that are currently locked by this transaction.
@@ -283,7 +380,11 @@ class Transaction {
   // committed.
   //
   // Note:  You should not write or delete anything from the batch directly and
+<<<<<<< HEAD
   // should only use the the functions in the Transaction class to
+=======
+  // should only use the functions in the Transaction class to
+>>>>>>> forknote/master
   // write to this transaction.
   virtual WriteBatchWithIndex* GetWriteBatch() = 0;
 
@@ -292,10 +393,75 @@ class Transaction {
   // Has no effect on OptimisticTransactions.
   virtual void SetLockTimeout(int64_t timeout) = 0;
 
+<<<<<<< HEAD
+=======
+  // Return the WriteOptions that will be used during Commit()
+  virtual WriteOptions* GetWriteOptions() = 0;
+
+  // Reset the WriteOptions that will be used during Commit().
+  virtual void SetWriteOptions(const WriteOptions& write_options) = 0;
+
+  // If this key was previously fetched in this transaction using
+  // GetForUpdate/MultigetForUpdate(), calling UndoGetForUpdate will tell
+  // the transaction that it no longer needs to do any conflict checking
+  // for this key.
+  //
+  // If a key has been fetched N times via GetForUpdate/MultigetForUpdate(),
+  // then UndoGetForUpdate will only have an effect if it is also called N
+  // times.  If this key has been written to in this transaction,
+  // UndoGetForUpdate() will have no effect.
+  //
+  // If SetSavePoint() has been called after the GetForUpdate(),
+  // UndoGetForUpdate() will not have any effect.
+  //
+  // If this Transaction was created by an OptimisticTransactionDB,
+  // calling UndoGetForUpdate can affect whether this key is conflict checked
+  // at commit time.
+  // If this Transaction was created by a TransactionDB,
+  // calling UndoGetForUpdate may release any held locks for this key.
+  virtual void UndoGetForUpdate(ColumnFamilyHandle* column_family,
+                                const Slice& key) = 0;
+  virtual void UndoGetForUpdate(const Slice& key) = 0;
+
+  virtual Status RebuildFromWriteBatch(WriteBatch* src_batch) = 0;
+
+  virtual WriteBatch* GetCommitTimeWriteBatch() = 0;
+
+  virtual void SetLogNumber(uint64_t log) { log_number_ = log; }
+
+  virtual uint64_t GetLogNumber() { return log_number_; }
+
+  virtual Status SetName(const TransactionName& name) = 0;
+
+  virtual TransactionName GetName() { return name_; }
+
+  enum ExecutionStatus {
+    STARTED = 0,
+    AWAITING_PREPARE = 1,
+    PREPARED = 2,
+    AWAITING_COMMIT = 3,
+    COMMITED = 4,
+    AWAITING_ROLLBACK = 5,
+    ROLLEDBACK = 6,
+    LOCKS_STOLEN = 7,
+  };
+
+  // Execution status of the transaction.
+  std::atomic<ExecutionStatus> exec_status_;
+
+>>>>>>> forknote/master
  protected:
   explicit Transaction(const TransactionDB* db) {}
   Transaction() {}
 
+<<<<<<< HEAD
+=======
+  // the log in which the prepared section for this txn resides
+  // (for two phase commit)
+  uint64_t log_number_;
+  TransactionName name_;
+
+>>>>>>> forknote/master
  private:
   // No copying allowed
   Transaction(const Transaction&);

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -34,6 +38,12 @@ class SnapshotImpl : public Snapshot {
   SnapshotList* list_;                 // just for sanity checks
 
   int64_t unix_time_;
+<<<<<<< HEAD
+=======
+
+  // Will this snapshot be used by a Transaction to do write-conflict checking?
+  bool is_write_conflict_boundary_;
+>>>>>>> forknote/master
 };
 
 class SnapshotList {
@@ -50,9 +60,16 @@ class SnapshotList {
   SnapshotImpl* newest() const { assert(!empty()); return list_.prev_; }
 
   const SnapshotImpl* New(SnapshotImpl* s, SequenceNumber seq,
+<<<<<<< HEAD
                           uint64_t unix_time) {
     s->number_ = seq;
     s->unix_time_ = unix_time;
+=======
+                          uint64_t unix_time, bool is_write_conflict_boundary) {
+    s->number_ = seq;
+    s->unix_time_ = unix_time;
+    s->is_write_conflict_boundary_ = is_write_conflict_boundary;
+>>>>>>> forknote/master
     s->list_ = this;
     s->next_ = &list_;
     s->prev_ = list_.prev_;
@@ -71,14 +88,37 @@ class SnapshotList {
   }
 
   // retrieve all snapshot numbers. They are sorted in ascending order.
+<<<<<<< HEAD
   std::vector<SequenceNumber> GetAll() {
     std::vector<SequenceNumber> ret;
+=======
+  std::vector<SequenceNumber> GetAll(
+      SequenceNumber* oldest_write_conflict_snapshot = nullptr) {
+    std::vector<SequenceNumber> ret;
+
+    if (oldest_write_conflict_snapshot != nullptr) {
+      *oldest_write_conflict_snapshot = kMaxSequenceNumber;
+    }
+
+>>>>>>> forknote/master
     if (empty()) {
       return ret;
     }
     SnapshotImpl* s = &list_;
     while (s->next_ != &list_) {
       ret.push_back(s->next_->number_);
+<<<<<<< HEAD
+=======
+
+      if (oldest_write_conflict_snapshot != nullptr &&
+          *oldest_write_conflict_snapshot == kMaxSequenceNumber &&
+          s->next_->is_write_conflict_boundary_) {
+        // If this is the first write-conflict boundary snapshot in the list,
+        // it is the oldest
+        *oldest_write_conflict_snapshot = s->next_->number_;
+      }
+
+>>>>>>> forknote/master
       s = s->next_;
     }
     return ret;

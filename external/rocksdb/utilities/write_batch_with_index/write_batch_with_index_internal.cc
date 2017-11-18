@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2015, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -24,10 +28,17 @@ class Statistics;
 
 Status ReadableWriteBatch::GetEntryFromDataOffset(size_t data_offset,
                                                   WriteType* type, Slice* Key,
+<<<<<<< HEAD
                                                   Slice* value,
                                                   Slice* blob) const {
   if (type == nullptr || Key == nullptr || value == nullptr ||
       blob == nullptr) {
+=======
+                                                  Slice* value, Slice* blob,
+                                                  Slice* xid) const {
+  if (type == nullptr || Key == nullptr || value == nullptr ||
+      blob == nullptr || xid == nullptr) {
+>>>>>>> forknote/master
     return Status::InvalidArgument("Output parameters cannot be null");
   }
 
@@ -42,8 +53,13 @@ Status ReadableWriteBatch::GetEntryFromDataOffset(size_t data_offset,
   Slice input = Slice(rep_.data() + data_offset, rep_.size() - data_offset);
   char tag;
   uint32_t column_family;
+<<<<<<< HEAD
   Status s =
       ReadRecordFromWriteBatch(&input, &tag, &column_family, Key, value, blob);
+=======
+  Status s = ReadRecordFromWriteBatch(&input, &tag, &column_family, Key, value,
+                                      blob, xid);
+>>>>>>> forknote/master
 
   switch (tag) {
     case kTypeColumnFamilyValue:
@@ -65,6 +81,15 @@ Status ReadableWriteBatch::GetEntryFromDataOffset(size_t data_offset,
     case kTypeLogData:
       *type = kLogDataRecord;
       break;
+<<<<<<< HEAD
+=======
+    case kTypeBeginPrepareXID:
+    case kTypeEndPrepareXID:
+    case kTypeCommitXID:
+    case kTypeRollbackXID:
+      *type = kXIDRecord;
+      break;
+>>>>>>> forknote/master
     default:
       return Status::Corruption("unknown WriteBatch tag");
   }
@@ -86,6 +111,7 @@ int WriteBatchEntryComparator::operator()(
     return 1;
   }
 
+<<<<<<< HEAD
   Status s;
   Slice key1, key2;
   if (entry1->search_key == nullptr) {
@@ -96,10 +122,17 @@ int WriteBatchEntryComparator::operator()(
     if (!s.ok()) {
       return 1;
     }
+=======
+  Slice key1, key2;
+  if (entry1->search_key == nullptr) {
+    key1 = Slice(write_batch_->Data().data() + entry1->key_offset,
+                 entry1->key_size);
+>>>>>>> forknote/master
   } else {
     key1 = *(entry1->search_key);
   }
   if (entry2->search_key == nullptr) {
+<<<<<<< HEAD
     Slice value, blob;
     WriteType write_type;
     s = write_batch_->GetEntryFromDataOffset(entry2->offset, &write_type, &key2,
@@ -107,6 +140,10 @@ int WriteBatchEntryComparator::operator()(
     if (!s.ok()) {
       return -1;
     }
+=======
+    key2 = Slice(write_batch_->Data().data() + entry2->key_offset,
+                 entry2->key_size);
+>>>>>>> forknote/master
   } else {
     key2 = *(entry2->search_key);
   }
@@ -125,9 +162,15 @@ int WriteBatchEntryComparator::operator()(
 int WriteBatchEntryComparator::CompareKey(uint32_t column_family,
                                           const Slice& key1,
                                           const Slice& key2) const {
+<<<<<<< HEAD
   auto comparator_for_cf = cf_comparator_map_.find(column_family);
   if (comparator_for_cf != cf_comparator_map_.end()) {
     return comparator_for_cf->second->Compare(key1, key2);
+=======
+  if (column_family < cf_comparators_.size() &&
+      cf_comparators_[column_family] != nullptr) {
+    return cf_comparators_[column_family]->Compare(key1, key2);
+>>>>>>> forknote/master
   } else {
     return default_comparator_->Compare(key1, key2);
   }
@@ -194,7 +237,12 @@ WriteBatchWithIndexInternal::Result WriteBatchWithIndexInternal::GetFromBatch(
         result = WriteBatchWithIndexInternal::Result::kDeleted;
         break;
       }
+<<<<<<< HEAD
       case kLogDataRecord: {
+=======
+      case kLogDataRecord:
+      case kXIDRecord: {
+>>>>>>> forknote/master
         // ignore
         break;
       }
@@ -241,9 +289,19 @@ WriteBatchWithIndexInternal::Result WriteBatchWithIndexInternal::GetFromBatch(
         Env* env = options.env;
         Logger* logger = options.info_log.get();
 
+<<<<<<< HEAD
         *s = MergeHelper::TimedFullMerge(
             key, entry_value, merge_context->GetOperands(), merge_operator,
             statistics, env, logger, value);
+=======
+        if (merge_operator) {
+          *s = MergeHelper::TimedFullMerge(merge_operator, key, entry_value,
+                                           merge_context->GetOperands(), value,
+                                           logger, statistics, env);
+        } else {
+          *s = Status::InvalidArgument("Options::merge_operator must be set");
+        }
+>>>>>>> forknote/master
         if ((*s).ok()) {
           result = WriteBatchWithIndexInternal::Result::kFound;
         } else {

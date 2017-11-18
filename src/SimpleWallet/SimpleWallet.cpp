@@ -104,6 +104,11 @@ const command_line::arg_descriptor<uint32_t> arg_log_level = { "set_log", "", IN
   const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_LAG  = {"DIFFICULTY_LAG", "size_t", CryptoNote::parameters::DIFFICULTY_LAG};
   const command_line::arg_descriptor<std::string> arg_rpc_bind_port = {"rpc-bind-port", "", std::to_string(RPC_DEFAULT_PORT)};
   const command_line::arg_descriptor<uint64_t> arg_MAX_TRANSACTION_SIZE_LIMIT  = {"MAX_TRANSACTION_SIZE_LIMIT", "Max transaction limit size", CryptoNote::parameters::MAX_TRANSACTION_SIZE_LIMIT};  
+<<<<<<< HEAD
+=======
+  const command_line::arg_descriptor<uint16_t> arg_MIN_MIXIN  = {"MIN_MIXIN", "Minimum mixin count", false};  
+  const command_line::arg_descriptor<uint8_t> arg_MANDATORY_MIXIN_BLOCK_VERSION  = {"MANDATORY_MIXIN_BLOCK_VERSION", "Make mixin mandatory after block with major version X", false};  
+>>>>>>> forknote/master
   const command_line::arg_descriptor<uint32_t> arg_MANDATORY_TRANSACTION  = {"MANDATORY_TRANSACTION", "Max transaction limit size", false};  
 const command_line::arg_descriptor<bool> arg_testnet = { "testnet", "Used to deploy test nets. The daemon must be launched with --testnet flag", false };
 const command_line::arg_descriptor< std::vector<std::string> > arg_command = { "command", "" };
@@ -198,6 +203,14 @@ struct TransferCommand {
         return false;
       }
 
+<<<<<<< HEAD
+=======
+              if (fake_outs_count < m_currency.minMixin()) {
+                logger(ERROR, BRIGHT_RED) << "mixin should be equal or bigger to " << m_currency.minMixin();
+                return false;
+              }
+
+>>>>>>> forknote/master
       while (!ar.eof()) {
 
         auto arg = ar.next();
@@ -1239,6 +1252,11 @@ int main(int argc, char* argv[]) {
   command_line::add_arg(desc_params, arg_testnet);
   Tools::wallet_rpc_server::init_options(desc_params);
   command_line::add_arg(desc_params, arg_MANDATORY_TRANSACTION);
+<<<<<<< HEAD
+=======
+  command_line::add_arg(desc_params, arg_MIN_MIXIN);
+  command_line::add_arg(desc_params, arg_MANDATORY_MIXIN_BLOCK_VERSION);
+>>>>>>> forknote/master
   command_line::add_arg(desc_params, arg_MAX_TRANSACTION_SIZE_LIMIT);
   command_line::add_arg(desc_params, command_line::arg_data_dir, Tools::getDefaultDataDirectory());
   command_line::add_arg(desc_params, arg_config_file);
@@ -1399,6 +1417,16 @@ int main(int argc, char* argv[]) {
   currencyBuilder.difficultyCutV2(command_line::get_arg(vm, arg_DIFFICULTY_CUT_V2));
 currencyBuilder.maxTransactionSizeLimit(command_line::get_arg(vm, arg_MAX_TRANSACTION_SIZE_LIMIT));
 currencyBuilder.fusionTxMaxSize(command_line::get_arg(vm, arg_MAX_TRANSACTION_SIZE_LIMIT) * 30 / 100);
+<<<<<<< HEAD
+=======
+currencyBuilder.minMixin(command_line::get_arg(vm, arg_MIN_MIXIN));
+//uint8_t recognized as char
+if (command_line::get_arg(vm, arg_MANDATORY_MIXIN_BLOCK_VERSION) == 0) {
+  currencyBuilder.mandatoryMixinBlockVersion(command_line::get_arg(vm, arg_MANDATORY_MIXIN_BLOCK_VERSION));
+} else {
+  currencyBuilder.mandatoryMixinBlockVersion(command_line::get_arg(vm, arg_MANDATORY_MIXIN_BLOCK_VERSION) - '0');
+}
+>>>>>>> forknote/master
 currencyBuilder.mandatoryTransaction(command_line::get_arg(vm, arg_MANDATORY_TRANSACTION));
 currencyBuilder.testnet(command_line::get_arg(vm, arg_testnet));
 CryptoNote::Currency currency = currencyBuilder.currency();

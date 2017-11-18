@@ -4,7 +4,13 @@
 
 #pragma once
 
+<<<<<<< HEAD
 #include <string>
+=======
+#include <memory>
+#include <string>
+#include <unordered_map>
+>>>>>>> forknote/master
 #include <vector>
 #include "rocksdb/compaction_job_stats.h"
 #include "rocksdb/status.h"
@@ -12,6 +18,7 @@
 
 namespace rocksdb {
 
+<<<<<<< HEAD
 class DB;
 class Status;
 struct CompactionJobStats;
@@ -20,12 +27,30 @@ struct TableFileCreationInfo {
   TableFileCreationInfo() = default;
   explicit TableFileCreationInfo(TableProperties&& prop) :
       table_properties(prop) {}
+=======
+typedef std::unordered_map<std::string, std::shared_ptr<const TableProperties>>
+    TablePropertiesCollection;
+
+class DB;
+class Status;
+struct CompactionJobStats;
+enum CompressionType : unsigned char;
+
+enum class TableFileCreationReason {
+  kFlush,
+  kCompaction,
+  kRecovery,
+};
+
+struct TableFileCreationBriefInfo {
+>>>>>>> forknote/master
   // the name of the database where the file was created
   std::string db_name;
   // the name of the column family where the file was created.
   std::string cf_name;
   // the path to the created file.
   std::string file_path;
+<<<<<<< HEAD
   // the size of the file.
   uint64_t file_size;
   // the id of the job (which could be flush or compaction) that
@@ -35,6 +60,46 @@ struct TableFileCreationInfo {
   TableProperties table_properties;
 };
 
+=======
+  // the id of the job (which could be flush or compaction) that
+  // created the file.
+  int job_id;
+  // reason of creating the table.
+  TableFileCreationReason reason;
+};
+
+struct TableFileCreationInfo : public TableFileCreationBriefInfo {
+  TableFileCreationInfo() = default;
+  explicit TableFileCreationInfo(TableProperties&& prop)
+      : table_properties(prop) {}
+  // the size of the file.
+  uint64_t file_size;
+  // Detailed properties of the created file.
+  TableProperties table_properties;
+  // The status indicating whether the creation was successful or not.
+  Status status;
+};
+
+enum class CompactionReason {
+  kUnknown,
+  // [Level] number of L0 files > level0_file_num_compaction_trigger
+  kLevelL0FilesNum,
+  // [Level] total size of level > MaxBytesForLevel()
+  kLevelMaxLevelSize,
+  // [Universal] Compacting for size amplification
+  kUniversalSizeAmplification,
+  // [Universal] Compacting for size ratio
+  kUniversalSizeRatio,
+  // [Universal] number of sorted runs > level0_file_num_compaction_trigger
+  kUniversalSortedRunNum,
+  // [FIFO] total size > max_table_files_size
+  kFIFOMaxSize,
+  // Manual compaction
+  kManualCompaction,
+  // DB::SuggestCompactRange() marked files for compaction
+  kFilesMarkedForCompaction,
+};
+>>>>>>> forknote/master
 
 #ifndef ROCKSDB_LITE
 
@@ -45,7 +110,11 @@ struct TableFileDeletionInfo {
   std::string file_path;
   // The id of the job which deleted the file.
   int job_id;
+<<<<<<< HEAD
   // The status indicating whether the deletion was successfull or not.
+=======
+  // The status indicating whether the deletion was successful or not.
+>>>>>>> forknote/master
   Status status;
 };
 
@@ -72,6 +141,11 @@ struct FlushJobInfo {
   SequenceNumber smallest_seqno;
   // The largest sequence number in the newly created file
   SequenceNumber largest_seqno;
+<<<<<<< HEAD
+=======
+  // Table properties of the table being flushed
+  TableProperties table_properties;
+>>>>>>> forknote/master
 };
 
 struct CompactionJobInfo {
@@ -93,13 +167,50 @@ struct CompactionJobInfo {
   int output_level;
   // the names of the compaction input files.
   std::vector<std::string> input_files;
+<<<<<<< HEAD
   // the names of the compaction output files.
   std::vector<std::string> output_files;
+=======
+
+  // the names of the compaction output files.
+  std::vector<std::string> output_files;
+  // Table properties for input and output tables.
+  // The map is keyed by values from input_files and output_files.
+  TablePropertiesCollection table_properties;
+
+  // Reason to run the compaction
+  CompactionReason compaction_reason;
+
+  // Compression algorithm used for output files
+  CompressionType compression;
+
+>>>>>>> forknote/master
   // If non-null, this variable stores detailed information
   // about this compaction.
   CompactionJobStats stats;
 };
 
+<<<<<<< HEAD
+=======
+struct MemTableInfo {
+  // the name of the column family to which memtable belongs
+  std::string cf_name;
+  // Sequence number of the first element that was inserted
+  // into the memtable.
+  SequenceNumber first_seqno;
+  // Sequence number that is guaranteed to be smaller than or equal
+  // to the sequence number of any key that could be inserted into this
+  // memtable. It can then be assumed that any write with a larger(or equal)
+  // sequence number will be present in this memtable or a later memtable.
+  SequenceNumber earliest_seqno;
+  // Total number of entries in memtable
+  uint64_t num_entries;
+  // Total number of deletes in memtable
+  uint64_t num_deletes;
+
+};
+
+>>>>>>> forknote/master
 // EventListener class contains a set of call-back functions that will
 // be called when specific RocksDB event happens such as flush.  It can
 // be used as a building block for developing custom features such as
@@ -138,8 +249,13 @@ class EventListener {
   // Note that the this function must be implemented in a way such that
   // it should not run for an extended period of time before the function
   // returns.  Otherwise, RocksDB may be blocked.
+<<<<<<< HEAD
   virtual void OnFlushCompleted(
       DB* db, const FlushJobInfo& flush_job_info) {}
+=======
+  virtual void OnFlushCompleted(DB* /*db*/,
+                                const FlushJobInfo& /*flush_job_info*/) {}
+>>>>>>> forknote/master
 
   // A call-back function for RocksDB which will be called whenever
   // a SST file is deleted.  Different from OnCompactionCompleted and
@@ -152,8 +268,12 @@ class EventListener {
   // Note that if applications would like to use the passed reference
   // outside this function call, they should make copies from the
   // returned value.
+<<<<<<< HEAD
   virtual void OnTableFileDeleted(
       const TableFileDeletionInfo& info) {}
+=======
+  virtual void OnTableFileDeleted(const TableFileDeletionInfo& /*info*/) {}
+>>>>>>> forknote/master
 
   // A call-back function for RocksDB which will be called whenever
   // a registered RocksDB compacts a file. The default implementation
@@ -168,7 +288,12 @@ class EventListener {
   // @param ci a reference to a CompactionJobInfo struct. 'ci' is released
   //  after this function is returned, and must be copied if it is needed
   //  outside of this function.
+<<<<<<< HEAD
   virtual void OnCompactionCompleted(DB *db, const CompactionJobInfo& ci) {}
+=======
+  virtual void OnCompactionCompleted(DB* /*db*/,
+                                     const CompactionJobInfo& /*ci*/) {}
+>>>>>>> forknote/master
 
   // A call-back function for RocksDB which will be called whenever
   // a SST file is created.  Different from OnCompactionCompleted and
@@ -178,11 +303,45 @@ class EventListener {
   // on file creations and deletions is suggested to implement
   // OnFlushCompleted and OnCompactionCompleted.
   //
+<<<<<<< HEAD
   // Note that if applications would like to use the passed reference
   // outside this function call, they should make copies from these
   // returned value.
   virtual void OnTableFileCreated(
       const TableFileCreationInfo& info) {}
+=======
+  // Historically it will only be called if the file is successfully created.
+  // Now it will also be called on failure case. User can check info.status
+  // to see if it succeeded or not.
+  //
+  // Note that if applications would like to use the passed reference
+  // outside this function call, they should make copies from these
+  // returned value.
+  virtual void OnTableFileCreated(const TableFileCreationInfo& /*info*/) {}
+
+  // A call-back function for RocksDB which will be called before
+  // a SST file is being created. It will follow by OnTableFileCreated after
+  // the creation finishes.
+  //
+  // Note that if applications would like to use the passed reference
+  // outside this function call, they should make copies from these
+  // returned value.
+  virtual void OnTableFileCreationStarted(
+      const TableFileCreationBriefInfo& /*info*/) {}
+ 
+  // A call-back function for RocksDB which will be called before
+  // a memtable is made immutable.
+  //
+  // Note that the this function must be implemented in a way such that
+  // it should not run for an extended period of time before the function
+  // returns.  Otherwise, RocksDB may be blocked.
+  //
+  // Note that if applications would like to use the passed reference
+  // outside this function call, they should make copies from these
+  // returned value.
+  virtual void OnMemTableSealed(
+    const MemTableInfo& /*info*/) {}
+>>>>>>> forknote/master
 
   virtual ~EventListener() {}
 };

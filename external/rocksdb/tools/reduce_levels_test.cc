@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -6,6 +10,7 @@
 
 #ifndef ROCKSDB_LITE
 
+<<<<<<< HEAD
 #include "rocksdb/db.h"
 #include "db/db_impl.h"
 #include "db/version_set.h"
@@ -13,6 +18,16 @@
 #include "util/testutil.h"
 #include "util/testharness.h"
 #include "util/ldb_cmd.h"
+=======
+#include "db/db_impl.h"
+#include "db/version_set.h"
+#include "rocksdb/db.h"
+#include "rocksdb/utilities/ldb_cmd.h"
+#include "tools/ldb_cmd_impl.h"
+#include "util/logging.h"
+#include "util/testharness.h"
+#include "util/testutil.h"
+>>>>>>> forknote/master
 
 namespace rocksdb {
 
@@ -93,7 +108,11 @@ bool ReduceLevelTest::ReduceLevels(int target_level) {
   std::vector<std::string> args = rocksdb::ReduceDBLevelsCommand::PrepareArgs(
       dbname_, target_level, false);
   LDBCommand* level_reducer = LDBCommand::InitFromCmdLineArgs(
+<<<<<<< HEAD
       args, Options(), LDBOptions());
+=======
+      args, Options(), LDBOptions(), nullptr, LDBCommand::SelectCommand);
+>>>>>>> forknote/master
   level_reducer->Run();
   bool is_succeed = level_reducer->GetExecuteState().IsSucceed();
   delete level_reducer;

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -10,6 +14,12 @@
 #include "port/port_posix.h"
 
 #include <assert.h>
+<<<<<<< HEAD
+=======
+#if defined(__i386__) || defined(__x86_64__)
+#include <cpuid.h>
+#endif
+>>>>>>> forknote/master
 #include <errno.h>
 #include <signal.h>
 #include <stdio.h>
@@ -32,7 +42,11 @@ static int PthreadCall(const char* label, int result) {
 }
 
 Mutex::Mutex(bool adaptive) {
+<<<<<<< HEAD
 #ifdef OS_LINUX
+=======
+#ifdef ROCKSDB_PTHREAD_ADAPTIVE_MUTEX
+>>>>>>> forknote/master
   if (!adaptive) {
     PthreadCall("init mutex", pthread_mutex_init(&mu_, nullptr));
   } else {
@@ -45,9 +59,15 @@ Mutex::Mutex(bool adaptive) {
     PthreadCall("destroy mutex attr",
                 pthread_mutexattr_destroy(&mutex_attr));
   }
+<<<<<<< HEAD
 #else // ignore adaptive for non-linux platform
   PthreadCall("init mutex", pthread_mutex_init(&mu_, nullptr));
 #endif // OS_LINUX
+=======
+#else
+  PthreadCall("init mutex", pthread_mutex_init(&mu_, nullptr));
+#endif // ROCKSDB_PTHREAD_ADAPTIVE_MUTEX
+>>>>>>> forknote/master
 }
 
 Mutex::~Mutex() { PthreadCall("destroy mutex", pthread_mutex_destroy(&mu_)); }
@@ -132,6 +152,22 @@ void RWMutex::ReadUnlock() { PthreadCall("read unlock", pthread_rwlock_unlock(&m
 
 void RWMutex::WriteUnlock() { PthreadCall("write unlock", pthread_rwlock_unlock(&mu_)); }
 
+<<<<<<< HEAD
+=======
+int PhysicalCoreID() {
+#if defined(__i386__) || defined(__x86_64__)
+  // if you ever find that this function is hot on Linux, you can go from
+  // ~200 nanos to ~20 nanos by adding the machinery to use __vdso_getcpu
+  unsigned eax, ebx = 0, ecx, edx;
+  __get_cpuid(1, &eax, &ebx, &ecx, &edx);
+  return ebx >> 24;
+#else
+  // getcpu or sched_getcpu could work here
+  return -1;
+#endif
+}
+
+>>>>>>> forknote/master
 void InitOnce(OnceType* once, void (*initializer)()) {
   PthreadCall("once", pthread_once(once, initializer));
 }

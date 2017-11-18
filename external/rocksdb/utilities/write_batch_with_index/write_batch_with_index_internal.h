@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2015, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -8,7 +12,11 @@
 
 #include <limits>
 #include <string>
+<<<<<<< HEAD
 #include <unordered_map>
+=======
+#include <vector>
+>>>>>>> forknote/master
 
 #include "rocksdb/comparator.h"
 #include "rocksdb/iterator.h"
@@ -24,17 +32,39 @@ struct Options;
 
 // Key used by skip list, as the binary searchable index of WriteBatchWithIndex.
 struct WriteBatchIndexEntry {
+<<<<<<< HEAD
   WriteBatchIndexEntry(size_t o, uint32_t c)
       : offset(o), column_family(c), search_key(nullptr) {}
   WriteBatchIndexEntry(const Slice* sk, uint32_t c)
       : offset(0), column_family(c), search_key(sk) {}
+=======
+  WriteBatchIndexEntry(size_t o, uint32_t c, size_t ko, size_t ksz)
+      : offset(o),
+        column_family(c),
+        key_offset(ko),
+        key_size(ksz),
+        search_key(nullptr) {}
+  WriteBatchIndexEntry(const Slice* sk, uint32_t c)
+      : offset(0),
+        column_family(c),
+        key_offset(0),
+        key_size(0),
+        search_key(sk) {}
+>>>>>>> forknote/master
 
   // If this flag appears in the offset, it indicates a key that is smaller
   // than any other entry for the same column family
   static const size_t kFlagMin = port::kMaxSizet;
 
   size_t offset;           // offset of an entry in write batch's string buffer.
+<<<<<<< HEAD
   uint32_t column_family;  // column family of the entry
+=======
+  uint32_t column_family;  // column family of the entry.
+  size_t key_offset;       // offset of the key in write batch's string buffer.
+  size_t key_size;         // size of the key.
+
+>>>>>>> forknote/master
   const Slice* search_key;  // if not null, instead of reading keys from
                             // write batch, use it to compare. This is used
                             // for lookup key.
@@ -47,7 +77,11 @@ class ReadableWriteBatch : public WriteBatch {
   // Retrieve some information from a write entry in the write batch, given
   // the start offset of the write entry.
   Status GetEntryFromDataOffset(size_t data_offset, WriteType* type, Slice* Key,
+<<<<<<< HEAD
                                 Slice* value, Slice* blob) const;
+=======
+                                Slice* value, Slice* blob, Slice* xid) const;
+>>>>>>> forknote/master
 };
 
 class WriteBatchEntryComparator {
@@ -65,14 +99,25 @@ class WriteBatchEntryComparator {
 
   void SetComparatorForCF(uint32_t column_family_id,
                           const Comparator* comparator) {
+<<<<<<< HEAD
     cf_comparator_map_[column_family_id] = comparator;
+=======
+    if (column_family_id >= cf_comparators_.size()) {
+      cf_comparators_.resize(column_family_id + 1, nullptr);
+    }
+    cf_comparators_[column_family_id] = comparator;
+>>>>>>> forknote/master
   }
 
   const Comparator* default_comparator() { return default_comparator_; }
 
  private:
   const Comparator* default_comparator_;
+<<<<<<< HEAD
   std::unordered_map<uint32_t, const Comparator*> cf_comparator_map_;
+=======
+  std::vector<const Comparator*> cf_comparators_;
+>>>>>>> forknote/master
   const ReadableWriteBatch* write_batch_;
 };
 

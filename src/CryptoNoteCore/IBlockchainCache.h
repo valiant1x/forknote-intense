@@ -98,9 +98,12 @@ public:
   virtual bool checkIfSpent(const Crypto::KeyImage& keyImage, uint32_t blockIndex) const = 0;
   virtual bool checkIfSpent(const Crypto::KeyImage& keyImage) const = 0;
 
+<<<<<<< HEAD
   virtual bool checkIfSpentMultisignature(uint64_t amount, uint32_t globalIndex) const = 0;
   virtual bool checkIfSpentMultisignature(uint64_t amount, uint32_t globalIndex, uint32_t blockIndex) const = 0;
 
+=======
+>>>>>>> forknote/master
   virtual bool isTransactionSpendTimeUnlocked(uint64_t unlockTime) const = 0;
   virtual bool isTransactionSpendTimeUnlocked(uint64_t unlockTime, uint32_t blockIndex) const = 0;
 
@@ -114,11 +117,14 @@ public:
       uint64_t amount, uint32_t blockIndex, Common::ArrayView<uint32_t> globalIndexes,
       std::function<ExtractOutputKeysResult(const CachedTransactionInfo& info, PackedOutIndex index, uint32_t globalIndex)> pred) const = 0;
 
+<<<<<<< HEAD
   virtual bool getMultisignatureOutputIfExists(uint64_t amount, uint32_t globalIndex, MultisignatureOutput& output, uint64_t& unlockTime) const = 0;
   virtual bool getMultisignatureOutputIfExists(uint64_t amount, uint32_t globalIndex, uint32_t blockIndex, MultisignatureOutput& output, uint64_t& unlockTime) const = 0;
 
   virtual std::pair<Crypto::Hash, size_t> getMultisignatureOutputReference(uint64_t amount, uint32_t globalIndex) const = 0;
 
+=======
+>>>>>>> forknote/master
   virtual uint32_t getTopBlockIndex() const = 0;
   virtual const Crypto::Hash& getTopBlockHash() const = 0;
   virtual uint32_t getBlockCount() const = 0;
@@ -155,10 +161,15 @@ public:
   virtual uint32_t getStartBlockIndex() const = 0;
 
   virtual size_t getKeyOutputsCountForAmount(uint64_t amount, uint32_t blockIndex) const = 0;
+<<<<<<< HEAD
   virtual size_t getMultisignatureCountForAmount(uint64_t amount, uint32_t blockIndex) const = 0;
 
   virtual uint32_t getTimestampLowerBoundBlockIndex(uint64_t timestamp) const = 0;
   virtual void addSpentMultisignature(uint64_t amount, uint32_t globalIndex, uint32_t blockIndex) = 0;
+=======
+
+  virtual uint32_t getTimestampLowerBoundBlockIndex(uint64_t timestamp) const = 0;
+>>>>>>> forknote/master
 
   //NOTE: shouldn't be recursive otherwise we'll get quadratic complexity
   virtual void getRawTransactions(const std::vector<Crypto::Hash>& transactions,
@@ -184,6 +195,10 @@ public:
   virtual std::vector<uint64_t> getLastUnits(size_t count, uint32_t blockIndex, UseGenesis use,
                                              std::function<uint64_t(const CachedBlockInfo&)> pred) const = 0;
   virtual std::vector<Crypto::Hash> getTransactionHashes() const = 0;
+<<<<<<< HEAD
+=======
+virtual std::vector<uint32_t> getRandomOutsByAmount(uint64_t amount, size_t count, uint32_t blockIndex, uint32_t startBlockIndex) const = 0;
+>>>>>>> forknote/master
   virtual std::vector<uint32_t> getRandomOutsByAmount(uint64_t amount, size_t count, uint32_t blockIndex) const = 0;
 
   virtual std::vector<Crypto::Hash> getTransactionHashesByPaymentId(const Crypto::Hash& paymentId) const = 0;

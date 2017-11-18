@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -20,7 +24,11 @@
  * Signature: (IJ)J
  */
 jlong Java_org_rocksdb_Statistics_getTickerCount0(
+<<<<<<< HEAD
     JNIEnv* env, jobject jobj, int tickerType, jlong handle) {
+=======
+    JNIEnv* env, jobject jobj, jint tickerType, jlong handle) {
+>>>>>>> forknote/master
   auto st = reinterpret_cast<rocksdb::Statistics*>(handle);
   assert(st != nullptr);
 
@@ -29,11 +37,19 @@ jlong Java_org_rocksdb_Statistics_getTickerCount0(
 
 /*
  * Class:     org_rocksdb_Statistics
+<<<<<<< HEAD
  * Method:    geHistogramData0
  * Signature: (IJ)Lorg/rocksdb/HistogramData;
  */
 jobject Java_org_rocksdb_Statistics_geHistogramData0(
   JNIEnv* env, jobject jobj, int histogramType, jlong handle) {
+=======
+ * Method:    getHistogramData0
+ * Signature: (IJ)Lorg/rocksdb/HistogramData;
+ */
+jobject Java_org_rocksdb_Statistics_getHistogramData0(
+    JNIEnv* env, jobject jobj, jint histogramType, jlong handle) {
+>>>>>>> forknote/master
   auto st = reinterpret_cast<rocksdb::Statistics*>(handle);
   assert(st != nullptr);
 

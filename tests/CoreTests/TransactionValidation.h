@@ -122,6 +122,7 @@ struct GenerateTransactionWithZeroFee : public get_tx_validation_base
 {
   bool generate(std::vector<test_event_entry>& events) const;
 };
+<<<<<<< HEAD
 
 // MultiSignature
 
@@ -155,3 +156,5 @@ struct MultiSigTx_BadInputSignature : public MultiSigTx_OutputSignatures {
   MultiSigTx_BadInputSignature();
   bool generate(std::vector<test_event_entry>& events) const;
 };
+=======
+>>>>>>> forknote/master

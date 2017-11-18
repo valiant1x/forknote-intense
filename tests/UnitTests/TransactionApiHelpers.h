@@ -140,17 +140,25 @@ public:
   // inputs
   size_t addTestInput(uint64_t amount, const AccountKeys& senderKeys = generateAccountKeys());
   size_t addTestInput(uint64_t amount, std::vector<uint32_t> gouts, const AccountKeys& senderKeys = generateAccountKeys());
+<<<<<<< HEAD
   void addTestMultisignatureInput(uint64_t amount, const TransactionOutputInformation& t);
   size_t addFakeMultisignatureInput(uint64_t amount, uint32_t globalOutputIndex, size_t signatureCount);
+=======
+>>>>>>> forknote/master
   void addInput(const AccountKeys& senderKeys, const TransactionOutputInformation& t);
 
   // outputs
   TransactionOutputInformationIn addTestKeyOutput(uint64_t amount, uint32_t globalOutputIndex, const AccountKeys& senderKeys = generateAccountKeys());
+<<<<<<< HEAD
   TransactionOutputInformationIn addTestMultisignatureOutput(uint64_t amount, uint32_t globalOutputIndex);
   TransactionOutputInformationIn addTestMultisignatureOutput(uint64_t amount, std::vector<AccountPublicAddress>& addresses, uint32_t globalOutputIndex);
   size_t addOutput(uint64_t amount, const AccountPublicAddress& to);
   size_t addOutput(uint64_t amount, const KeyOutput& out);
   size_t addOutput(uint64_t amount, const MultisignatureOutput& out);
+=======
+  size_t addOutput(uint64_t amount, const AccountPublicAddress& to);
+  size_t addOutput(uint64_t amount, const KeyOutput& out);
+>>>>>>> forknote/master
 
   // final step
   std::unique_ptr<ITransactionReader> build();
@@ -168,6 +176,7 @@ private:
       reinterpret_cast<Crypto::PublicKey&>(ephemeralKey));
   }
 
+<<<<<<< HEAD
   struct MsigInfo {
     PublicKey transactionKey;
     size_t outputIndex;
@@ -176,6 +185,9 @@ private:
 
   std::unordered_map<size_t, std::pair<TransactionTypes::InputKeyInfo, KeyPair>> keys;
   std::unordered_map<size_t, MsigInfo> msigInputs;
+=======
+  std::unordered_map<size_t, std::pair<TransactionTypes::InputKeyInfo, KeyPair>> keys;
+>>>>>>> forknote/master
 
   std::unique_ptr<ITransaction> tx;
   Crypto::Hash transactionHash;

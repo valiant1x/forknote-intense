@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -15,6 +19,10 @@
 #include <vector>
 
 #include "rocksdb/table.h"
+<<<<<<< HEAD
+=======
+#include "rocksdb/table_properties.h"
+>>>>>>> forknote/master
 #include "rocksdb/utilities/table_properties_collectors.h"
 #include "util/random.h"
 #include "utilities/table_properties_collectors/compact_on_deletion_collector.h"
@@ -24,6 +32,12 @@ int main(int argc, char** argv) {
       {1000, 10000, 10000, 127, 128, 129, 255, 256, 257, 2, 10000};
   const int kDeletionTriggers[] =
       {500, 9500, 4323, 47, 61, 128, 250, 250, 250, 2, 2};
+<<<<<<< HEAD
+=======
+  rocksdb::TablePropertiesCollectorFactory::Context context;
+  context.column_family_id =
+      rocksdb::TablePropertiesCollectorFactory::Context::kUnknownColumnFamily;
+>>>>>>> forknote/master
 
   std::vector<int> window_sizes;
   std::vector<int> deletion_triggers;
@@ -57,8 +71,12 @@ int main(int argc, char** argv) {
       std::unique_ptr<rocksdb::TablePropertiesCollector> collector;
       auto factory = rocksdb::NewCompactOnDeletionCollectorFactory(
           kWindowSize, kNumDeletionTrigger);
+<<<<<<< HEAD
       collector.reset(
           factory->CreateTablePropertiesCollector());
+=======
+      collector.reset(factory->CreateTablePropertiesCollector(context));
+>>>>>>> forknote/master
       const int kSample = 10;
       for (int delete_rate = 0; delete_rate <= kSample; ++delete_rate) {
         int deletions = 0;
@@ -90,8 +108,12 @@ int main(int argc, char** argv) {
       std::unique_ptr<rocksdb::TablePropertiesCollector> collector;
       auto factory = rocksdb::NewCompactOnDeletionCollectorFactory(
           kWindowSize, kNumDeletionTrigger);
+<<<<<<< HEAD
       collector.reset(
           factory->CreateTablePropertiesCollector());
+=======
+      collector.reset(factory->CreateTablePropertiesCollector(context));
+>>>>>>> forknote/master
       const int kSample = 10;
       for (int delete_rate = 0; delete_rate <= kSample; ++delete_rate) {
         int deletions = 0;
@@ -138,8 +160,12 @@ int main(int argc, char** argv) {
       std::unique_ptr<rocksdb::TablePropertiesCollector> collector;
       auto factory = rocksdb::NewCompactOnDeletionCollectorFactory(
           kWindowSize, kNumDeletionTrigger);
+<<<<<<< HEAD
       collector.reset(
           factory->CreateTablePropertiesCollector());
+=======
+      collector.reset(factory->CreateTablePropertiesCollector(context));
+>>>>>>> forknote/master
       assert(collector->NeedCompact() == false);
       // Insert "kNumDeletionTrigger * 0.95" deletions for every
       // "kWindowSize" and verify compaction is not needed.

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2014, Facebook, Inc.  All rights reserved.
+=======
+// Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. An additional grant
 // of patent rights can be found in the PATENTS file in the same directory.
@@ -24,6 +28,14 @@
 #include "rocksjni/loggerjnicallback.h"
 #include "rocksjni/writebatchhandlerjnicallback.h"
 
+<<<<<<< HEAD
+=======
+// Remove macro on windows
+#ifdef DELETE
+#undef DELETE
+#endif
+
+>>>>>>> forknote/master
 namespace rocksdb {
 
 // Detect if jlong overflows size_t
@@ -44,6 +56,7 @@ template<class PTR, class DERIVED> class RocksDBNativeClass {
     assert(jclazz != nullptr);
     return jclazz;
   }
+<<<<<<< HEAD
 
   // Get the field id of the member variable to store
   // the ptr
@@ -65,6 +78,27 @@ template<class PTR, class DERIVED> class RocksDBNativeClass {
     env->SetLongField(
         jdb, getHandleFieldID(env),
         reinterpret_cast<jlong>(ptr));
+=======
+};
+
+// Native class template for sub-classes of RocksMutableObject
+template<class PTR, class DERIVED> class NativeRocksMutableObject
+    : public RocksDBNativeClass<PTR, DERIVED> {
+ public:
+
+  static jmethodID getSetNativeHandleMethod(JNIEnv* env) {
+    static jmethodID mid = env->GetMethodID(
+        DERIVED::getJClass(env), "setNativeHandle", "(JZ)V");
+    assert(mid != nullptr);
+    return mid;
+  }
+
+  // Pass the pointer to the java side.
+  static void setHandle(JNIEnv* env, jobject jobj, PTR ptr,
+      jboolean java_owns_handle) {
+    env->CallVoidMethod(jobj, getSetNativeHandleMethod(env),
+      reinterpret_cast<jlong>(ptr), java_owns_handle);
+>>>>>>> forknote/master
   }
 };
 
@@ -402,7 +436,11 @@ class AbstractComparatorJni : public RocksDBNativeClass<
 };
 
 // The portal class for org.rocksdb.AbstractSlice
+<<<<<<< HEAD
 class AbstractSliceJni : public RocksDBNativeClass<
+=======
+class AbstractSliceJni : public NativeRocksMutableObject<
+>>>>>>> forknote/master
     const rocksdb::Slice*, AbstractSliceJni> {
  public:
   static jclass getJClass(JNIEnv* env) {
@@ -644,6 +682,7 @@ class WriteEntryJni {
       assert(jclazz != nullptr);
       return jclazz;
     }
+<<<<<<< HEAD
 
     static void setWriteType(JNIEnv* env, jobject jwrite_entry,
         WriteType write_type) {
@@ -705,6 +744,8 @@ class WriteEntryJni {
       assert(fid != nullptr);
       return fid;
     }
+=======
+>>>>>>> forknote/master
 };
 
 class InfoLogLevelJni {
@@ -734,15 +775,29 @@ class InfoLogLevelJni {
       return getEnum(env, "FATAL_LEVEL");
     }
 
+<<<<<<< HEAD
  private:
     // Get the java class id of org.rocksdb.WBWIRocksIterator.WriteType.
+=======
+    // Get the HEADER_LEVEL enum field of org.rocksdb.InfoLogLevel
+    static jobject HEADER_LEVEL(JNIEnv* env) {
+      return getEnum(env, "HEADER_LEVEL");
+    }
+
+ private:
+    // Get the java class id of org.rocksdb.InfoLogLevel
+>>>>>>> forknote/master
     static jclass getJClass(JNIEnv* env) {
       jclass jclazz = env->FindClass("org/rocksdb/InfoLogLevel");
       assert(jclazz != nullptr);
       return jclazz;
     }
 
+<<<<<<< HEAD
     // Get an enum field of org.rocksdb.WBWIRocksIterator.WriteType
+=======
+    // Get an enum field of org.rocksdb.InfoLogLevel
+>>>>>>> forknote/master
     static jobject getEnum(JNIEnv* env, const char name[]) {
       jclass jclazz = getJClass(env);
       jfieldID jfid =

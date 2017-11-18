@@ -31,6 +31,10 @@ enum WalletErrorCodes {
   WRONG_PASSWORD,
   INTERNAL_WALLET_ERROR,
   MIXIN_COUNT_TOO_BIG,
+<<<<<<< HEAD
+=======
+MIXIN_COUNT_TOO_SMALL,
+>>>>>>> forknote/master
   BAD_ADDRESS,
   TRANSACTION_SIZE_TOO_BIG,
   WRONG_AMOUNT,
@@ -76,6 +80,10 @@ public:
     case WRONG_PASSWORD:                return "The password is wrong";
     case ALREADY_INITIALIZED:           return "The object is already initialized";
     case INTERNAL_WALLET_ERROR:         return "Internal error occurred";
+<<<<<<< HEAD
+=======
+  case MIXIN_COUNT_TOO_SMALL:           return "MixIn count is below the required minimum";
+>>>>>>> forknote/master
     case MIXIN_COUNT_TOO_BIG:           return "MixIn count is too big";
     case BAD_ADDRESS:                   return "Bad address";
     case TRANSACTION_SIZE_TOO_BIG:      return "Transaction size is too big";

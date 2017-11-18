@@ -12,7 +12,12 @@ namespace rocksdb {
 
 class StringAppendOperator : public AssociativeMergeOperator {
  public:
+<<<<<<< HEAD
   StringAppendOperator(char delim_char);    /// Constructor: specify delimiter
+=======
+  // Constructor: specify delimiter
+  explicit StringAppendOperator(char delim_char);
+>>>>>>> forknote/master
 
   virtual bool Merge(const Slice& key,
                      const Slice* existing_value,
@@ -28,4 +33,7 @@ class StringAppendOperator : public AssociativeMergeOperator {
 };
 
 } // namespace rocksdb
+<<<<<<< HEAD
 
+=======
+>>>>>>> forknote/master

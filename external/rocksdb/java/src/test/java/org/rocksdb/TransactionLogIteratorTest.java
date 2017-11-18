@@ -17,6 +17,7 @@ public class TransactionLogIteratorTest {
 
   @Test
   public void transactionLogIterator() throws RocksDBException {
+<<<<<<< HEAD
     RocksDB db = null;
     Options options = null;
     TransactionLogIterator transactionLogIterator = null;
@@ -35,12 +36,22 @@ public class TransactionLogIteratorTest {
       if (options != null) {
         options.dispose();
       }
+=======
+    try (final Options options = new Options()
+        .setCreateIfMissing(true);
+         final RocksDB db = RocksDB.open(options,
+             dbFolder.getRoot().getAbsolutePath());
+         final TransactionLogIterator transactionLogIterator =
+             db.getUpdatesSince(0)) {
+      //no-op
+>>>>>>> forknote/master
     }
   }
 
   @Test
   public void getBatch() throws RocksDBException {
     final int numberOfPuts = 5;
+<<<<<<< HEAD
     RocksDB db = null;
     Options options = null;
     ColumnFamilyHandle cfHandle = null;
@@ -54,6 +65,16 @@ public class TransactionLogIteratorTest {
       db = RocksDB.open(options, dbFolder.getRoot().getAbsolutePath());
 
       for (int i = 0; i < numberOfPuts; i++){
+=======
+    try (final Options options = new Options()
+        .setCreateIfMissing(true)
+        .setWalTtlSeconds(1000)
+        .setWalSizeLimitMB(10);
+         final RocksDB db = RocksDB.open(options,
+             dbFolder.getRoot().getAbsolutePath())) {
+
+      for (int i = 0; i < numberOfPuts; i++) {
+>>>>>>> forknote/master
         db.put(String.valueOf(i).getBytes(),
             String.valueOf(i).getBytes());
       }
@@ -65,6 +86,7 @@ public class TransactionLogIteratorTest {
           isEqualTo(numberOfPuts);
 
       // insert 5 writes into a cf
+<<<<<<< HEAD
       cfHandle = db.createColumnFamily(
           new ColumnFamilyDescriptor("new_cf".getBytes()));
 
@@ -98,11 +120,36 @@ public class TransactionLogIteratorTest {
       }
       if (options != null) {
         options.dispose();
+=======
+      try (final ColumnFamilyHandle cfHandle = db.createColumnFamily(
+          new ColumnFamilyDescriptor("new_cf".getBytes()))) {
+        for (int i = 0; i < numberOfPuts; i++) {
+          db.put(cfHandle, String.valueOf(i).getBytes(),
+              String.valueOf(i).getBytes());
+        }
+        // the latest sequence number is 10 because
+        // (5 + 5) puts were written beforehand
+        assertThat(db.getLatestSequenceNumber()).
+            isEqualTo(numberOfPuts + numberOfPuts);
+
+        // Get updates since the beginning
+        try (final TransactionLogIterator transactionLogIterator =
+                 db.getUpdatesSince(0)) {
+          assertThat(transactionLogIterator.isValid()).isTrue();
+          transactionLogIterator.status();
+
+          // The first sequence number is 1
+          final TransactionLogIterator.BatchResult batchResult =
+              transactionLogIterator.getBatch();
+          assertThat(batchResult.sequenceNumber()).isEqualTo(1);
+        }
+>>>>>>> forknote/master
       }
     }
   }
 
   @Test
+<<<<<<< HEAD
   public void transactionLogIteratorStallAtLastRecord() throws RocksDBException {
     RocksDB db = null;
     Options options = null;
@@ -136,11 +183,36 @@ public class TransactionLogIteratorTest {
       }
       if (options != null) {
         options.dispose();
+=======
+  public void transactionLogIteratorStallAtLastRecord()
+      throws RocksDBException {
+    try (final Options options = new Options()
+        .setCreateIfMissing(true)
+        .setWalTtlSeconds(1000)
+        .setWalSizeLimitMB(10);
+         final RocksDB db = RocksDB.open(options,
+             dbFolder.getRoot().getAbsolutePath())) {
+
+      db.put("key1".getBytes(), "value1".getBytes());
+      // Get updates since the beginning
+      try (final TransactionLogIterator transactionLogIterator =
+               db.getUpdatesSince(0)) {
+        transactionLogIterator.status();
+        assertThat(transactionLogIterator.isValid()).isTrue();
+        transactionLogIterator.next();
+        assertThat(transactionLogIterator.isValid()).isFalse();
+        transactionLogIterator.status();
+        db.put("key2".getBytes(), "value2".getBytes());
+        transactionLogIterator.next();
+        transactionLogIterator.status();
+        assertThat(transactionLogIterator.isValid()).isTrue();
+>>>>>>> forknote/master
       }
     }
   }
 
   @Test
+<<<<<<< HEAD
   public void transactionLogIteratorCheckAfterRestart() throws RocksDBException {
     final int numberOfKeys = 2;
     RocksDB db = null;
@@ -176,6 +248,37 @@ public class TransactionLogIteratorTest {
       }
       if (options != null) {
         options.dispose();
+=======
+  public void transactionLogIteratorCheckAfterRestart()
+      throws RocksDBException {
+    final int numberOfKeys = 2;
+    try (final Options options = new Options()
+        .setCreateIfMissing(true)
+        .setWalTtlSeconds(1000)
+        .setWalSizeLimitMB(10)) {
+
+      try (final RocksDB db = RocksDB.open(options,
+          dbFolder.getRoot().getAbsolutePath())) {
+        db.put("key1".getBytes(), "value1".getBytes());
+        db.put("key2".getBytes(), "value2".getBytes());
+        db.flush(new FlushOptions().setWaitForFlush(true));
+
+      }
+
+      // reopen
+      try (final RocksDB db = RocksDB.open(options,
+          dbFolder.getRoot().getAbsolutePath())) {
+        assertThat(db.getLatestSequenceNumber()).isEqualTo(numberOfKeys);
+
+        try (final TransactionLogIterator transactionLogIterator =
+                 db.getUpdatesSince(0)) {
+          for (int i = 0; i < numberOfKeys; i++) {
+            transactionLogIterator.status();
+            assertThat(transactionLogIterator.isValid()).isTrue();
+            transactionLogIterator.next();
+          }
+        }
+>>>>>>> forknote/master
       }
     }
   }

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //  Copyright (c) 2013, Facebook, Inc.  All rights reserved.
+=======
+//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
+>>>>>>> forknote/master
 //  This source code is licensed under the BSD-style license found in the
 //  LICENSE file in the root directory of this source tree. An additional grant
 //  of patent rights can be found in the PATENTS file in the same directory.
@@ -33,6 +37,10 @@ int main() {
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
+<<<<<<< HEAD
+=======
+#include <algorithm>
+>>>>>>> forknote/master
 #include <chrono>
 #include <exception>
 #include <thread>
@@ -228,8 +236,20 @@ DEFINE_int64(cache_size, 2LL * KB * KB * KB,
              "Number of bytes to use as a cache of uncompressed data.");
 
 DEFINE_uint64(subcompactions, 1,
+<<<<<<< HEAD
              "Maximum number of subcompactions to divide L0-L1 compactions "
              "into.");
+=======
+              "Maximum number of subcompactions to divide L0-L1 compactions "
+              "into.");
+
+DEFINE_bool(allow_concurrent_memtable_write, true,
+            "Allow multi-writers to update mem tables in parallel.");
+
+DEFINE_bool(enable_write_thread_adaptive_yield, true,
+            "Use a yielding spin loop for brief writer thread waits.");
+
+>>>>>>> forknote/master
 static const bool FLAGS_subcompactions_dummy __attribute__((unused)) =
     RegisterFlagValidator(&FLAGS_subcompactions, &ValidateUint32Range);
 
@@ -277,6 +297,14 @@ static const bool FLAGS_kill_random_test_dummy __attribute__((unused)) =
     RegisterFlagValidator(&FLAGS_kill_random_test, &ValidateInt32Positive);
 extern int rocksdb_kill_odds;
 
+<<<<<<< HEAD
+=======
+DEFINE_string(kill_prefix_blacklist, "",
+              "If non-empty, kill points with prefix in the list given will be"
+              " skipped. Items are comma-separated.");
+extern std::vector<std::string> rocksdb_kill_prefix_blacklist;
+
+>>>>>>> forknote/master
 DEFINE_bool(disable_wal, false, "If true, do not write WAL for write.");
 
 DEFINE_int32(target_file_size_base, 64 * KB,
@@ -290,6 +318,14 @@ DEFINE_uint64(max_bytes_for_level_base, 256 * KB, "Max bytes for level-1");
 DEFINE_int32(max_bytes_for_level_multiplier, 2,
              "A multiplier to compute max bytes for level-N (N >= 2)");
 
+<<<<<<< HEAD
+=======
+// Temporarily disable this to allows it to detect new bugs
+DEFINE_int32(compact_files_one_in, 0,
+             "If non-zero, then CompactFiles() will be called one for every N "
+             "operations IN AVERAGE.  0 indicates CompactFiles() is disabled.");
+
+>>>>>>> forknote/master
 static bool ValidateInt32Percent(const char* flagname, int32_t value) {
   if (value < 0 || value>100) {
     fprintf(stderr, "Invalid value for --%s: %d, 0<= pct <=100 \n",
@@ -298,6 +334,10 @@ static bool ValidateInt32Percent(const char* flagname, int32_t value) {
   }
   return true;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> forknote/master
 DEFINE_int32(readpercent, 10,
              "Ratio of reads to total workload (expressed as a percentage)");
 static const bool FLAGS_readpercent_dummy __attribute__((unused)) =
@@ -350,12 +390,35 @@ enum rocksdb::CompressionType StringToCompressionType(const char* ctype) {
     return rocksdb::kLZ4Compression;
   else if (!strcasecmp(ctype, "lz4hc"))
     return rocksdb::kLZ4HCCompression;
+<<<<<<< HEAD
+=======
+  else if (!strcasecmp(ctype, "xpress"))
+    return rocksdb::kXpressCompression;
+>>>>>>> forknote/master
   else if (!strcasecmp(ctype, "zstd"))
     return rocksdb::kZSTDNotFinalCompression;
 
   fprintf(stdout, "Cannot parse compression type '%s'\n", ctype);
   return rocksdb::kSnappyCompression; //default value
 }
+<<<<<<< HEAD
+=======
+
+std::vector<std::string> SplitString(std::string src) {
+  std::vector<std::string> ret;
+  if (src.empty()) {
+    return ret;
+  }
+  size_t pos = 0;
+  size_t pos_comma;
+  while ((pos_comma = src.find(',', pos)) != std::string::npos) {
+    ret.push_back(src.substr(pos, pos_comma - pos));
+    pos = pos_comma + 1;
+  }
+  ret.push_back(src.substr(pos, src.length()));
+  return ret;
+}
+>>>>>>> forknote/master
 }  // namespace
 
 DEFINE_string(compression_type, "snappy",
@@ -375,9 +438,12 @@ DEFINE_uint64(log2_keys_per_lock, 2, "Log2 of number of keys per lock");
 static const bool FLAGS_log2_keys_per_lock_dummy __attribute__((unused)) =
     RegisterFlagValidator(&FLAGS_log2_keys_per_lock, &ValidateUint32Range);
 
+<<<<<<< HEAD
 DEFINE_bool(filter_deletes, false, "On true, deletes use KeyMayExist to drop"
             " the delete if key not present");
 
+=======
+>>>>>>> forknote/master
 DEFINE_bool(in_place_update, false, "On true, does inplace update in memtable");
 
 enum RepFactory {
@@ -420,17 +486,31 @@ static const bool FLAGS_prefix_size_dummy __attribute__((unused)) =
 DEFINE_bool(use_merge, false, "On true, replaces all writes with a Merge "
             "that behaves like a Put");
 
+<<<<<<< HEAD
+=======
+DEFINE_bool(use_full_merge_v1, false,
+            "On true, use a merge operator that implement the deprecated "
+            "version of FullMerge");
+>>>>>>> forknote/master
 
 namespace rocksdb {
 
 // convert long to a big-endian slice key
+<<<<<<< HEAD
 static std::string Key(long val) {
+=======
+static std::string Key(int64_t val) {
+>>>>>>> forknote/master
   std::string little_endian_key;
   std::string big_endian_key;
   PutFixed64(&little_endian_key, val);
   assert(little_endian_key.size() == sizeof(val));
   big_endian_key.resize(sizeof(val));
+<<<<<<< HEAD
   for (int i=0; i<(int)sizeof(val); i++) {
+=======
+  for (size_t i = 0 ; i < sizeof(val); ++i) {
+>>>>>>> forknote/master
     big_endian_key[i] = little_endian_key[sizeof(val) - 1 - i];
   }
   return big_endian_key;
@@ -438,11 +518,15 @@ static std::string Key(long val) {
 
 static std::string StringToHex(const std::string& str) {
   std::string result = "0x";
+<<<<<<< HEAD
   char buf[10];
   for (size_t i = 0; i < str.length(); i++) {
     snprintf(buf, 10, "%02X", (unsigned char)str[i]);
     result += buf;
   }
+=======
+  result.append(Slice(str).ToString(true));
+>>>>>>> forknote/master
   return result;
 }
 
@@ -452,9 +536,15 @@ namespace {
 
 class Stats {
  private:
+<<<<<<< HEAD
   double start_;
   double finish_;
   double seconds_;
+=======
+  uint64_t start_;
+  uint64_t finish_;
+  double  seconds_;
+>>>>>>> forknote/master
   long done_;
   long gets_;
   long prefixes_;
@@ -465,9 +555,17 @@ class Stats {
   long founds_;
   long iterations_;
   long errors_;
+<<<<<<< HEAD
   int next_report_;
   size_t bytes_;
   double last_op_finish_;
+=======
+  long num_compact_files_succeed_;
+  long num_compact_files_failed_;
+  int next_report_;
+  size_t bytes_;
+  uint64_t last_op_finish_;
+>>>>>>> forknote/master
   HistogramImpl hist_;
 
  public:
@@ -488,6 +586,11 @@ class Stats {
     errors_ = 0;
     bytes_ = 0;
     seconds_ = 0;
+<<<<<<< HEAD
+=======
+    num_compact_files_succeed_ = 0;
+    num_compact_files_failed_ = 0;
+>>>>>>> forknote/master
     start_ = FLAGS_env->NowMicros();
     last_op_finish_ = start_;
     finish_ = start_;
@@ -507,6 +610,11 @@ class Stats {
     errors_ += other.errors_;
     bytes_ += other.bytes_;
     seconds_ += other.seconds_;
+<<<<<<< HEAD
+=======
+    num_compact_files_succeed_ += other.num_compact_files_succeed_;
+    num_compact_files_failed_ += other.num_compact_files_failed_;
+>>>>>>> forknote/master
     if (other.start_ < start_) start_ = other.start_;
     if (other.finish_ > finish_) finish_ = other.finish_;
   }
@@ -518,11 +626,19 @@ class Stats {
 
   void FinishedSingleOp() {
     if (FLAGS_histogram) {
+<<<<<<< HEAD
       double now = FLAGS_env->NowMicros();
       double micros = now - last_op_finish_;
       hist_.Add(micros);
       if (micros > 20000) {
         fprintf(stdout, "long op: %.1f micros%30s\r", micros, "");
+=======
+      auto now = FLAGS_env->NowMicros();
+      auto micros = now - last_op_finish_;
+      hist_.Add(micros);
+      if (micros > 20000) {
+        fprintf(stdout, "long op: %" PRIu64 " micros%30s\r", micros, "");
+>>>>>>> forknote/master
       }
       last_op_finish_ = now;
     }
@@ -571,6 +687,13 @@ class Stats {
     errors_ += n;
   }
 
+<<<<<<< HEAD
+=======
+  void AddNumCompactFilesSucceed(int n) { num_compact_files_succeed_ += n; }
+
+  void AddNumCompactFilesFailed(int n) { num_compact_files_failed_ += n; }
+
+>>>>>>> forknote/master
   void Report(const char* name) {
     std::string extra;
     if (bytes_ < 1 || done_ < 1) {
@@ -590,7 +713,12 @@ class Stats {
             "", bytes_mb, rate, (100*writes_)/done_, done_);
     fprintf(stdout, "%-12s: Wrote %ld times\n", "", writes_);
     fprintf(stdout, "%-12s: Deleted %ld times\n", "", deletes_);
+<<<<<<< HEAD
     fprintf(stdout, "%-12s: Single deleted %ld times\n", "", single_deletes_);
+=======
+    fprintf(stdout, "%-12s: Single deleted %" ROCKSDB_PRIszt " times\n", "",
+           single_deletes_);
+>>>>>>> forknote/master
     fprintf(stdout, "%-12s: %ld read and %ld found the key\n", "",
             gets_, founds_);
     fprintf(stdout, "%-12s: Prefix scanned %ld times\n", "", prefixes_);
@@ -598,6 +726,13 @@ class Stats {
             iterator_size_sums_);
     fprintf(stdout, "%-12s: Iterated %ld times\n", "", iterations_);
     fprintf(stdout, "%-12s: Got errors %ld times\n", "", errors_);
+<<<<<<< HEAD
+=======
+    fprintf(stdout, "%-12s: %ld CompactFiles() succeed\n", "",
+            num_compact_files_succeed_);
+    fprintf(stdout, "%-12s: %ld CompactFiles() did not succeed\n", "",
+            num_compact_files_failed_);
+>>>>>>> forknote/master
 
     if (FLAGS_histogram) {
       fprintf(stdout, "Microseconds per op:\n%s\n", hist_.ToString().c_str());
@@ -655,7 +790,11 @@ class SharedState {
       values_[i] = std::vector<uint32_t>(max_key_, SENTINEL);
     }
 
+<<<<<<< HEAD
     long num_locks = (max_key_ >> log2_keys_per_lock_);
+=======
+    long num_locks = static_cast<long>(max_key_ >> log2_keys_per_lock_);
+>>>>>>> forknote/master
     if (max_key_ & ((1 << log2_keys_per_lock_) - 1)) {
       num_locks++;
     }
@@ -684,7 +823,11 @@ class SharedState {
     return stress_test_;
   }
 
+<<<<<<< HEAD
   long GetMaxKey() const {
+=======
+  int64_t GetMaxKey() const {
+>>>>>>> forknote/master
     return max_key_;
   }
 
@@ -764,6 +907,7 @@ class SharedState {
     std::fill(values_[cf].begin(), values_[cf].end(), SENTINEL);
   }
 
+<<<<<<< HEAD
   void Put(int cf, long key, uint32_t value_base) {
     values_[cf][key] = value_base;
   }
@@ -779,6 +923,23 @@ class SharedState {
   }
 
   bool Exists(int cf, size_t key) { return values_[cf][key] != SENTINEL; }
+=======
+  void Put(int cf, int64_t key, uint32_t value_base) {
+    values_[cf][key] = value_base;
+  }
+
+  uint32_t Get(int cf, int64_t key) const { return values_[cf][key]; }
+
+  void Delete(int cf, int64_t key) { values_[cf][key] = SENTINEL; }
+
+  void SingleDelete(int cf, int64_t key) { values_[cf][key] = SENTINEL; }
+
+  bool AllowsOverwrite(int cf, int64_t key) {
+    return no_overwrite_ids_[cf].find(key) == no_overwrite_ids_[cf].end();
+  }
+
+  bool Exists(int cf, int64_t key) { return values_[cf][key] != SENTINEL; }
+>>>>>>> forknote/master
 
   uint32_t GetSeed() const { return seed_; }
 
@@ -794,7 +955,11 @@ class SharedState {
   port::Mutex mu_;
   port::CondVar cv_;
   const uint32_t seed_;
+<<<<<<< HEAD
   const long max_key_;
+=======
+  const int64_t max_key_;
+>>>>>>> forknote/master
   const uint32_t log2_keys_per_lock_;
   const int num_threads_;
   long num_initialized_;
@@ -873,11 +1038,21 @@ class DbStressListener : public EventListener {
     assert(info.db_name == db_name_);
     assert(IsValidColumnFamilyName(info.cf_name));
     VerifyFilePath(info.file_path);
+<<<<<<< HEAD
     assert(info.file_size > 0);
     assert(info.job_id > 0);
     assert(info.table_properties.data_size > 0);
     assert(info.table_properties.raw_key_size > 0);
     assert(info.table_properties.num_entries > 0);
+=======
+    assert(info.job_id > 0 || FLAGS_compact_files_one_in > 0);
+    if (info.status.ok()) {
+      assert(info.file_size > 0);
+      assert(info.table_properties.data_size > 0);
+      assert(info.table_properties.raw_key_size > 0);
+      assert(info.table_properties.num_entries > 0);
+    }
+>>>>>>> forknote/master
   }
 
  protected:
@@ -998,10 +1173,15 @@ class StressTest {
          }},
         {"memtable_prefix_bloom_bits", {"0", "8", "10"}},
         {"memtable_prefix_bloom_probes", {"4", "5", "6"}},
+<<<<<<< HEAD
         {"memtable_prefix_bloom_huge_page_tlb_size",
          {"0", ToString(2 * 1024 * 1024)}},
         {"max_successive_merges", {"0", "2", "4"}},
         {"filter_deletes", {"0", "1"}},
+=======
+        {"memtable_huge_page_size", {"0", ToString(2 * 1024 * 1024)}},
+        {"max_successive_merges", {"0", "2", "4"}},
+>>>>>>> forknote/master
         {"inplace_update_num_locks", {"100", "200", "300"}},
         // TODO(ljin): enable test for this option
         // {"disable_auto_compactions", {"100", "200", "300"}},
@@ -1101,9 +1281,15 @@ class StressTest {
         shared.GetCondVar()->Wait();
       }
 
+<<<<<<< HEAD
       double now = FLAGS_env->NowMicros();
       fprintf(stdout, "%s Starting database operations\n",
               FLAGS_env->TimeToString((uint64_t) now/1000000).c_str());
+=======
+      auto now = FLAGS_env->NowMicros();
+      fprintf(stdout, "%s Starting database operations\n",
+              FLAGS_env->TimeToString(now/1000000).c_str());
+>>>>>>> forknote/master
 
       shared.SetStart();
       shared.GetCondVar()->SignalAll();
@@ -1136,10 +1322,17 @@ class StressTest {
       delete threads[i];
       threads[i] = nullptr;
     }
+<<<<<<< HEAD
     double now = FLAGS_env->NowMicros();
     if (!FLAGS_test_batches_snapshots) {
       fprintf(stdout, "%s Verification successful\n",
               FLAGS_env->TimeToString((uint64_t) now/1000000).c_str());
+=======
+    auto now = FLAGS_env->NowMicros();
+    if (!FLAGS_test_batches_snapshots) {
+      fprintf(stdout, "%s Verification successful\n",
+              FLAGS_env->TimeToString(now/1000000).c_str());
+>>>>>>> forknote/master
     }
     PrintStatistics();
 
@@ -1489,7 +1682,11 @@ class StressTest {
     WriteOptions write_opts;
     auto shared = thread->shared;
     char value[100];
+<<<<<<< HEAD
     long max_key = thread->shared->GetMaxKey();
+=======
+    auto max_key = thread->shared->GetMaxKey();
+>>>>>>> forknote/master
     std::string from_db;
     if (FLAGS_sync) {
       write_opts.sync = true;
@@ -1568,6 +1765,61 @@ class StressTest {
         }
       }
 
+<<<<<<< HEAD
+=======
+#ifndef ROCKSDB_LITE  // Lite does not support GetColumnFamilyMetaData
+      if (FLAGS_compact_files_one_in > 0 &&
+          thread->rand.Uniform(FLAGS_compact_files_one_in) == 0) {
+        auto* random_cf =
+            column_families_[thread->rand.Next() % FLAGS_column_families];
+        rocksdb::ColumnFamilyMetaData cf_meta_data;
+        db_->GetColumnFamilyMetaData(random_cf, &cf_meta_data);
+
+        // Randomly compact up to three consecutive files from a level
+        const int kMaxRetry = 3;
+        for (int attempt = 0; attempt < kMaxRetry; ++attempt) {
+          size_t random_level = thread->rand.Uniform(
+              static_cast<int>(cf_meta_data.levels.size()));
+
+          const auto& files = cf_meta_data.levels[random_level].files;
+          if (files.size() > 0) {
+            size_t random_file_index =
+                thread->rand.Uniform(static_cast<int>(files.size()));
+            if (files[random_file_index].being_compacted) {
+              // Retry as the selected file is currently being compacted
+              continue;
+            }
+
+            std::vector<std::string> input_files;
+            input_files.push_back(files[random_file_index].name);
+            if (random_file_index > 0 &&
+                !files[random_file_index - 1].being_compacted) {
+              input_files.push_back(files[random_file_index - 1].name);
+            }
+            if (random_file_index + 1 < files.size() &&
+                !files[random_file_index + 1].being_compacted) {
+              input_files.push_back(files[random_file_index + 1].name);
+            }
+
+            size_t output_level =
+                std::min(random_level + 1, cf_meta_data.levels.size() - 1);
+            auto s =
+                db_->CompactFiles(CompactionOptions(), random_cf, input_files,
+                                  static_cast<int>(output_level));
+            if (!s.ok()) {
+              printf("Unable to perform CompactFiles(): %s\n",
+                     s.ToString().c_str());
+              thread->stats.AddNumCompactFilesFailed(1);
+            } else {
+              thread->stats.AddNumCompactFilesSucceed(1);
+            }
+            break;
+          }
+        }
+      }
+#endif                // !ROCKSDB_LITE
+
+>>>>>>> forknote/master
       long rand_key = thread->rand.Next() % max_key;
       int rand_column_family = thread->rand.Next() % FLAGS_column_families;
       std::string keystr = Key(rand_key);
@@ -1739,7 +1991,11 @@ class StressTest {
         unique_ptr<Iterator> iter(
             db_->NewIterator(options, column_families_[cf]));
         iter->Seek(Key(start));
+<<<<<<< HEAD
         for (long i = start; i < end; i++) {
+=======
+        for (auto i = start; i < end; i++) {
+>>>>>>> forknote/master
           if (thread->shared->HasVerificationFailedYet()) {
             break;
           }
@@ -1777,7 +2033,11 @@ class StressTest {
         }
       } else {
         // Use Get to verify this range
+<<<<<<< HEAD
         for (long i = start; i < end; i++) {
+=======
+        for (auto i = start; i < end; i++) {
+>>>>>>> forknote/master
           if (thread->shared->HasVerificationFailedYet()) {
             break;
           }
@@ -1797,13 +2057,22 @@ class StressTest {
   }
 
   void VerificationAbort(SharedState* shared, std::string msg, int cf,
+<<<<<<< HEAD
                          long key) const {
     printf("Verification failed for column family %d key %ld: %s\n", cf, key,
+=======
+                         int64_t key) const {
+    printf("Verification failed for column family %d key %" PRIi64 ": %s\n", cf, key,
+>>>>>>> forknote/master
            msg.c_str());
     shared->SetVerificationFailure();
   }
 
+<<<<<<< HEAD
   bool VerifyValue(int cf, long key, const ReadOptions& opts,
+=======
+  bool VerifyValue(int cf, int64_t key, const ReadOptions& opts,
+>>>>>>> forknote/master
                    SharedState* shared, const std::string& value_from_db,
                    Status s, bool strict = false) const {
     if (shared->HasVerificationFailedYet()) {
@@ -1840,12 +2109,20 @@ class StressTest {
     return true;
   }
 
+<<<<<<< HEAD
   static void PrintKeyValue(int cf, uint32_t key, const char* value,
+=======
+  static void PrintKeyValue(int cf, int64_t key, const char* value,
+>>>>>>> forknote/master
                             size_t sz) {
     if (!FLAGS_verbose) {
       return;
     }
+<<<<<<< HEAD
     fprintf(stdout, "[CF %d] %u ==> (%u) ", cf, key, (unsigned int)sz);
+=======
+    fprintf(stdout, "[CF %d] %" PRIi64 " == > (%" ROCKSDB_PRIszt ") ", cf, key, sz);
+>>>>>>> forknote/master
     for (size_t i = 0; i < sz; i++) {
       fprintf(stdout, "%X", value[i]);
     }
@@ -1899,12 +2176,20 @@ class StressTest {
     fprintf(stdout, "Num times DB reopens      : %d\n", FLAGS_reopen);
     fprintf(stdout, "Batches/snapshots         : %d\n",
             FLAGS_test_batches_snapshots);
+<<<<<<< HEAD
     fprintf(stdout, "Deletes use filter        : %d\n", FLAGS_filter_deletes);
+=======
+>>>>>>> forknote/master
     fprintf(stdout, "Do update in place        : %d\n", FLAGS_in_place_update);
     fprintf(stdout, "Num keys per lock         : %d\n",
             1 << FLAGS_log2_keys_per_lock);
     std::string compression = CompressionTypeToString(FLAGS_compression_type_e);
     fprintf(stdout, "Compression               : %s\n", compression.c_str());
+<<<<<<< HEAD
+=======
+    fprintf(stdout, "Max subcompactions        : %" PRIu64 "\n",
+            FLAGS_subcompactions);
+>>>>>>> forknote/master
 
     const char* memtablerep = "";
     switch (FLAGS_rep_factory) {
@@ -1921,6 +2206,17 @@ class StressTest {
 
     fprintf(stdout, "Memtablerep               : %s\n", memtablerep);
 
+<<<<<<< HEAD
+=======
+    fprintf(stdout, "Test kill odd             : %d\n", rocksdb_kill_odds);
+    if (!rocksdb_kill_prefix_blacklist.empty()) {
+      fprintf(stdout, "Skipping kill points prefixes:\n");
+      for (auto& p : rocksdb_kill_prefix_blacklist) {
+        fprintf(stdout, "  %s\n", p.c_str());
+      }
+    }
+
+>>>>>>> forknote/master
     fprintf(stdout, "------------------------------------------------\n");
   }
 
@@ -1952,7 +2248,10 @@ class StressTest {
     options_.disableDataSync = FLAGS_disable_data_sync;
     options_.use_fsync = FLAGS_use_fsync;
     options_.allow_mmap_reads = FLAGS_mmap_read;
+<<<<<<< HEAD
     rocksdb_kill_odds = FLAGS_kill_random_test;
+=======
+>>>>>>> forknote/master
     options_.target_file_size_base = FLAGS_target_file_size_base;
     options_.target_file_size_multiplier = FLAGS_target_file_size_multiplier;
     options_.max_bytes_for_level_base = FLAGS_max_bytes_for_level_base;
@@ -1966,6 +2265,7 @@ class StressTest {
     options_.compression = FLAGS_compression_type_e;
     options_.create_if_missing = true;
     options_.max_manifest_file_size = 10 * 1024;
+<<<<<<< HEAD
     options_.filter_deletes = FLAGS_filter_deletes;
     options_.inplace_update_support = FLAGS_in_place_update;
     options_.max_subcompactions = static_cast<uint32_t>(FLAGS_subcompactions);
@@ -1974,6 +2274,25 @@ class StressTest {
             "prefix_size should be non-zero iff memtablerep == prefix_hash\n");
       exit(1);
     }
+=======
+    options_.inplace_update_support = FLAGS_in_place_update;
+    options_.max_subcompactions = static_cast<uint32_t>(FLAGS_subcompactions);
+    options_.allow_concurrent_memtable_write =
+        FLAGS_allow_concurrent_memtable_write;
+    options_.enable_write_thread_adaptive_yield =
+        FLAGS_enable_write_thread_adaptive_yield;
+
+    if (FLAGS_prefix_size == 0 && FLAGS_rep_factory == kHashSkipList) {
+      fprintf(stderr,
+              "prefeix_size cannot be zero if memtablerep == prefix_hash\n");
+      exit(1);
+    }
+    if (FLAGS_prefix_size != 0 && FLAGS_rep_factory != kHashSkipList) {
+      fprintf(stderr,
+              "WARNING: prefix_size is non-zero but "
+              "memtablerep != prefix_hash\n");
+    }
+>>>>>>> forknote/master
     switch (FLAGS_rep_factory) {
       case kSkipList:
         // no need to do anything
@@ -1993,7 +2312,13 @@ class StressTest {
 #endif  // ROCKSDB_LITE
     }
 
+<<<<<<< HEAD
     if (FLAGS_use_merge) {
+=======
+    if (FLAGS_use_full_merge_v1) {
+      options_.merge_operator = MergeOperators::CreateDeprecatedPutOperator();
+    } else {
+>>>>>>> forknote/master
       options_.merge_operator = MergeOperators::CreatePutOperator();
     }
 
@@ -2034,8 +2359,14 @@ class StressTest {
         // this is a reopen. just assert that existing column_family_names are
         // equivalent to what we remember
         auto sorted_cfn = column_family_names_;
+<<<<<<< HEAD
         sort(sorted_cfn.begin(), sorted_cfn.end());
         sort(existing_column_families.begin(), existing_column_families.end());
+=======
+        std::sort(sorted_cfn.begin(), sorted_cfn.end());
+        std::sort(existing_column_families.begin(),
+                  existing_column_families.end());
+>>>>>>> forknote/master
         if (sorted_cfn != existing_column_families) {
           fprintf(stderr,
                   "Expected column families differ from the existing:\n");
@@ -2099,9 +2430,15 @@ class StressTest {
     db_ = nullptr;
 
     num_times_reopened_++;
+<<<<<<< HEAD
     double now = FLAGS_env->NowMicros();
     fprintf(stdout, "%s Reopening database for the %dth time\n",
             FLAGS_env->TimeToString((uint64_t) now/1000000).c_str(),
+=======
+    auto now = FLAGS_env->NowMicros();
+    fprintf(stdout, "%s Reopening database for the %dth time\n",
+            FLAGS_env->TimeToString(now/1000000).c_str(),
+>>>>>>> forknote/master
             num_times_reopened_);
     Open();
   }
@@ -2186,6 +2523,12 @@ int main(int argc, char** argv) {
       FLAGS_db = default_db_path;
   }
 
+<<<<<<< HEAD
+=======
+  rocksdb_kill_odds = FLAGS_kill_random_test;
+  rocksdb_kill_prefix_blacklist = SplitString(FLAGS_kill_prefix_blacklist);
+
+>>>>>>> forknote/master
   rocksdb::StressTest stress;
   if (stress.Run()) {
     return 0;
